@@ -1,0 +1,1629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chaz Agent Portal — AI That Reasons Across Data Sources</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep: #0a0f1a;
+      --bg-card: #111827;
+      --bg-card-hover: #1a2332;
+      --cyan: #00b4d8;
+      --cyan-dim: #0096b7;
+      --green: #00ff88;
+      --green-dim: #00cc6a;
+      --text-primary: #f0f4f8;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --border: #1e293b;
+      --border-light: #334155;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── Typography ─────────────────────────────────── */
+    h1, h2, h3, h4 { font-weight: 700; line-height: 1.2; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .text-cyan { color: var(--cyan); }
+    .text-green { color: var(--green); }
+    .text-muted { color: var(--text-muted); }
+    .text-secondary { color: var(--text-secondary); }
+
+    /* ─── Layout ─────────────────────────────────────── */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section { padding: 100px 0; }
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 640px;
+      margin-bottom: 60px;
+    }
+
+    /* ─── Navbar ──────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(10, 15, 26, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    nav .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--cyan);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+    .nav-logo span { color: var(--text-secondary); }
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+    .nav-cta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 8px 18px;
+      background: transparent;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      border-radius: 6px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-cta:hover { background: var(--cyan); color: var(--bg-deep); }
+
+    /* ─── Hero ───────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 64px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0, 180, 216, 0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 60%, rgba(0, 255, 136, 0.04) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-grid-bg {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0, 180, 216, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 180, 216, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 70%);
+    }
+    .hero-content { position: relative; z-index: 1; }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      background: rgba(0, 255, 136, 0.08);
+      border: 1px solid rgba(0, 255, 136, 0.2);
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+    .hero-badge svg { width: 10px; height: 10px; }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      max-width: 900px;
+      line-height: 1.1;
+    }
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--cyan) 0%, var(--green) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2vw, 20px);
+      color: var(--text-secondary);
+      max-width: 680px;
+      margin-bottom: 40px;
+      line-height: 1.7;
+    }
+    .hero-challenge {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 48px;
+      max-width: 680px;
+    }
+    .hero-challenge p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-style: italic;
+      line-height: 1.7;
+    }
+    .hero-challenge .quote-bar {
+      display: inline-block;
+      width: 3px;
+      height: 14px;
+      background: var(--cyan);
+      border-radius: 2px;
+      margin-right: 10px;
+      vertical-align: middle;
+    }
+    .hero-cta-group { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 14px 28px;
+      background: var(--cyan);
+      color: var(--bg-deep);
+      border: none;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-primary:hover { background: #00c5e8; transform: translateY(-1px); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 14px 28px;
+      background: transparent;
+      color: var(--text-primary);
+      border: 1px solid var(--border-light);
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
+    .btn-primary svg, .btn-secondary svg { width: 16px; height: 16px; }
+
+    /* ─── Agent Diagram ───────────────────────────────── */
+    .agent-diagram {
+      margin-top: 80px;
+      position: relative;
+    }
+    .diagram-center {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      padding: 28px;
+      background: var(--bg-card);
+      border: 2px solid var(--cyan);
+      border-radius: 16px;
+      width: 180px;
+      margin: 0 auto 40px;
+      box-shadow: 0 0 40px rgba(0, 180, 216, 0.15);
+    }
+    .diagram-center svg { width: 48px; height: 48px; }
+    .diagram-center-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--cyan);
+      text-align: center;
+    }
+    .diagram-center-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: center;
+    }
+    .diagram-nodes {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .diagram-node {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .diagram-node:hover { border-color: var(--cyan); transform: translateY(-2px); }
+    .diagram-node svg { width: 28px; height: 28px; flex-shrink: 0; }
+    .diagram-node-info { min-width: 0; }
+    .diagram-node-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .diagram-node-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .diagram-node.full-width {
+      grid-column: 1 / -1;
+      max-width: 100%;
+    }
+    .diagram-connector {
+      display: none;
+    }
+
+    /* ─── Reasoning Chain ────────────────────────────── */
+    #reasoning { background: linear-gradient(180deg, var(--bg-deep) 0%, #0d1424 100%); }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      position: relative;
+    }
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+    .step-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--green));
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .step-card:hover::before { opacity: 1; }
+    .step-card:hover { border-color: rgba(0, 180, 216, 0.3); }
+    @keyframes fadeUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .step-card:nth-child(1) { animation-delay: 0.1s; }
+    .step-card:nth-child(2) { animation-delay: 0.2s; }
+    .step-card:nth-child(3) { animation-delay: 0.3s; }
+    .step-card:nth-child(4) { animation-delay: 0.4s; }
+    .step-card:nth-child(5) { animation-delay: 0.5s; }
+    .step-card:nth-child(6) { animation-delay: 0.6s; }
+
+    .step-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .step-num .step-badge {
+      font-size: 10px;
+      padding: 2px 8px;
+      background: rgba(0, 180, 216, 0.1);
+      border: 1px solid rgba(0, 180, 216, 0.2);
+      border-radius: 4px;
+      color: var(--cyan);
+      letter-spacing: 0;
+    }
+    .step-icon { margin-bottom: 16px; }
+    .step-icon svg { width: 36px; height: 36px; }
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .step-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+    .step-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .step-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 3px 8px;
+      background: rgba(0, 180, 216, 0.06);
+      border: 1px solid rgba(0, 180, 216, 0.15);
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+
+    /* ─── Data Stack ─────────────────────────────────── */
+    .data-stack-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .stack-col-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .stack-col-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+    .stack-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .stack-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .stack-card-header svg { width: 22px; height: 22px; }
+    .stack-card-header span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .stack-card-header.databricks span { color: #ff6b35; }
+    .stack-card-header.salesforce span { color: #00a1e0; }
+    .stack-card-header.groq span { color: var(--cyan); }
+    .stack-table-list { padding: 8px 0; }
+    .stack-table-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+      transition: background 0.15s;
+    }
+    .stack-table-item:last-child { border-bottom: none; }
+    .stack-table-item:hover { background: rgba(0, 180, 216, 0.04); color: var(--text-primary); }
+    .stack-table-item svg { width: 14px; height: 14px; opacity: 0.5; flex-shrink: 0; }
+    .stack-table-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-primary);
+    }
+    .stack-arrow-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding-top: 60px;
+    }
+    .stack-arrow { color: var(--text-muted); }
+    .stack-arrow svg { width: 20px; height: 20px; }
+    .stack-arrow-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-align: center;
+    }
+    .triangle-section {
+      display: flex;
+      justify-content: center;
+      margin-top: 60px;
+    }
+    .triangle {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 40px;
+    }
+    .tri-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 0 32px;
+    }
+    .tri-node svg { width: 36px; height: 36px; }
+    .tri-node-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .tri-node-role { font-size: 11px; color: var(--text-muted); text-align: center; }
+    .tri-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--border-light);
+    }
+    .tri-connector svg { width: 16px; height: 16px; }
+    .tri-connector span { font-size: 9px; font-family: 'JetBrains Mono', monospace; color: var(--text-muted); }
+
+    /* ─── Live Demo Flow ─────────────────────────────── */
+    #demo { background: linear-gradient(180deg, #0d1424 0%, var(--bg-deep) 100%); }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .demo-panel {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+    .demo-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0,0,0,0.2);
+    }
+    .demo-dots { display: flex; gap: 6px; }
+    .demo-dots span {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .demo-dots span:nth-child(1) { background: #ff5f57; }
+    .demo-dots span:nth-child(2) { background: #ffbd2e; }
+    .demo-dots span:nth-child(3) { background: #28ca42; }
+    .demo-panel-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-left: 8px;
+    }
+    .demo-chat-area {
+      padding: 24px;
+      min-height: 320px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .chat-msg {
+      max-width: 80%;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .chat-msg.user {
+      background: rgba(0, 180, 216, 0.1);
+      border: 1px solid rgba(0, 180, 216, 0.2);
+      color: var(--text-primary);
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+    .chat-msg.agent {
+      background: rgba(0, 255, 136, 0.06);
+      border: 1px solid rgba(0, 255, 136, 0.15);
+      color: var(--text-primary);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+    .chat-msg .chat-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+    .chat-msg.agent .chat-label { color: var(--green); }
+    .activity-log {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .log-entry {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 12px;
+      opacity: 0;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .log-entry:nth-child(1) { animation-delay: 0.5s; }
+    .log-entry:nth-child(2) { animation-delay: 1.0s; }
+    .log-entry:nth-child(3) { animation-delay: 1.5s; }
+    .log-entry:nth-child(4) { animation-delay: 2.0s; }
+    .log-entry:nth-child(5) { animation-delay: 2.5s; }
+    .log-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .log-dot.cyan { background: var(--cyan); box-shadow: 0 0 8px rgba(0, 180, 216, 0.5); }
+    .log-dot.green { background: var(--green); box-shadow: 0 0 8px rgba(0, 255, 136, 0.5); }
+    .log-dot.yellow { background: #fbbf24; }
+    .log-dot.red { background: #f87171; }
+    .log-text { color: var(--text-secondary); line-height: 1.5; }
+    .log-text strong { color: var(--text-primary); font-weight: 600; }
+    .log-text .mono { font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+
+    /* ─── Capabilities Grid ──────────────────────────── */
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .cap-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 24px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .cap-card:hover { border-color: rgba(0, 180, 216, 0.4); transform: translateY(-2px); }
+    .cap-icon { margin-bottom: 16px; }
+    .cap-icon svg { width: 32px; height: 32px; }
+    .cap-title {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .cap-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ─── Tech Stack ─────────────────────────────────── */
+    #tech { background: linear-gradient(180deg, var(--bg-deep) 0%, #0d1424 100%); }
+    .tech-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 60px;
+    }
+    .tech-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .tech-badge:hover { border-color: var(--cyan); color: var(--cyan); }
+    .tech-badge svg { width: 18px; height: 18px; }
+    .arch-diagram {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+    }
+    .arch-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .arch-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 20px 24px;
+      background: var(--bg-deep);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      min-width: 140px;
+    }
+    .arch-box.highlight {
+      border-color: var(--cyan);
+      box-shadow: 0 0 24px rgba(0, 180, 216, 0.1);
+    }
+    .arch-box svg { width: 28px; height: 28px; }
+    .arch-box-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      text-align: center;
+    }
+    .arch-box-desc { font-size: 10px; color: var(--text-muted); text-align: center; }
+    .arch-arrow { color: var(--border-light); }
+    .arch-arrow svg { width: 20px; height: 20px; }
+    .arch-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    /* ─── Footer ─────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0;
+      background: rgba(0,0,0,0.2);
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 24px;
+    }
+    .footer-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .footer-brand svg { width: 28px; height: 28px; }
+    .footer-brand-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+    }
+    .footer-brand-text strong { display: block; color: var(--text-primary); }
+    .footer-brand-text span { color: var(--text-muted); font-size: 11px; }
+    .footer-links { display: flex; gap: 24px; align-items: center; }
+    .footer-links a {
+      font-size: 13px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--cyan); }
+    .footer-credit {
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      margin-top: 24px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ─── Responsive ──────────────────────────────────── */
+    @media (max-width: 900px) {
+      .steps-grid { grid-template-columns: repeat(2, 1fr); }
+      .data-stack-grid { grid-template-columns: 1fr; }
+      .stack-arrow-col { display: none; }
+      .demo-grid { grid-template-columns: 1fr; }
+      .cap-grid { grid-template-columns: repeat(2, 1fr); }
+      .triangle { flex-direction: column; gap: 24px; }
+      .tri-connector { transform: rotate(90deg); }
+    }
+    @media (max-width: 640px) {
+      .nav-links { display: none; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .cap-grid { grid-template-columns: 1fr; }
+      .hero h1 { letter-spacing: -1px; }
+      .arch-diagram { padding: 24px; }
+    }
+
+    /* ─── Scrollbar ──────────────────────────────────── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<!-- ─── NAV ───────────────────────────────────────────── -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">CHAZ<span>/PORTAL</span></a>
+    <ul class="nav-links">
+      <li><a href="#reasoning">Reasoning Chain</a></li>
+      <li><a href="#data-stack">Data Stack</a></li>
+      <li><a href="#demo">Live Demo</a></li>
+      <li><a href="#capabilities">Capabilities</a></li>
+      <li><a href="#tech">Tech Stack</a></li>
+    </ul>
+    <a href="http://192.168.1.13:5050" class="nav-cta" target="_blank">Live Demo</a>
+  </div>
+</nav>
+
+<!-- ─── HERO ──────────────────────────────────────────── -->
+<section class="hero">
+  <div class="hero-grid-bg"></div>
+  <div class="container hero-content">
+    <div class="hero-badge">
+      <svg viewBox="0 0 10 10" fill="currentColor"><circle cx="5" cy="5" r="5"/></svg>
+      Principal Architect Capstone — April 2026
+    </div>
+
+    <h1>An AI Agent That<br><span class="gradient">Reasons Across Data Sources</span></h1>
+
+    <p class="hero-sub">
+      A real-time AI agent that understands natural language questions about bakery supply chain data,
+      queries Databricks, cross-references Salesforce, detects risk, and autonomously takes action —
+      all with a visible 6-step reasoning trace.
+    </p>
+
+    <div class="hero-challenge">
+      <p>
+        <span class="quote-bar"></span>
+        "You will have to create an agent using some external technology framework. The idea is that
+        it can learn something new? Can you talk about agents? Can your agents reason? Can your agents
+        connect to other data sources? And if you want extra credit, figure out a way to connect into
+        Salesforce."
+      </p>
+      <p class="text-muted" style="font-size:11px; margin-top:8px; font-style:normal;">— Salman Mian, Principal Architect Interview</p>
+    </div>
+
+    <div class="hero-cta-group">
+      <a href="http://192.168.1.13:5050" class="btn-primary" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        See the Live Demo
+      </a>
+      <a href="https://github.com/toddclawbot-cmyk/chaz-agent-portal" class="btn-secondary" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        View Source
+      </a>
+    </div>
+
+    <!-- Agent Diagram -->
+    <div class="agent-diagram">
+      <div class="diagram-center">
+        <!-- Brain/Agent SVG icon -->
+        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="24" cy="24" r="22" stroke="#00b4d8" stroke-width="1.5" fill="rgba(0,180,216,0.06)"/>
+          <path d="M24 10c-1.5 0-3 1-3.5 2.5-.5-1-1.5-1.5-2.5-1.5-2 0-3.5 1.5-3.5 3.5 0 1.2.6 2.2 1.5 2.8C15.2 18 14 19.8 14 22c0 2.8 2.2 5 5 5h1v4c0 1.7 1.3 3 3 3h4c1.7 0 3-1.3 3-3v-4h1c2.8 0 5-2.2 5-5 0-2.2-1.2-4-2.8-4.7.9-.6 1.5-1.6 1.5-2.8 0-2-1.5-3.5-3.5-3.5-1 0-2 .5-2.5 1.5C27 11 25.5 10 24 10z" fill="rgba(0,180,216,0.15)" stroke="#00b4d8" stroke-width="1.2"/>
+          <circle cx="24" cy="24" r="4" fill="#00b4d8" opacity="0.3"/>
+          <circle cx="24" cy="24" r="2" fill="#00b4d8"/>
+        </svg>
+        <div class="diagram-center-name">CHAZ AGENT</div>
+        <div class="diagram-center-sub">Central Intelligence</div>
+      </div>
+
+      <div class="diagram-nodes">
+        <div class="diagram-node">
+          <!-- Groq / LLM icon -->
+          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="24" height="24" rx="4" stroke="#00b4d8" stroke-width="1.5" fill="rgba(0,180,216,0.08)"/>
+            <path d="M8 10h12M8 14h8M8 18h10" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="21" cy="18" r="2.5" fill="#00ff88" opacity="0.8"/>
+          </svg>
+          <div class="diagram-node-info">
+            <div class="diagram-node-name">Groq LLM</div>
+            <div class="diagram-node-desc">Natural Language Understanding</div>
+          </div>
+        </div>
+
+        <div class="diagram-node">
+          <!-- Databricks icon -->
+          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 3L4 9v10l10 6 10-6V9L14 3z" stroke="#ff6b35" stroke-width="1.5" fill="rgba(255,107,53,0.08)"/>
+            <path d="M14 8l-5 3v6l5 3 5-3v-6l-5-3z" stroke="#ff6b35" stroke-width="1.2" fill="rgba(255,107,53,0.05)"/>
+            <circle cx="14" cy="14" r="2" fill="#ff6b35"/>
+          </svg>
+          <div class="diagram-node-info">
+            <div class="diagram-node-name">Databricks</div>
+            <div class="diagram-node-desc">Supply Chain Data Warehouse</div>
+          </div>
+        </div>
+
+        <div class="diagram-node">
+          <!-- Salesforce icon -->
+          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="14" cy="14" rx="10" ry="12" stroke="#00a1e0" stroke-width="1.5" fill="rgba(0,161,224,0.08)"/>
+            <path d="M14 6c-3 0-5.5 2-6.5 4.5 2.5 1 4.5 3 4.5 5.5 0 1-.3 2-.8 2.8C13 17 15 15 15 12c0-2-1-3.5-1-6z" stroke="#00a1e0" stroke-width="1.2" fill="rgba(0,161,224,0.1)"/>
+            <path d="M10 22c2.5-.8 5-2.5 6-5-.5-.8-.8-1.8-.8-2.8 0-2.5 2-4.5 4.5-5.5-1 2.5-3.5 4.5-6.5 4.5 0 2.5-1 4-1 6-.5.8-.5 2-2.2 2.8z" stroke="#00a1e0" stroke-width="1.2" fill="rgba(0,161,224,0.1)"/>
+          </svg>
+          <div class="diagram-node-info">
+            <div class="diagram-node-name">Salesforce</div>
+            <div class="diagram-node-desc">CRM — Accounts, Cases, Opportunities</div>
+          </div>
+        </div>
+
+        <div class="diagram-node">
+          <!-- Email icon -->
+          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="3" y="6" width="22" height="16" rx="3" stroke="#00ff88" stroke-width="1.5" fill="rgba(0,255,136,0.06)"/>
+            <path d="M3 9l11 7 11-7" stroke="#00ff88" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="diagram-node-info">
+            <div class="diagram-node-name">Apple Mail</div>
+            <div class="diagram-node-desc">Automated Outreach</div>
+          </div>
+        </div>
+
+        <div class="diagram-node full-width">
+          <!-- Data streams / connections -->
+          <svg viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;">
+            <path d="M3 11h4M11 11h4M15 11h4" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2"/>
+            <circle cx="11" cy="11" r="3" stroke="#00b4d8" stroke-width="1.2" fill="rgba(0,180,216,0.1)"/>
+            <path d="M11 8v-3M11 17v-3M8 11H5M17 11h-3" stroke="#00b4d8" stroke-width="1" stroke-linecap="round"/>
+          </svg>
+          <div class="diagram-node-info">
+            <div class="diagram-node-name">Server-Sent Events (SSE)</div>
+            <div class="diagram-node-desc">Real-time streaming of agent reasoning to the UI — every step visible as it happens</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── REASONING CHAIN ───────────────────────────────── -->
+<section id="reasoning">
+  <div class="container">
+    <div class="section-label">Agent Architecture</div>
+    <h2 class="section-title">The 6-Step Reasoning Chain</h2>
+    <p class="section-sub">
+      Every question triggers a transparent, sequential reasoning process.
+      Watch the agent think — from understanding the question to taking autonomous action.
+    </p>
+
+    <div class="steps-grid">
+
+      <!-- Step 1: Understand -->
+      <div class="step-card">
+        <div class="step-num">
+          STEP 01
+          <span class="step-badge">INPUT</span>
+        </div>
+        <div class="step-icon">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="16" stroke="#00b4d8" stroke-width="1.5" fill="rgba(0,180,216,0.06)"/>
+            <path d="M10 18h16M18 10v16" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/>
+            <circle cx="18" cy="18" r="6" stroke="#00b4d8" stroke-width="1.5" fill="rgba(0,180,216,0.08)"/>
+            <path d="M14 18c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="step-title">UNDERSTAND</div>
+        <div class="step-desc">
+          Groq LLM (llama-3.3-70b-versatile) interprets the natural language question,
+          identifies the intent, and determines what data and actions are needed.
+        </div>
+        <div class="step-tags">
+          <span class="step-tag">Groq LLM</span>
+          <span class="step-tag">Intent Classification</span>
+          <span class="step-tag">Parameter Extraction</span>
+        </div>
+      </div>
+
+      <!-- Step 2: Query Databricks -->
+      <div class="step-card">
+        <div class="step-num">
+          STEP 02
+          <span class="step-badge">DATA</span>
+        </div>
+        <div class="step-icon">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="4" y="4" width="28" height="28" rx="4" stroke="#ff6b35" stroke-width="1.5" fill="rgba(255,107,53,0.06)"/>
+            <path d="M4 12h28M4 18h28M4 24h28" stroke="#ff6b35" stroke-width="1" opacity="0.4"/>
+            <rect x="8" y="8" width="6" height="4" rx="1" fill="#ff6b35" opacity="0.5"/>
+            <rect x="8" y="14" width="6" height="4" rx="1" fill="#ff6b35" opacity="0.5"/>
+            <rect x="8" y="20" width="6" height="4" rx="1" fill="#ff6b35" opacity="0.5"/>
+            <path d="M18 8v20M26 8v20" stroke="#ff6b35" stroke-width="1" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="step-title">QUERY DATABRICKS</div>
+        <div class="step-desc">
+          The LLM generates precise SQL from natural language, executes it against
+          chazbakedgoods.sales — the bakery supply chain data warehouse.
+        </div>
+        <div class="step-tags">
+          <span class="step-tag">NL → SQL</span>
+          <span class="step-tag">Databricks SQL</span>
+          <span class="step-tag">9 Tables</span>
+        </div>
+      </div>
+
+      <!-- Step 3: Analyze -->
+      <div class="step-card">
+        <div class="step-num">
+          STEP 03
+          <span class="step-badge">ANALYSIS</span>
+        </div>
+        <div class="step-icon">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 28L14 18l6 4 8-12" stroke="#00ff88" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="14" cy="18" r="3" stroke="#00ff88" stroke-width="1.5" fill="rgba(0,255,136,0.1)"/>
+            <circle cx="20" cy="22" r="3" stroke="#00ff88" stroke-width="1.5" fill="rgba(0,255,136,0.1)"/>
+            <circle cx="28" cy="10" r="3" stroke="#00ff88" stroke-width="1.5" fill="rgba(0,255,136,0.1)"/>
+            <path d="M6 32h24" stroke="#00ff88" stroke-width="1" opacity="0.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="step-title">ANALYZE RESULTS</div>
+        <div class="step-desc">
+          Correlates inventory levels with 3-week demand forecasts. Identifies
+          coverage gaps, depletion timelines, and supply constraints.
+        </div>
+        <div class="step-tags">
+          <span class="step-tag">Demand vs Supply</span>
+          <span class="step-tag">Coverage Ratio</span>
+          <span class="step-tag">Trend Analysis</span>
+        </div>
+      </div>
+
+      <!-- Step 4: Cross-reference Salesforce -->
+      <div class="step-card">
+        <div class="step-num">
+          STEP 04
+          <span class="step-badge">CRM</span>
+        </div>
+        <div class="step-icon">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="12" r="6" stroke="#00a1e0" stroke-width="1.5" fill="rgba(0,161,224,0.08)"/>
+            <path d="M8 30c0-5.5 4.5-10 10-10s10 4.5 10 10" stroke="#00a1e0" stroke-width="1.5" fill="rgba(0,161,224,0.06)"/>
+            <path d="M18 12l3 3-3 3" stroke="#00a1e0" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
+            <path d="M4 4l4 4M32 4l-4 4M4 32l4-4M32 32l-4-4" stroke="#00a1e0" stroke-width="1" stroke-linecap="round" opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="step-title">CROSS-REFERENCE SALESFORCE</div>
+        <div class="step-desc">
+          Checks Salesforce for active opportunities, recent cases, and account health
+          at any supplier or franchise locations flagged as at-risk.
+        </div>
+        <div class="step-tags">
+          <span class="step-tag">Account Object</span>
+          <span class="step-tag">Opportunity Object</span>
+          <span class="step-tag">Case Object</span>
+        </div>
+      </div>
+
+      <!-- Step 5: Assess Risk -->
+      <div class="step-card">
+        <div class="step-num">
+          STEP 05
+          <span class="step-badge">DECISION</span>
+        </div>
+        <div class="step-icon">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 4l14 26H4L18 4z" stroke="#fbbf24" stroke-width="1.5" fill="rgba(251,191,36,0.08)"/>
+            <path d="M18 12v8" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="18" cy="24" r="1.5" fill="#fbbf24"/>
+          </svg>
+        </div>
+        <div class="step-title">ASSESS RISK</div>
+        <div class="step-desc">
+          Calculates business impact using coverage ratios, depletion velocity, and
+          opportunity value at risk. Assigns a risk tier: Low / Medium / High / Critical.
+        </div>
+        <div class="step-tags">
+          <span class="step-tag">Risk Scoring</span>
+          <span class="step-tag">Business Impact</span>
+          <span class="step-tag">Threshold Logic</span>
+        </div>
+      </div>
+
+      <!-- Step 6: Act -->
+      <div class="step-card">
+        <div class="step-num">
+          STEP 06
+          <span class="step-badge">ACTION</span>
+        </div>
+        <div class="step-icon">
+          <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="18" cy="18" r="14" stroke="#00ff88" stroke-width="1.5" fill="rgba(0,255,136,0.06)"/>
+            <path d="M12 18l4 4 8-8" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M18 4v4M18 28v4M4 18h4M28 18h4" stroke="#00ff88" stroke-width="1" stroke-linecap="round" opacity="0.4"/>
+          </svg>
+        </div>
+        <div class="step-title">ACT</div>
+        <div class="step-desc">
+          If risk threshold is met: creates a Salesforce Case with full context, drafts
+          an outreach email via Apple Mail, and streams the result back to the user in real time.
+        </div>
+        <div class="step-tags">
+          <span class="step-tag">Create Case</span>
+          <span class="step-tag">Draft Email</span>
+          <span class="step-tag">SSE Response</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── DATA STACK ─────────────────────────────────────── -->
+<section id="data-stack">
+  <div class="container">
+    <div class="section-label">Data Architecture</div>
+    <h2 class="section-title">The Data Stack</h2>
+    <p class="section-sub">
+      Nine tables of supply chain intelligence in Databricks, three Salesforce objects for
+      CRM context — all orchestrated through a single AI agent interface.
+    </p>
+
+    <div class="data-stack-grid">
+
+      <!-- Databricks Column -->
+      <div>
+        <div class="stack-col-label">Databricks — chazbakedgoods.sales</div>
+        <div class="stack-card">
+          <div class="stack-card-header databricks">
+            <svg viewBox="0 0 22 22" fill="none"><path d="M11 2L2 7v8l9 5 9-5V7L11 2z" stroke="#ff6b35" stroke-width="1.5" fill="rgba(255,107,53,0.1)"/><circle cx="11" cy="11" r="2.5" fill="#ff6b35"/></svg>
+            <span>9 Tables</span>
+          </div>
+          <div class="stack-table-list">
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/><path d="M1 5h12M1 9h12M5 1v12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/></svg>
+              <div>
+                <div class="stack-table-name">supplier_inventory</div>
+                <div style="font-size:10px; color:var(--text-muted);">Real-time stock levels per SKU</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/><path d="M1 5h12M1 9h12M5 1v12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/></svg>
+              <div>
+                <div class="stack-table-name">shipping_logistics</div>
+                <div style="font-size:10px; color:var(--text-muted);">In-transit shipments &amp; lead times</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/><path d="M1 5h12M1 9h12M5 1v12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/></svg>
+              <div>
+                <div class="stack-table-name">demand_forecast_3week</div>
+                <div style="font-size:10px; color:var(--text-muted);">3-week rolling demand projections</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/><path d="M1 5h12M1 9h12M5 1v12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/></svg>
+              <div>
+                <div class="stack-table-name">customer_satisfaction</div>
+                <div style="font-size:10px; color:var(--text-muted);">NPS scores &amp; feedback signals</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/><path d="M1 5h12M1 9h12M5 1v12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/></svg>
+              <div>
+                <div class="stack-table-name">inventory_coverage</div>
+                <div style="font-size:10px; color:var(--text-muted);">Days of coverage per product</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/><path d="M1 5h12M1 9h12M5 1v12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/></svg>
+              <div>
+                <div class="stack-table-name">sales_transactions</div>
+                <div style="font-size:10px; color:var(--text-muted);">Point-of-sale &amp; order data</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/><path d="M1 5h12M1 9h12M5 1v12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/></svg>
+              <div>
+                <div class="stack-table-name">franchise_locations</div>
+                <div style="font-size:10px; color:var(--text-muted);">Store metadata &amp; geography</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/><path d="M1 5h12M1 9h12M5 1v12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/></svg>
+              <div>
+                <div class="stack-table-name">production_schedule</div>
+                <div style="font-size:10px; color:var(--text-muted);">Bake schedules &amp; capacity</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="1" y="1" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1"/><path d="M1 5h12M1 9h12M5 1v12" stroke="currentColor" stroke-width="0.8" opacity="0.5"/></svg>
+              <div>
+                <div class="stack-table-name">products</div>
+                <div style="font-size:10px; color:var(--text-muted);">SKU catalog &amp; categories</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow col 1 -->
+      <div class="stack-arrow-col">
+        <div class="stack-arrow">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M10 16l-4-4M10 16l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="stack-arrow-label">QUERY<br>READ</div>
+      </div>
+
+      <!-- Salesforce Column -->
+      <div>
+        <div class="stack-col-label">Salesforce — CRM</div>
+        <div class="stack-card">
+          <div class="stack-card-header salesforce">
+            <svg viewBox="0 0 22 22" fill="none"><ellipse cx="11" cy="11" rx="8" ry="10" stroke="#00a1e0" stroke-width="1.5" fill="rgba(0,161,224,0.08)"/><path d="M7 11c0-1.7 1.8-3 4-3s4 1.3 4 3-1.8 3-4 3" stroke="#00a1e0" stroke-width="1.2"/></svg>
+            <span>3 Objects (RW)</span>
+          </div>
+          <div class="stack-table-list">
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="5" r="3" stroke="currentColor" stroke-width="1"/><path d="M2 13c0-2.8 2.2-5 5-5s5 2.2 5 5" stroke="currentColor" stroke-width="1"/></svg>
+              <div>
+                <div class="stack-table-name">Account</div>
+                <div style="font-size:10px; color:var(--text-muted);">Supplier &amp; franchise entities</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 10l4-6 4 4 2-2" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/><path d="M2 10h10" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+              <div>
+                <div class="stack-table-name">Opportunity</div>
+                <div style="font-size:10px; color:var(--text-muted);">Active deals at risk accounts</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><rect x="2" y="3" width="10" height="9" rx="1.5" stroke="currentColor" stroke-width="1"/><path d="M5 3V2M9 3V2M2 6h10" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+              <div>
+                <div class="stack-table-name">Case</div>
+                <div style="font-size:10px; color:var(--text-muted);">Risk-triggered cases (created by agent)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Arrow col 2 -->
+      <div class="stack-arrow-col">
+        <div class="stack-arrow">
+          <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M10 16l-4-4M10 16l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="stack-arrow-label">CREATE<br>WRITE</div>
+      </div>
+
+      <!-- Groq Column -->
+      <div>
+        <div class="stack-col-label">Groq LLM — Brain</div>
+        <div class="stack-card">
+          <div class="stack-card-header groq">
+            <svg viewBox="0 0 22 22" fill="none"><rect x="2" y="2" width="18" height="18" rx="3" stroke="#00b4d8" stroke-width="1.5" fill="rgba(0,180,216,0.08)"/><path d="M6 8h10M6 11h7M6 14h8" stroke="#00b4d8" stroke-width="1.2" stroke-linecap="round"/></svg>
+            <span>llama-3.3-70b-versatile</span>
+          </div>
+          <div class="stack-table-list">
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5" stroke="currentColor" stroke-width="1"/><path d="M7 4v3l2 2" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+              <div>
+                <div class="stack-table-name">NL Understanding</div>
+                <div style="font-size:10px; color:var(--text-muted);">Classifies intent &amp; entities</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M2 10l4-6 4 4 2-2" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/><path d="M2 10h10" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+              <div>
+                <div class="stack-table-name">SQL Generation</div>
+                <div style="font-size:10px; color:var(--text-muted);">Natural language to SQL</div>
+              </div>
+            </div>
+            <div class="stack-table-item">
+              <svg viewBox="0 0 14 14" fill="none"><path d="M7 2v10M4 5l3-3 3 3M4 9l3 3 3-3" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div>
+                <div class="stack-table-name">Reasoning Chain</div>
+                <div style="font-size:10px; color:var(--text-muted);">6-step visible thought trace</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Triangle -->
+    <div class="triangle-section">
+      <div class="triangle">
+        <div class="tri-node">
+          <svg viewBox="0 0 36 36" fill="none"><rect x="4" y="4" width="28" height="28" rx="5" stroke="#ff6b35" stroke-width="1.5" fill="rgba(255,107,53,0.08)"/><path d="M4 13h28M4 20h28M4 27h28" stroke="#ff6b35" stroke-width="1" opacity="0.4"/><circle cx="18" cy="18" r="4" fill="#ff6b35" opacity="0.6"/></svg>
+          <div class="tri-node-name" style="color:#ff6b35;">Databricks</div>
+          <div class="tri-node-role">Supply Chain Data<br>9 tables of intelligence</div>
+        </div>
+
+        <div class="tri-connector">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M10 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>SQL Query</span>
+        </div>
+
+        <div class="tri-node">
+          <svg viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="14" stroke="#00b4d8" stroke-width="1.5" fill="rgba(0,180,216,0.06)"/><path d="M12 18h12M18 12v12" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round" opacity="0.4"/><circle cx="18" cy="18" r="5" stroke="#00b4d8" stroke-width="1.5" fill="rgba(0,180,216,0.1)"/><circle cx="18" cy="18" r="2" fill="#00b4d8"/></svg>
+          <div class="tri-node-name" style="color:#00b4d8;">Groq LLM</div>
+          <div class="tri-node-role">The Reasoning Engine<br>llama-3.3-70b-versatile</div>
+        </div>
+
+        <div class="tri-connector">
+          <svg viewBox="0 0 16 16" fill="none"><path d="M2 8h12M6 4l4 4-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span>REST API</span>
+        </div>
+
+        <div class="tri-node">
+          <svg viewBox="0 0 36 36" fill="none"><ellipse cx="18" cy="18" rx="11" ry="13" stroke="#00a1e0" stroke-width="1.5" fill="rgba(0,161,224,0.08)"/><circle cx="18" cy="14" r="4" stroke="#00a1e0" stroke-width="1.2" fill="rgba(0,161,224,0.1)"/><path d="M9 30c0-4.4 4-8 9-8s9 3.6 9 8" stroke="#00a1e0" stroke-width="1.2" fill="rgba(0,161,224,0.06)"/></svg>
+          <div class="tri-node-name" style="color:#00a1e0;">Salesforce</div>
+          <div class="tri-node-role">CRM Layer<br>Accounts, Cases, Opps</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── LIVE DEMO ─────────────────────────────────────── -->
+<section id="demo">
+  <div class="container">
+    <div class="section-label">User Experience</div>
+    <h2 class="section-title">Live Demo Flow</h2>
+    <p class="section-sub">
+      Ask a question in plain English. Watch the agent think in real time.
+      Every step of the reasoning chain streams back via SSE — visible, auditable, and actionable.
+    </p>
+
+    <div class="demo-grid">
+
+      <!-- Chat Interface Panel -->
+      <div class="demo-panel">
+        <div class="demo-panel-header">
+          <div class="demo-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="demo-panel-title">agent-portal — Chat Interface</span>
+        </div>
+        <div class="demo-chat-area">
+          <div class="chat-msg user">
+            <div class="chat-label">YOU</div>
+            "Which franchise locations are at risk of stockout in the next 2 weeks?"
+          </div>
+          <div class="chat-msg agent">
+            <div class="chat-label">CHAZ AGENT</div>
+            "Analyzing supply chain data for all franchise locations...
+            I've identified <strong>4 locations</strong> at high risk of stockout within 14 days.
+            Creating Salesforce case now..."
+          </div>
+          <div class="chat-msg agent" style="border-color: rgba(0,255,136,0.3); background: rgba(0,255,136,0.08);">
+            <div class="chat-label">CHAZ AGENT</div>
+            "Case created: <span class="mono" style="color:var(--green);">CASE-00427</span> —
+            High priority. Drafting outreach email to regional manager..."
+          </div>
+        </div>
+      </div>
+
+      <!-- Activity Log Panel -->
+      <div class="demo-panel">
+        <div class="demo-panel-header">
+          <div class="demo-dots">
+            <span></span><span></span><span></span>
+          </div>
+          <span class="demo-panel-title">agent-activity.log — Reasoning Trace</span>
+        </div>
+        <div class="activity-log">
+          <div class="log-entry">
+            <div class="log-dot cyan"></div>
+            <div class="log-text">
+              <strong>[01] UNDERSTAND</strong> — Groq LLM interprets question.
+              Intent: <span class="mono">risk_analysis</span> | Entity: <span class="mono">franchise_locations</span> | Horizon: <span class="mono">14 days</span>
+            </div>
+          </div>
+          <div class="log-entry">
+            <div class="log-dot cyan"></div>
+            <div class="log-text">
+              <strong>[02] QUERY DATABRICKS</strong> — Generated SQL:
+              <span class="mono">SELECT location, product, days_remaining FROM inventory_coverage WHERE days_remaining &lt; 14...</span>
+            </div>
+          </div>
+          <div class="log-entry">
+            <div class="log-dot yellow"></div>
+            <div class="log-text">
+              <strong>[03] ANALYZE</strong> — Correlated 9,247 inventory records with 3-week demand forecast.
+              Flagged <span class="mono">4 locations</span> with coverage ratio &lt; 0.8.
+            </div>
+          </div>
+          <div class="log-entry">
+            <div class="log-dot yellow"></div>
+            <div class="log-text">
+              <strong>[04] CROSS-REFERENCE SALESFORCE</strong> — Checked Account + Opportunity objects.
+              Found <span class="mono">3 at-risk accounts</span> with $2.4M in active opportunities.
+            </div>
+          </div>
+          <div class="log-entry">
+            <div class="log-dot red"></div>
+            <div class="log-text">
+              <strong>[05] ASSESS RISK</strong> — Risk Score: <span class="mono">HIGH</span> (0.87).
+              Business impact: $340K revenue at risk. Threshold exceeded. Proceeding to action.
+            </div>
+          </div>
+          <div class="log-entry">
+            <div class="log-dot green"></div>
+            <div class="log-text">
+              <strong>[06] ACT</strong> — Salesforce Case <span class="mono">CASE-00427</span> created.
+              Email drafted to <span class="mono">regional.ops@chazbakedgoods.com</span>.
+              Streaming final response to user.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="text-align:center; margin-top:40px;">
+      <a href="http://192.168.1.13:5050" class="btn-primary" target="_blank">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        Launch Local Demo (192.168.1.13:5050)
+      </a>
+      <p style="font-size:12px; color:var(--text-muted); margin-top:12px;">
+        Note: Live demo runs on local network at Todd's workstation.
+        This landing page is hosted on GitHub Pages.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CAPABILITIES ───────────────────────────────────── -->
+<section id="capabilities">
+  <div class="container">
+    <div class="section-label">Core Capabilities</div>
+    <h2 class="section-title">What the Agent Can Do</h2>
+    <p class="section-sub">
+      Six core capabilities that combine to create a production-grade AI agent
+      capable of autonomous decision-making across multiple data systems.
+    </p>
+
+    <div class="cap-grid">
+
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 32 32" fill="none"><rect x="2" y="2" width="28" height="28" rx="5" stroke="#00b4d8" stroke-width="1.5" fill="rgba(0,180,216,0.06)"/><path d="M8 12h16M8 16h12M8 20h14" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round"/><path d="M20 20l4 4" stroke="#00ff88" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="cap-title">Natural Language to SQL</div>
+        <div class="cap-desc">
+          Ask supply chain questions in plain English. Groq's llama-3.3-70b-versatile
+          generates precise, syntactically correct SQL against the Databricks warehouse — no
+          query language required.
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M4 16h6M16 16h6M22 16h6" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round"/><circle cx="16" cy="16" r="3" stroke="#00b4d8" stroke-width="1.5" fill="rgba(0,180,216,0.1)"/><path d="M16 8v-4M16 28v-4M8 16H4M28 16h-4" stroke="#00b4d8" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/></svg>
+        </div>
+        <div class="cap-title">Real-Time Event Streaming</div>
+        <div class="cap-desc">
+          Every step of the agent's reasoning is streamed back to the UI via Server-Sent Events (SSE).
+          Watch the thought process unfold in real time, with full transparency into what the agent is doing.
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 32 32" fill="none"><circle cx="10" cy="16" r="5" stroke="#ff6b35" stroke-width="1.3" fill="rgba(255,107,53,0.06)"/><circle cx="22" cy="10" r="5" stroke="#00a1e0" stroke-width="1.3" fill="rgba(0,161,224,0.06)"/><circle cx="22" cy="22" r="5" stroke="#00ff88" stroke-width="1.3" fill="rgba(0,255,136,0.06)"/><path d="M14 14l4-2M14 18l4 2" stroke="#00b4d8" stroke-width="1.2" stroke-linecap="round"/></svg>
+        </div>
+        <div class="cap-title">Multi-System Orchestration</div>
+        <div class="cap-desc">
+          Coordinates reads and writes across Databricks and Salesforce simultaneously.
+          Joins supply chain data with CRM context to build a complete picture of business risk.
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="12" stroke="#00ff88" stroke-width="1.5" fill="rgba(0,255,136,0.06)"/><path d="M11 16l3 3 7-7" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 6v3M16 23v3M6 16h3M23 16h3" stroke="#00ff88" stroke-width="1" stroke-linecap="round" opacity="0.4"/></svg>
+        </div>
+        <div class="cap-title">Autonomous Action</div>
+        <div class="cap-desc">
+          When risk thresholds are exceeded, the agent acts — creating Salesforce Cases with full
+          context and drafting outreach emails. No human intervention required for routine escalation.
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M6 24L12 14l6 4 6-10" stroke="#00b4d8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="14" r="2.5" stroke="#00b4d8" stroke-width="1.2" fill="rgba(0,180,216,0.1)"/><circle cx="18" cy="18" r="2.5" stroke="#00b4d8" stroke-width="1.2" fill="rgba(0,180,216,0.1)"/><circle cx="24" cy="8" r="2.5" stroke="#00b4d8" stroke-width="1.2" fill="rgba(0,180,216,0.1)"/><path d="M6 28h20" stroke="#00b4d8" stroke-width="1" opacity="0.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="cap-title">Visible Reasoning Chains</div>
+        <div class="cap-desc">
+          The agent's 6-step reasoning trace is fully visible. Every decision is explainable —
+          Understand, Query, Analyze, Cross-Reference, Assess, Act. No black boxes.
+        </div>
+      </div>
+
+      <div class="cap-card">
+        <div class="cap-icon">
+          <svg viewBox="0 0 32 32" fill="none"><path d="M16 4l12 22H4L16 4z" stroke="#fbbf24" stroke-width="1.5" fill="rgba(251,191,36,0.08)"/><path d="M16 12v6" stroke="#fbbf24" stroke-width="2" stroke-linecap="round"/><circle cx="16" cy="22" r="1.5" fill="#fbbf24"/></svg>
+        </div>
+        <div class="cap-title">Risk Detection &amp; Alerting</div>
+        <div class="cap-desc">
+          Configurable risk thresholds based on coverage ratios, depletion velocity, and
+          business impact. Risk tiers (Low / Medium / High / Critical) trigger different
+          escalation paths automatically.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ─── TECHNICAL STACK ───────────────────────────────── -->
+<section id="tech">
+  <div class="container">
+    <div class="section-label">Technical Architecture</div>
+    <h2 class="section-title">Under the Hood</h2>
+    <p class="section-sub">
+      A production-grade stack combining real-time streaming, LLM reasoning, and enterprise
+      data systems — all orchestrated by a Python Flask backend.
+    </p>
+
+    <div class="tech-strip">
+      <div class="tech-badge">
+        <svg viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="#00b4d8" stroke-width="1.2"/><path d="M6 9c0-1.7 1.3-3 3-3s3 1.3 3 3-1.3 3-3 3" stroke="#00b4d8" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Flask (Python)
+      </div>
+      <div class="tech-badge">
+        <svg viewBox="0 0 18 18" fill="none"><path d="M9 2L2 6v6l7 4 7-4V6L9 2z" stroke="#ff6b35" stroke-width="1.2" fill="rgba(255,107,53,0.08)"/><circle cx="9" cy="9" r="2" fill="#ff6b35"/></svg>
+        Databricks SQL
+      </div>
+      <div class="tech-badge">
+        <svg viewBox="0 0 18 18" fill="none"><ellipse cx="9" cy="9" rx="6" ry="7.5" stroke="#00a1e0" stroke-width="1.2" fill="rgba(0,161,224,0.06)"/></svg>
+        Salesforce REST API
+      </div>
+      <div class="tech-badge">
+        <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="2" width="14" height="14" rx="2.5" stroke="#00b4d8" stroke-width="1.2" fill="rgba(0,180,216,0.08)"/><path d="M5 7h8M5 9.5h6M5 12h7" stroke="#00b4d8" stroke-width="1" stroke-linecap="round"/></svg>
+        Groq LLM API
+      </div>
+      <div class="tech-badge">
+        <svg viewBox="0 0 18 18" fill="none"><path d="M2 9h14M9 2c-2 2-3 4-3 7s1 5 3 7M9 2c2 2 3 4 3 7s-1 5-3 7" stroke="#00ff88" stroke-width="1.2" stroke-linecap="round"/></svg>
+        Server-Sent Events
+      </div>
+      <div class="tech-badge">
+        <svg viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="10" rx="2" stroke="#00ff88" stroke-width="1.2" fill="rgba(0,255,136,0.06)"/><path d="M2 7l7 4 7-4" stroke="#00ff88" stroke-width="1" stroke-linecap="round"/></svg>
+        Apple Mail (osascript)
+      </div>
+      <div class="tech-badge">
+        <svg viewBox="0 0 18 18" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        GitHub Pages
+      </div>
+    </div>
+
+    <div class="arch-diagram">
+      <div class="arch-label">System Architecture</div>
+
+      <div class="arch-row">
+        <div class="arch-box">
+          <svg viewBox="0 0 28 28" fill="none"><rect x="2" y="2" width="24" height="24" rx="4" stroke="#00b4d8" stroke-width="1.3" fill="rgba(0,180,216,0.06)"/><path d="M7 10h14M7 14h10M7 18h12" stroke="#00b4d8" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <div class="arch-box-name">User</div>
+          <div class="arch-box-desc">Natural Language Query</div>
+        </div>
+        <div class="arch-arrow"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12M13 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="arch-box highlight">
+          <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="11" stroke="#00b4d8" stroke-width="1.3" fill="rgba(0,180,216,0.08)"/><circle cx="14" cy="14" r="4" stroke="#00b4d8" stroke-width="1.3" fill="rgba(0,180,216,0.1)"/><circle cx="14" cy="14" r="1.5" fill="#00b4d8"/></svg>
+          <div class="arch-box-name">Flask Backend</div>
+          <div class="arch-box-desc">SSE Streaming + Routing</div>
+        </div>
+        <div class="arch-arrow"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12M13 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="arch-box">
+          <svg viewBox="0 0 28 28" fill="none"><rect x="3" y="3" width="22" height="22" rx="3" stroke="#00b4d8" stroke-width="1.3" fill="rgba(0,180,216,0.06)"/><path d="M3 10h22M3 17h22" stroke="#00b4d8" stroke-width="0.8" opacity="0.4"/><path d="M10 3v22M17 3v22" stroke="#00b4d8" stroke-width="0.8" opacity="0.4"/></svg>
+          <div class="arch-box-name">Groq LLM API</div>
+          <div class="arch-box-desc">llama-3.3-70b-versatile</div>
+        </div>
+      </div>
+
+      <div class="arch-arrow" style="transform:rotate(90deg);"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12M13 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+
+      <div class="arch-row">
+        <div class="arch-box">
+          <svg viewBox="0 0 28 28" fill="none"><path d="M14 3L4 9v10l10 6 10-6V9L14 3z" stroke="#ff6b35" stroke-width="1.3" fill="rgba(255,107,53,0.08)"/><circle cx="14" cy="14" r="3" fill="#ff6b35" opacity="0.6"/></svg>
+          <div class="arch-box-name">Databricks</div>
+          <div class="arch-box-desc">SQL Warehouse (READ)</div>
+        </div>
+        <div class="arch-arrow"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12M13 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="arch-box">
+          <svg viewBox="0 0 28 28" fill="none"><ellipse cx="14" cy="14" rx="9" ry="11" stroke="#00a1e0" stroke-width="1.3" fill="rgba(0,161,224,0.08)"/><circle cx="14" cy="11" r="3.5" stroke="#00a1e0" stroke-width="1.1" fill="rgba(0,161,224,0.08)"/><path d="M7 26c0-3.5 3.1-6.5 7-6.5s7 3 7 6.5" stroke="#00a1e0" stroke-width="1.1" fill="rgba(0,161,224,0.06)"/></svg>
+          <div class="arch-box-name">Salesforce</div>
+          <div class="arch-box-desc">REST API (READ/WRITE)</div>
+        </div>
+        <div class="arch-arrow"><svg viewBox="0 0 20 20" fill="none"><path d="M4 10h12M13 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="arch-box">
+          <svg viewBox="0 0 28 28" fill="none"><rect x="3" y="6" width="22" height="16" rx="3" stroke="#00ff88" stroke-width="1.3" fill="rgba(0,255,136,0.06)"/><path d="M3 10l11 6 11-6" stroke="#00ff88" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <div class="arch-box-name">Apple Mail</div>
+          <div class="arch-box-desc">osascript Automation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─────────────────────────────────────────── -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <svg viewBox="0 0 28 28" fill="none">
+          <circle cx="14" cy="14" r="13" stroke="#00b4d8" stroke-width="1.2" fill="rgba(0,180,216,0.06)"/>
+          <path d="M14 7c-1 0-2 .7-2.3 1.7-.3-.7-1-1-1.7-1-1.3 0-2.3 1-2.3 2.3 0 .8.4 1.5 1 1.9-.7.4-1.2 1.2-1.2 2.1 0 1.9 1.5 3.3 3.3 3.3h.7v2.7c0 1.1.9 2 2 2h2.7c1.1 0 2-.9 2-2v-2.7h.7c1.9 0 3.3-1.5 3.3-3.3 0-1.4-.8-2.7-2-3.1.6-.4 1-1.1 1-1.9 0-1.3-1-2.3-2.3-2.3-.7 0-1.3.3-1.7 1C16 7.7 15 7 14 7z" fill="rgba(0,180,216,0.15)" stroke="#00b4d8" stroke-width="1"/>
+          <circle cx="14" cy="14" r="2.5" fill="#00b4d8" opacity="0.4"/>
+          <circle cx="14" cy="14" r="1.2" fill="#00b4d8"/>
+        </svg>
+        <div class="footer-brand-text">
+          <strong>Chaz Agent Portal</strong>
+          <span>Salesforce Principal Architect Capstone</span>
+        </div>
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/toddclawbot-cmyk/chaz-agent-portal" target="_blank">GitHub Repo</a>
+        <a href="http://192.168.1.13:5050" target="_blank">Live Demo</a>
+        <a href="https://groq.com" target="_blank">Groq API</a>
+        <a href="https://www.salesforce.com" target="_blank">Salesforce</a>
+      </div>
+    </div>
+    <div class="footer-credit">
+      Built for <strong style="color:var(--text-secondary);">Salman Mian's Principal Architect Interview — April 2026</strong><br>
+      By Todd Ghidaleson + Chaz (AI Assistant)
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
