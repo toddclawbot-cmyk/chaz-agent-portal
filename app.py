@@ -311,17 +311,19 @@ def run_inventory_agent(task_id, question):
         except:
             pass
 
-        outreach_message = f"""To: Taylor Nguyen (Owner), Cafe Lumiere — {contact_email}
+        outreach_message = f"""To: Taylor Nguyen (Owner), Cafe Lumiere — tghidaleson@salesforce.com
 From: Riley Torres, Sales Director, Chaz Bakery
 Subject: Cafe Lumiere — May 8 Pastry Delivery: Quick Heads Up
 
 Hi Taylor,
 
-I wanted to reach out proactively before our May 8 delivery. As we're planning our production schedule for your Full Pastry Program, our ops team flagged that we're managing through a tight butter supply window — Grassland Dairy's next delivery isn't until April 26.
+I'm reaching out proactively as your Chaz Bakery account team regarding your Full Pastry Program — the opportunity currently in our system ($85K, closing May 15).
 
-The good news: your May 8 order is fully confirmed and we have a clear production plan. We're scheduling your {int(cafe_units)} units as a priority run. We'll send you a confirmation by end of day Friday.
+Our ops team flagged a tight butter supply window. Grassland Dairy's next delivery isn't until April 26, and we're carefully managing production runs to protect your May 8 order of {int(cafe_units)} pastry units.
 
-I'm also looping in our ops team on the supply situation so we can stay ahead of it. If anything changes on your end, let me know ASAP and we'll adjust.
+Good news: your May 8 delivery is fully confirmed and scheduled as a priority run. We'll send a formal confirmation by end of day Friday.
+
+I'm also keeping our ops team on the supply situation so we stay ahead of it. If anything changes on your end, let me know and we'll adjust immediately.
 
 Talk soon,
 Riley Torres | Sales Director | Chaz Bakery | rtorres@chazsbakery.com"""
@@ -344,6 +346,8 @@ Riley Torres | Sales Director | Chaz Bakery | rtorres@chazsbakery.com"""
             f"**Recommended action:** Expedite Grassland Dairy butter delivery + proactive outreach to Taylor Nguyen at Cafe Lumiere within 24 hours."
         )
         tasks[task_id]["result"] = final_response
+        tasks[task_id]["outreach_email"] = outreach_message
+        tasks[task_id]["case_id"] = case_id
 
         try:
             tasks[task_id]["queue"].put_nowait(None)
@@ -439,10 +443,73 @@ def stream(task_id):
             if event is None:
                 break
             yield f"data: {json.dumps(event)}\n\n"
-        # Send final completion
-        yield f"data: {json.dumps({'type': 'complete', 'result': tasks[task_id]['result']})}\n\n"
+        # Send final completion with outreach email option
+        final_data = {'type': 'complete', 'result': tasks[task_id]['result']}
+        if tasks[task_id].get('outreach_email'):
+            final_data['outreach_email'] = tasks[task_id]['outreach_email']
+        if tasks[task_id].get('case_id'):
+            final_data['case_id'] = tasks[task_id]['case_id']
+        yield f"data: {json.dumps(final_data)}\n\n"
 
     return Response(generate(), mimetype="text/event-stream")
+
+
+@app.route("/send-email", methods=["POST"])
+def send_email():
+    """Send the outreach email via osascript (Apple Mail)."""
+    import subprocess
+    outreach = tasks.get(request.args.get('task_id'), {}).get('outreach_email', '')
+    if not outreach:
+        return jsonify({"error": "No outreach message found"}), 400
+
+    # Parse the outreach message into subject and body
+    lines = outreach.strip().split('\n')
+    subject = "Cafe Lumiere — May 8 Pastry Delivery: Quick Heads Up"
+    body_lines = []
+    for line in lines:
+        if line.startswith('To:') or line.startswith('From:') or line.startswith('Subject:'):
+            continue
+        body_lines.append(line)
+    body = '\n'.join(body_lines).strip()
+
+    # The email recipient
+    recipient = "tghidaleson@salesforce.com"
+
+    # AppleScript to send via Mail.app
+    script = f'''
+    tell application "Mail"
+        set theMessage to make new outgoing message with properties {{subject:"{subject}", content:"{body}"}}
+        tell theMessage
+            make new to recipient at end of to recipients with properties {{address:"{recipient}"}}
+            send
+        end tell
+    end tell
+    '''
+    try:
+        result = subprocess.run(['osascript', '-e', script], capture_output=True, text=True, timeout=30)
+        if result.returncode == 0:
+            # Update the Salesforce case with outreach email note
+            case_id = tasks.get(request.args.get('task_id'), {}).get('case_id')
+            if case_id:
+                try:
+                    comment_data = {
+                        "ParentId": case_id,
+                        "CommentBody": (
+                            f"OUTREACH EMAIL SENT at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+                            f"To: Taylor Nguyen (Owner), Cafe Lumiere — tghidaleson@salesforce.com\n"
+                            f"Subject: {subject}\n"
+                            f"Status: Delivered via Apple Mail (Chaz Bakery — Riley Torres, Sales Director)\n\n"
+                            f"--- Email Body ---\n{body}"
+                        )
+                    }
+                    sf_req("POST", "/sobjects/CaseComment", comment_data)
+                except Exception:
+                    pass  # Don't fail the email send if case update fails
+            return jsonify({"status": "sent", "to": recipient})
+        else:
+            return jsonify({"error": result.stderr or "Mail send failed"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/history")
