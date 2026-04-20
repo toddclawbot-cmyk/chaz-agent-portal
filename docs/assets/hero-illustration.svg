@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img">
+  <title>Chaz Agent - Reasoning Across Systems</title>
+  <desc>Abstract geometric illustration showing an AI agent connecting to Groq, Databricks, and Salesforce</desc>
+
+  <!-- Central Agent Node -->
+  <g id="agent-node">
+    <!-- Radiating lines -->
+    <line x1="400" y1="250" x2="400" y2="80" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+    <line x1="400" y1="250" x2="560" y2="150" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+    <line x1="400" y1="250" x2="240" y2="150" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+    <line x1="400" y1="250" x2="160" y2="340" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+    <line x1="400" y1="250" x2="640" y2="340" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+    <line x1="400" y1="250" x2="400" y2="420" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+
+    <!-- Decorative dots along radiating lines -->
+    <circle cx="400" cy="165" r="2" fill="#b5694a" fill-opacity="0.3"/>
+    <circle cx="480" cy="200" r="1.5" fill="#e8d5c4" fill-opacity="0.4"/>
+    <circle cx="320" cy="200" r="1.5" fill="#e8d5c4" fill-opacity="0.4"/>
+    <circle cx="280" cy="295" r="1.5" fill="#b5694a" fill-opacity="0.3"/>
+    <circle cx="520" cy="295" r="1.5" fill="#b5694a" fill-opacity="0.3"/>
+    <circle cx="400" cy="335" r="2" fill="#b5694a" fill-opacity="0.3"/>
+
+    <!-- Main agent circle -->
+    <circle cx="400" cy="250" r="48" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle cx="400" cy="250" r="38" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+    <circle cx="400" cy="250" r="8" fill="#b5694a"/>
+
+    <!-- Inner geometric mark -->
+    <path d="M388 242 L400 235 L412 242 L412 258 L400 265 L388 258 Z" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+  </g>
+
+  <!-- Groq Node (Circle with sparkle) -->
+  <g id="groq-node">
+    <circle cx="160" cy="340" r="32" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle cx="160" cy="340" r="24" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+    <!-- Sparkle/star inside -->
+    <path d="M160 326 L162 334 L170 336 L162 338 L160 346 L158 338 L150 336 L158 334 Z" stroke="#b5694a" stroke-width="1" fill="none" stroke-linejoin="round"/>
+    <!-- Connection to agent (elegant curve) -->
+    <path d="M220 320 Q280 290 352 268" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+  </g>
+
+  <!-- Databricks Node (Hexagon) -->
+  <g id="databricks-node">
+    <polygon points="640,118 672,134 672,166 640,182 608,166 608,134" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <polygon points="640,130 660,140 660,160 640,170 620,160 620,140" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+    <!-- Small diamond accent -->
+    <path d="M640 145 L644 152 L640 159 L636 152 Z" stroke="#b5694a" stroke-width="1" fill="none"/>
+    <!-- Connection to agent (elegant curve) -->
+    <path d="M580 162 Q520 200 448 238" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+  </g>
+
+  <!-- Salesforce Node (Soft rectangle with cloud hint) -->
+  <g id="salesforce-node">
+    <rect x="548" y="298" width="64" height="44" rx="8" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <rect x="556" y="306" width="48" height="28" rx="4" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+    <!-- Cloud hint inside -->
+    <path d="M566 324 Q562 318 568 316 Q572 312 578 314 Q582 310 588 314 Q594 314 594 320 Q598 320 596 326" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5" stroke-linecap="round"/>
+    <!-- Connection to agent (elegant curve) -->
+    <path d="M548 320 Q490 295 448 262" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+  </g>
+
+  <!-- Decorative corner marks -->
+  <g id="corner-marks" stroke="#8a7f75" stroke-width="1" stroke-opacity="0.3">
+    <path d="M40 40 L40 60 M40 40 L60 40"/>
+    <path d="M760 40 L760 60 M760 40 L740 40"/>
+    <path d="M40 460 L40 440 M40 460 L60 460"/>
+    <path d="M760 460 L760 440 M760 460 L740 460"/>
+  </g>
+
+  <!-- Subtle geometric accents -->
+  <g id="geo-accents" fill="none" stroke="#8a7f75" stroke-width="1" stroke-opacity="0.2">
+    <circle cx="100" cy="100" r="4"/>
+    <circle cx="700" cy="420" r="4"/>
+    <circle cx="720" cy="80" r="3"/>
+    <circle cx="80" cy="400" r="3"/>
+  </g>
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" role="img">
+  <title>Ask → Think → Act Flow</title>
+  <desc>Three-stage timeline showing the agent interaction flow</desc>
+
+  <!-- Connecting line with gradient effect -->
+  <defs>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#b5694a" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#b5694a" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#b5694a" stop-opacity="0.3"/>
+    </linearGradient>
+  </defs>
+
+  <line x1="120" y1="80" x2="480" y2="80" stroke="url(#lineGrad)" stroke-width="2" fill="none"/>
+
+  <!-- Ask Station -->
+  <g id="ask-station" transform="translate(120,80)">
+    <circle r="32" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="24" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+    <!-- Microphone icon -->
+    <path d="M0 -12 L0 -4 M-6 2 Q-6 10 0 10 Q6 10 6 2" stroke="#e8d5c4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <rect x="-3" y="-2" width="6" height="8" rx="1" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <text x="0" y="56" font-family="Inter, sans-serif" font-size="12" fill="#e8d5c4" text-anchor="middle" font-weight="500">Ask</text>
+  </g>
+
+  <!-- Arrow 1 -->
+  <path d="M165 80 L180 80" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+  <path d="M176 76 L182 80 L176 84" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6" stroke-linejoin="round"/>
+
+  <!-- Think Station -->
+  <g id="think-station" transform="translate(300,80)">
+    <circle r="36" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="28" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+    <!-- Brain/mesh icon - interconnected dots -->
+    <circle cx="-8" cy="-4" r="3" stroke="#b5694a" stroke-width="1" fill="none"/>
+    <circle cx="8" cy="-4" r="3" stroke="#b5694a" stroke-width="1" fill="none"/>
+    <circle cx="0" cy="8" r="3" stroke="#b5694a" stroke-width="1" fill="none"/>
+    <line x1="-5" y1="-4" x2="-3" y2="6" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+    <line x1="5" y1="-4" x2="3" y2="6" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+    <line x1="-5" y1="-4" x2="5" y2="-4" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+    <text x="0" y="60" font-family="Inter, sans-serif" font-size="12" fill="#e8d5c4" text-anchor="middle" font-weight="500">Think</text>
+  </g>
+
+  <!-- Arrow 2 -->
+  <path d="M348 80 L363 80" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+  <path d="M359 76 L365 80 L359 84" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6" stroke-linejoin="round"/>
+
+  <!-- Act Station -->
+  <g id="act-station" transform="translate(480,80)">
+    <circle r="32" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="24" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+    <!-- Lightning bolt -->
+    <path d="M2 -14 L-6 2 L0 2 L-2 14 L8 -2 L2 -2 Z" stroke="#e8d5c4" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+    <text x="0" y="56" font-family="Inter, sans-serif" font-size="12" fill="#e8d5c4" text-anchor="middle" font-weight="500">Act</text>
+  </g>
+
+  <!-- Decorative dots -->
+  <circle cx="210" cy="50" r="2" fill="#b5694a" fill-opacity="0.3"/>
+  <circle cx="390" cy="110" r="2" fill="#e8d5c4" fill-opacity="0.3"/>
+</svg>

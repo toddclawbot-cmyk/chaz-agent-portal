@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img">
+  <title>Chaz Agent Favicon</title>
+  <!-- Abstract agent node - CA monogram -->
+  <circle cx="16" cy="16" r="14" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+  <circle cx="16" cy="16" r="9" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+  <!-- C -->
+  <path d="M10 12 Q8 14 10 18" stroke="#e8d5c4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <!-- A -->
+  <path d="M16 11 L19 19 M17 15 L21 15" stroke="#e8d5c4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+</svg>

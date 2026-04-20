@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+  <title>Salesforce Cloud</title>
+  <!-- Simple cloud outline -->
+  <path d="M12 32 Q6 32 6 26 Q6 20 14 20 Q16 14 24 14 Q32 14 34 20 Q42 20 42 26 Q42 32 36 32 Z"
+        stroke="#b5694a" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- Inner cloud highlight -->
+  <path d="M14 28 Q12 28 12 25 Q12 22 16 22 Q18 18 24 18 Q30 18 31 22 Q34 22 34 25 Q34 28 30 28 Z"
+        stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+</svg>

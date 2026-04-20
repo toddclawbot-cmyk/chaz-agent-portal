@@ -3,30 +3,43 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chaz Agent Portal — An AI Agent That Reasons</title>
-  <meta name="description" content="A live demonstration of an AI agent that transforms natural language into autonomous action across Groq, Databricks, and Salesforce.">
+  <title>Chaz Agent Portal — An AI That Reasons Across Data Sources</title>
+  <meta name="description" content="An AI agent that reasons across Groq LLM, Databricks, and Salesforce — from natural language to autonomous action.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0f0e0d;
-      --bg-alt: #1a1614;
-      --surface: #241f1b;
-      --accent: #b5694a;
-      --accent-light: #c9876b;
-      --cream: #e8d5c4;
-      --cream-dim: rgba(232, 213, 196, 0.6);
+      --surface: #1c1816;
+      --primary: #b5694a;
+      --secondary: #e8d5c4;
       --text: #f5f0eb;
-      --text-muted: #8a7f75;
-      --divider: rgba(232, 213, 196, 0.15);
-      --divider-strong: rgba(232, 213, 196, 0.25);
+      --muted: #8a7f75;
+      --divider: rgba(232, 213, 196, 0.12);
+      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Inter', -apple-system, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --space-xs: 8px;
+      --space-sm: 16px;
+      --space-md: 32px;
+      --space-lg: 64px;
+      --space-xl: 128px;
+      --space-2xl: 192px;
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+      --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.3);
+      --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.4);
+      --shadow-glow: 0 0 40px rgba(181, 105, 74, 0.15);
     }
 
     *, *::before, *::after {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
     }
 
     html {
@@ -34,65 +47,20 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--bg);
+      font-family: var(--font-sans);
+      background-color: var(--bg);
       color: var(--text);
       line-height: 1.6;
-      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
 
-    ::selection {
-      background: var(--accent);
-      color: var(--text);
-    }
-
-    ::-webkit-scrollbar {
-      width: 8px;
-    }
-
-    ::-webkit-scrollbar-track {
-      background: var(--bg);
-    }
-
-    ::-webkit-scrollbar-thumb {
-      background: var(--surface);
-      border-radius: 4px;
-    }
-
-    ::-webkit-scrollbar-thumb:hover {
-      background: var(--accent);
-    }
-
-    /* Typography */
-    .serif {
-      font-family: 'Playfair Display', Georgia, serif;
-    }
-
-    .mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* Gradient Text */
-    .gradient-text {
-      background: linear-gradient(90deg, var(--cream) 0%, var(--cream) 40%, transparent 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .gradient-text-accent {
-      background: linear-gradient(90deg, var(--accent) 0%, var(--accent) 50%, transparent 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    /* Scroll Reveal */
+    /* ─── Scroll Reveal ─────────────────────────────────── */
     .reveal {
       opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateY(30px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .reveal.visible {
@@ -100,1038 +68,1334 @@
       transform: translateY(0);
     }
 
-    .reveal-delay-1 { transition-delay: 0.1s; }
-    .reveal-delay-2 { transition-delay: 0.2s; }
-    .reveal-delay-3 { transition-delay: 0.3s; }
-    .reveal-delay-4 { transition-delay: 0.4s; }
-    .reveal-delay-5 { transition-delay: 0.5s; }
-    .reveal-delay-6 { transition-delay: 0.6s; }
-
-    /* Sections */
-    section {
-      position: relative;
+    .reveal-stagger > * {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    .reveal-stagger.visible > * {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-stagger.visible > *:nth-child(1) { transition-delay: 0.0s; }
+    .reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.12s; }
+    .reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.24s; }
+    .reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.36s; }
+    .reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.48s; }
+    .reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.60s; }
+
+    /* ─── Layout ─────────────────────────────────────────── */
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 var(--space-md);
     }
 
-    /* ========== HERO ========== */
+    .container--wide {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    /* ─── SECTION 1: HERO ───────────────────────────────── */
     .hero {
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       text-align: center;
       position: relative;
+      padding: var(--space-xl) var(--space-md);
       overflow: hidden;
-      background: var(--bg);
     }
 
     .hero::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: 
-        radial-gradient(ellipse 80% 50% at 50% 0%, rgba(181, 105, 74, 0.08) 0%, transparent 50%),
-        radial-gradient(ellipse 60% 40% at 70% 100%, rgba(181, 105, 74, 0.05) 0%, transparent 40%);
-      animation: ambientShift 20s ease-in-out infinite;
+      inset: 0;
+      background: radial-gradient(ellipse 80% 60% at 50% 40%, rgba(181, 105, 74, 0.06) 0%, transparent 70%);
+      pointer-events: none;
+      animation: pulse-bg 8s ease-in-out infinite;
     }
 
-    @keyframes ambientShift {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.05); }
+    @keyframes pulse-bg {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
     }
 
-    .hero-content {
-      position: relative;
-      z-index: 1;
-      padding: 60px 24px;
+    .hero__illustration {
+      width: min(700px, 90vw);
+      height: auto;
+      margin-bottom: var(--space-lg);
     }
 
-    .hero-eyebrow {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 32px;
-      opacity: 0;
-      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
-    }
-
-    .hero h1 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(48px, 10vw, 96px);
+    .hero__headline {
+      font-family: var(--font-serif);
+      font-size: clamp(42px, 7vw, 88px);
       font-weight: 400;
-      line-height: 1.1;
-      margin-bottom: 24px;
-      letter-spacing: -0.02em;
+      line-height: 1.08;
+      margin-bottom: var(--space-sm);
     }
 
-    .hero h1 .fade-word {
-      background: linear-gradient(90deg, var(--text) 0%, var(--text) 30%, rgba(245, 240, 235, 0.3) 70%, transparent 100%);
+    .hero__headline--fade {
+      display: block;
+      background: linear-gradient(
+        to bottom,
+        #e8d5c4 0%,
+        #e8d5c4 45%,
+        rgba(232, 213, 196, 0.18) 75%,
+        transparent 100%
+      );
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .hero-subtitle {
-      font-size: clamp(16px, 2.5vw, 20px);
-      color: var(--cream-dim);
-      max-width: 520px;
-      margin: 0 auto 48px;
+    .hero__subtitle {
+      font-family: var(--font-sans);
+      font-size: clamp(15px, 2vw, 18px);
       font-weight: 300;
-      opacity: 0;
-      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto var(--space-lg);
+      letter-spacing: 0.01em;
     }
 
-    .hero-cta {
+    .hero__cta {
       display: inline-flex;
       align-items: center;
-      gap: 12px;
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
+      gap: var(--space-xs);
+      font-family: var(--font-sans);
+      font-size: 15px;
       font-weight: 500;
-      color: var(--text);
+      color: var(--primary);
       text-decoration: none;
-      padding: 16px 32px;
-      border: 1px solid var(--divider-strong);
-      border-radius: 2px;
-      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      opacity: 0;
-      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
-      letter-spacing: 0.05em;
+      letter-spacing: 0.02em;
+      transition: gap 0.25s ease, opacity 0.2s ease;
+      cursor: pointer;
+      border: none;
+      background: none;
     }
 
-    .hero-cta:hover {
-      background: var(--accent);
-      border-color: var(--accent);
-      transform: translateY(-2px);
+    .hero__cta:hover {
+      gap: 14px;
+      opacity: 0.85;
     }
 
-    .hero-cta svg {
-      transition: transform 0.3s ease;
+    .hero__cta svg {
+      transition: transform 0.25s ease;
     }
 
-    .hero-cta:hover svg {
+    .hero__cta:hover svg {
       transform: translateX(4px);
     }
 
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .scroll-indicator {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      animation: fadeUp 1s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
-    }
-
-    .scroll-indicator span {
-      display: block;
-      width: 1px;
-      height: 60px;
-      background: linear-gradient(to bottom, var(--accent), transparent);
-      animation: scrollPulse 2s ease-in-out infinite;
-    }
-
-    @keyframes scrollPulse {
-      0%, 100% { opacity: 0.3; transform: scaleY(0.6); }
-      50% { opacity: 1; transform: scaleY(1); }
-    }
-
-    /* ========== DIVIDER ========== */
-    .divider {
-      width: 100%;
-      height: 1px;
-      background: var(--divider);
-    }
-
-    /* ========== CHALLENGE ========== */
-    .challenge {
-      padding: 120px 0;
-      background: var(--bg);
-      text-align: center;
-    }
-
-    .challenge blockquote {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-style: italic;
-      font-size: clamp(24px, 4vw, 36px);
-      color: var(--cream);
-      max-width: 800px;
-      margin: 0 auto;
-      line-height: 1.5;
-      font-weight: 400;
-    }
-
-    .challenge blockquote cite {
-      display: block;
-      margin-top: 32px;
-      font-family: 'Inter', sans-serif;
-      font-style: normal;
-      font-size: 13px;
-      color: var(--text-muted);
-      letter-spacing: 0.1em;
-    }
-
-    /* ========== THE AGENT ========== */
+    /* ─── SECTION 2: THE AGENT ───────────────────────────── */
     .agent {
-      padding: 140px 0;
-      background: var(--bg-alt);
+      padding: var(--space-xl) 0;
     }
 
-    .agent-intro {
+    .agent__intro {
       text-align: center;
       max-width: 700px;
-      margin: 0 auto 100px;
+      margin: 0 auto var(--space-xl);
     }
 
-    .agent-intro h2 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(36px, 6vw, 56px);
+    .agent__tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .agent__headline {
+      font-family: var(--font-serif);
+      font-size: clamp(28px, 4vw, 48px);
       font-weight: 400;
-      margin-bottom: 24px;
       line-height: 1.2;
+      color: var(--secondary);
     }
 
-    .agent-intro p {
-      font-size: 18px;
-      color: var(--cream-dim);
-      line-height: 1.7;
-      font-weight: 300;
-    }
-
-    .steps-grid {
+    .agent__chain {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 24px;
+      grid-template-columns: 80px 1fr;
+      gap: 0;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .agent__chain-line {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 8px;
+    }
+
+    .agent__chain-svg {
+      width: 40px;
+      height: auto;
+      flex-shrink: 0;
+    }
+
+    .agent__chain-line::after {
+      content: '';
+      width: 1px;
+      flex: 1;
+      background: linear-gradient(to bottom, var(--primary), transparent);
+      opacity: 0.3;
+      margin-top: var(--space-xs);
+    }
+
+    .agent__chain-line:last-child::after {
+      display: none;
+    }
+
+    .agent__steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .agent__step {
+      display: grid;
+      grid-template-columns: 52px 1fr;
+      gap: var(--space-md);
+      align-items: start;
+      padding: var(--space-md) 0;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .agent__step:last-child {
+      border-bottom: none;
+    }
+
+    .agent__step-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--primary);
+      letter-spacing: 0.05em;
+      padding-top: 4px;
+    }
+
+    .agent__step-body {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-md);
+    }
+
+    .agent__step-icon {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+    }
+
+    .agent__step-icon svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .agent__step-content h3 {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 400;
+      color: var(--secondary);
+      margin-bottom: 4px;
+    }
+
+    .agent__step-content p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 480px;
+    }
+
+    /* ─── SECTION 3: DATA STACK ─────────────────────────── */
+    .data-stack {
+      padding: var(--space-xl) 0;
+      border-top: 1px solid var(--divider);
+    }
+
+    .data-stack__header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .data-stack__tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .data-stack__title {
+      font-family: var(--font-serif);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 400;
+      color: var(--secondary);
+    }
+
+    .data-stack__item {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-xl);
+      align-items: center;
+      padding: var(--space-xl) 0;
+      border-bottom: 1px solid var(--divider);
+    }
+
+    .data-stack__item:last-child {
+      border-bottom: none;
+    }
+
+    .data-stack__item:nth-child(even) {
+      direction: rtl;
+    }
+
+    .data-stack__item:nth-child(even) > * {
+      direction: ltr;
+    }
+
+    .data-stack__visual {
+      display: flex;
+      justify-content: center;
+    }
+
+    .data-stack__visual svg {
+      width: min(400px, 90%);
+      height: auto;
+    }
+
+    .data-stack__info {
+      padding: var(--space-md) 0;
+    }
+
+    .data-stack__name {
+      font-family: var(--font-serif);
+      font-size: clamp(22px, 3vw, 36px);
+      font-weight: 400;
+      color: var(--secondary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .data-stack__desc {
+      font-size: 15px;
+      color: var(--muted);
+      line-height: 1.65;
+      max-width: 440px;
+      margin-bottom: var(--space-md);
+    }
+
+    .data-stack__tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+    }
+
+    .data-stack__tag-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      border: 1px solid var(--divider);
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─── SECTION 4: LIVE DEMO FLOW ─────────────────────── */
+    .demo-flow {
+      padding: var(--space-xl) 0;
+      border-top: 1px solid var(--divider);
+      overflow: hidden;
+    }
+
+    .demo-flow__header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .demo-flow__tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .demo-flow__title {
+      font-family: var(--font-serif);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 400;
+      color: var(--secondary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .demo-flow__timeline {
+      display: flex;
+      justify-content: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .demo-flow__timeline svg {
+      width: min(600px, 100%);
+      height: auto;
+    }
+
+    .demo-flow__cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
       max-width: 900px;
       margin: 0 auto;
     }
 
-    @media (max-width: 768px) {
-      .steps-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .step-card {
+    .demo-flow__card {
       background: var(--surface);
       border: 1px solid var(--divider);
-      padding: 40px;
-      position: relative;
-      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md) var(--space-md) var(--space-md);
+      text-align: center;
+      transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+                  box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
     }
 
-    .step-card:hover {
-      border-color: var(--accent);
+    .demo-flow__card:hover {
       transform: translateY(-4px);
+      box-shadow: var(--shadow-md), 0 0 0 1px rgba(181, 105, 74, 0.15);
     }
 
-    .step-number {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 64px;
-      font-weight: 700;
-      color: var(--accent);
-      opacity: 0.3;
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      line-height: 1;
-    }
-
-    .step-icon {
-      width: 40px;
-      height: 40px;
-      margin-bottom: 20px;
-      color: var(--accent);
-    }
-
-    .step-card h3 {
-      font-family: 'Inter', sans-serif;
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      letter-spacing: 0.02em;
-    }
-
-    .step-card p {
-      font-size: 14px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    /* ========== THE DATA ========== */
-    .data {
-      padding: 140px 0;
-      background: var(--bg);
-    }
-
-    .data h2 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(36px, 6vw, 56px);
-      font-weight: 400;
-      text-align: center;
-      margin-bottom: 80px;
-    }
-
-    .data-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 80px;
-    }
-
-    .data-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-    }
-
-    .data-row:nth-child(even) {
-      direction: rtl;
-    }
-
-    .data-row:nth-child(even) > * {
-      direction: ltr;
-    }
-
-    @media (max-width: 900px) {
-      .data-row {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-      .data-row:nth-child(even) {
-        direction: ltr;
-      }
-    }
-
-    .data-content h3 {
-      font-family: 'Inter', sans-serif;
-      font-size: 20px;
-      font-weight: 600;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .data-content p {
-      font-size: 15px;
-      color: var(--cream-dim);
-      line-height: 1.7;
-      margin-bottom: 24px;
-    }
-
-    .data-tag {
-      display: inline-block;
-      font-family: 'JetBrains Mono', monospace;
+    .demo-flow__card-label {
+      font-family: var(--font-mono);
       font-size: 11px;
-      padding: 8px 14px;
-      background: var(--surface);
-      border: 1px solid var(--divider);
-      color: var(--accent);
-      letter-spacing: 0.05em;
+      color: var(--primary);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: var(--space-xs);
     }
 
-    .data-visual {
-      background: var(--surface);
-      border: 1px solid var(--divider);
-      padding: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 280px;
-      position: relative;
-      overflow: hidden;
+    .demo-flow__card-title {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      color: var(--secondary);
+      margin-bottom: var(--space-xs);
     }
 
-    .data-visual::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, var(--accent), transparent);
-      opacity: 0.5;
-    }
-
-    .data-visual svg {
-      width: 80px;
-      height: 80px;
-      color: var(--accent);
-      opacity: 0.8;
-    }
-
-    /* ========== THE FLOW ========== */
-    .flow {
-      padding: 140px 0;
-      background: var(--bg-alt);
-    }
-
-    .flow h2 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(36px, 6vw, 56px);
-      font-weight: 400;
-      text-align: center;
-      margin-bottom: 24px;
-    }
-
-    .flow-subtitle {
-      text-align: center;
-      font-size: 16px;
-      color: var(--text-muted);
-      margin-bottom: 80px;
-    }
-
-    .flow-timeline {
-      display: flex;
-      gap: 0;
-      justify-content: center;
-      position: relative;
-      flex-wrap: wrap;
-    }
-
-    .flow-timeline::before {
-      content: '';
-      position: absolute;
-      top: 44px;
-      left: 15%;
-      right: 15%;
-      height: 1px;
-      background: var(--divider-strong);
-    }
-
-    .flow-step {
-      text-align: center;
-      flex: 1;
-      min-width: 200px;
-      max-width: 280px;
-      position: relative;
-      padding: 0 20px;
-    }
-
-    .flow-step-number {
-      width: 88px;
-      height: 88px;
-      border-radius: 50%;
-      background: var(--surface);
-      border: 1px solid var(--divider-strong);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 24px;
-      position: relative;
-      z-index: 1;
-      transition: all 0.4s ease;
-    }
-
-    .flow-step:hover .flow-step-number {
-      border-color: var(--accent);
-      background: var(--accent);
-    }
-
-    .flow-step-number svg {
-      width: 32px;
-      height: 32px;
-      color: var(--cream);
-    }
-
-    .flow-step h4 {
-      font-family: 'Inter', sans-serif;
-      font-size: 14px;
-      font-weight: 600;
-      margin-bottom: 8px;
-      letter-spacing: 0.05em;
-    }
-
-    .flow-step p {
+    .demo-flow__card-body {
       font-size: 13px;
-      color: var(--text-muted);
+      color: var(--muted);
       line-height: 1.5;
     }
 
-    .flow-connector {
-      position: absolute;
-      top: 44px;
-      right: -30px;
-      width: 40px;
-      height: 1px;
+    /* ─── SECTION 5: CAPABILITIES ────────────────────────── */
+    .capabilities {
+      padding: var(--space-xl) 0;
+      border-top: 1px solid var(--divider);
+    }
+
+    .capabilities__header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .capabilities__tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .capabilities__title {
+      font-family: var(--font-serif);
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 400;
+      color: var(--secondary);
+    }
+
+    .capabilities__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-md);
+    }
+
+    .capability-card {
+      background: var(--surface);
+      border: 1px solid var(--divider);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      transition: transform 0.3s cubic-bezier(0.25, 0.1, 0.25, 1),
+                  box-shadow 0.3s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+
+    .capability-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-md), 0 0 0 1px rgba(181, 105, 74, 0.2);
+    }
+
+    .capability-card__icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: var(--space-sm);
+    }
+
+    .capability-card__icon svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .capability-card__title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      color: var(--secondary);
+      margin-bottom: 6px;
+    }
+
+    .capability-card__desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    /* ─── SECTION 6: TECH STACK ───────────────────────────── */
+    .tech-strip {
+      padding: var(--space-lg) 0;
+      border-top: 1px solid var(--divider);
+    }
+
+    .tech-strip__inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: var(--space-md) var(--space-xl);
+    }
+
+    .tech-strip__item {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      opacity: 0.7;
+      transition: opacity 0.2s ease;
+    }
+
+    .tech-strip__item:hover {
+      opacity: 1;
+    }
+
+    .tech-strip__sep {
+      width: 1px;
+      height: 16px;
       background: var(--divider);
     }
 
-    .flow-step:last-child .flow-connector {
-      display: none;
-    }
-
-    @media (max-width: 768px) {
-      .flow-timeline {
-        flex-direction: column;
-        align-items: center;
-        gap: 40px;
-      }
-      .flow-timeline::before {
-        display: none;
-      }
-      .flow-connector {
-        display: none;
-      }
-    }
-
-    /* ========== WHAT IT DOES ========== */
-    .capabilities {
-      padding: 140px 0;
-      background: var(--bg);
-    }
-
-    .capabilities h2 {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: clamp(36px, 6vw, 56px);
-      font-weight: 400;
-      text-align: center;
-      margin-bottom: 80px;
-    }
-
-    .cap-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-    }
-
-    @media (max-width: 900px) {
-      .cap-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 600px) {
-      .cap-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    .cap-card {
-      background: var(--surface);
-      border: 1px solid var(--divider);
-      padding: 40px 32px;
-      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .cap-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-4px);
-    }
-
-    .cap-icon {
-      width: 36px;
-      height: 36px;
-      color: var(--accent);
-      margin-bottom: 24px;
-    }
-
-    .cap-card h3 {
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 12px;
-      letter-spacing: 0.03em;
-    }
-
-    .cap-card p {
-      font-size: 13px;
-      color: var(--text-muted);
-      line-height: 1.6;
-    }
-
-    /* ========== TECH STACK ========== */
-    .tech {
-      padding: 80px 0;
-      background: var(--bg-alt);
+    /* ─── SECTION 7: FOOTER ──────────────────────────────── */
+    .footer {
+      padding: var(--space-xl) 0 var(--space-lg);
       border-top: 1px solid var(--divider);
-      border-bottom: 1px solid var(--divider);
+      text-align: center;
     }
 
-    .tech-inner {
+    .footer__brand {
+      font-family: var(--font-serif);
+      font-size: clamp(22px, 3vw, 32px);
+      color: var(--secondary);
+      margin-bottom: var(--space-md);
+    }
+
+    .footer__links {
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 48px;
-      flex-wrap: wrap;
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
     }
 
-    .tech-item {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
-      color: var(--text-muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
+    .footer__link {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s ease;
       position: relative;
     }
 
-    .tech-item::after {
+    .footer__link::after {
       content: '';
       position: absolute;
-      right: -28px;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 8px;
+      bottom: -2px;
+      left: 0;
+      right: 0;
       height: 1px;
-      background: var(--divider);
+      background: var(--primary);
+      transform: scaleX(0);
+      transition: transform 0.25s ease;
     }
 
-    .tech-item:last-child::after {
-      display: none;
+    .footer__link:hover {
+      color: var(--primary);
     }
 
-    /* ========== FOOTER ========== */
-    .footer {
-      padding: 100px 0;
-      background: var(--bg);
-      text-align: center;
+    .footer__link:hover::after {
+      transform: scaleX(1);
     }
 
-    .footer-brand {
-      font-family: 'Playfair Display', Georgia, serif;
-      font-size: 28px;
-      margin-bottom: 32px;
-      color: var(--cream);
+    .footer__divider {
+      color: var(--divider);
+      font-size: 18px;
     }
 
-    .footer-links {
-      display: flex;
-      justify-content: center;
-      gap: 40px;
-      margin-bottom: 48px;
-    }
-
-    .footer-links a {
-      font-family: 'Inter', sans-serif;
-      font-size: 13px;
-      color: var(--text-muted);
-      text-decoration: none;
-      letter-spacing: 0.05em;
-      transition: color 0.3s ease;
-    }
-
-    .footer-links a:hover {
-      color: var(--accent);
-    }
-
-    .footer-credit {
+    .footer__credit {
       font-size: 12px;
-      color: var(--text-muted);
+      color: var(--muted);
       opacity: 0.6;
+    }
+
+    /* ─── Responsive ─────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .capabilities__grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .data-stack__item {
+        grid-template-columns: 1fr;
+        gap: var(--space-lg);
+      }
+
+      .data-stack__item:nth-child(even) {
+        direction: ltr;
+      }
+
+      .demo-flow__cards {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-sm);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .agent__chain {
+        grid-template-columns: 1fr;
+      }
+
+      .agent__chain-line {
+        display: none;
+      }
+
+      .capabilities__grid {
+        grid-template-columns: 1fr;
+      }
+
+      .demo-flow__cards {
+        grid-template-columns: 1fr;
+      }
+
+      .agent__step-body {
+        flex-direction: column;
+        gap: var(--space-sm);
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-content">
-      <p class="hero-eyebrow">Chaz Agent Portal</p>
-      <h1>An AI Agent That <span class="fade-word">REASONS</span></h1>
-      <p class="hero-subtitle">From natural language to autonomous action — a live demonstration connecting Groq, Databricks, and Salesforce.</p>
-      <a href="https://chaz-agent-portal.onrender.com" class="hero-cta" target="_blank" rel="noopener">
-        Start Demo
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 1: HERO
+  ════════════════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="container--wide">
+
+      <!-- Hero Illustration — inline SVG -->
+      <div class="hero__illustration">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" role="img" aria-label="Chaz Agent - Reasoning Across Systems">
+          <title>Chaz Agent — Reasoning Across Systems</title>
+          <desc>Abstract geometric illustration showing an AI agent connecting to Groq, Databricks, and Salesforce</desc>
+
+          <!-- Radiating lines -->
+          <line x1="400" y1="250" x2="400" y2="80" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+          <line x1="400" y1="250" x2="560" y2="150" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+          <line x1="400" y1="250" x2="240" y2="150" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+          <line x1="400" y1="250" x2="160" y2="340" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+          <line x1="400" y1="250" x2="640" y2="340" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+          <line x1="400" y1="250" x2="400" y2="420" stroke="#b5694a" stroke-width="1" stroke-opacity="0.4"/>
+
+          <!-- Decorative dots -->
+          <circle cx="400" cy="165" r="2" fill="#b5694a" fill-opacity="0.3"/>
+          <circle cx="480" cy="200" r="1.5" fill="#e8d5c4" fill-opacity="0.4"/>
+          <circle cx="320" cy="200" r="1.5" fill="#e8d5c4" fill-opacity="0.4"/>
+          <circle cx="280" cy="295" r="1.5" fill="#b5694a" fill-opacity="0.3"/>
+          <circle cx="520" cy="295" r="1.5" fill="#b5694a" fill-opacity="0.3"/>
+          <circle cx="400" cy="335" r="2" fill="#b5694a" fill-opacity="0.3"/>
+
+          <!-- Central Agent Node -->
+          <circle cx="400" cy="250" r="48" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+          <circle cx="400" cy="250" r="38" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+          <circle cx="400" cy="250" r="8" fill="#b5694a"/>
+          <path d="M388 242 L400 235 L412 242 L412 258 L400 265 L388 258 Z" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+
+          <!-- Groq Node -->
+          <circle cx="160" cy="340" r="32" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+          <circle cx="160" cy="340" r="24" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+          <path d="M160 326 L162 334 L170 336 L162 338 L160 346 L158 338 L150 336 L158 334 Z" stroke="#b5694a" stroke-width="1" fill="none" stroke-linejoin="round"/>
+          <path d="M220 320 Q280 290 352 268" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+
+          <!-- Databricks Node -->
+          <polygon points="640,118 672,134 672,166 640,182 608,166 608,134" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+          <polygon points="640,130 660,140 660,160 640,170 620,160 620,140" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+          <path d="M640 145 L644 152 L640 159 L636 152 Z" stroke="#b5694a" stroke-width="1" fill="none"/>
+          <path d="M580 162 Q520 200 448 238" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+
+          <!-- Salesforce Node -->
+          <rect x="548" y="298" width="64" height="44" rx="8" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+          <rect x="556" y="306" width="48" height="28" rx="4" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+          <path d="M566 324 Q562 318 568 316 Q572 312 578 314 Q582 310 588 314 Q594 314 594 320 Q598 320 596 326" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5" stroke-linecap="round"/>
+          <path d="M548 320 Q490 295 448 262" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+
+          <!-- Corner marks -->
+          <g stroke="#8a7f75" stroke-width="1" stroke-opacity="0.3">
+            <path d="M40 40 L40 60 M40 40 L60 40"/>
+            <path d="M760 40 L760 60 M760 40 L740 40"/>
+            <path d="M40 460 L40 440 M40 460 L60 460"/>
+            <path d="M760 460 L760 440 M760 460 L740 460"/>
+          </g>
+
+          <!-- Geometric accents -->
+          <g fill="none" stroke="#8a7f75" stroke-width="1" stroke-opacity="0.2">
+            <circle cx="100" cy="100" r="4"/>
+            <circle cx="700" cy="420" r="4"/>
+            <circle cx="720" cy="80" r="3"/>
+            <circle cx="80" cy="400" r="3"/>
+          </g>
+        </svg>
+      </div>
+
+      <!-- Headline -->
+      <h1 class="hero__headline reveal">
+        An AI Agent That<br>
+        <span class="hero__headline--fade">REASONS</span><br>
+        Across Data Sources
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="hero__subtitle reveal">
+        From natural language to autonomous action — a live demonstration.
+      </p>
+
+      <!-- CTA -->
+      <a href="#demo" class="hero__cta reveal">
+        See the Live Demo
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 10H16M16 10L11 5M16 10L11 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
       </a>
-    </div>
-    <div class="scroll-indicator">
-      <span></span>
+
     </div>
   </section>
 
-  <div class="divider"></div>
-
-  <!-- CHALLENGE -->
-  <section class="challenge">
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 2: THE AGENT
+  ════════════════════════════════════════════════════════ -->
+  <section class="agent" id="agent">
     <div class="container">
-      <blockquote class="reveal">
-        "The future isn't about AI that answers questions. It's about AI that takes action."
-        <cite>— The Promise of Reasoning Agents</cite>
-      </blockquote>
-    </div>
-  </section>
 
-  <div class="divider"></div>
-
-  <!-- THE AGENT -->
-  <section class="agent">
-    <div class="container">
-      <div class="agent-intro reveal">
-        <h2>The Agent</h2>
-        <p>Chaz transforms how you interact with enterprise data. Ask in plain language, receive reasoned answers backed by live queries across your systems.</p>
+      <div class="agent__intro reveal">
+        <p class="agent__tag">How It Works</p>
+        <h2 class="agent__headline">
+          A reasoning chain that turns<br>a single question into a complete action plan.
+        </h2>
       </div>
 
-      <div class="steps-grid">
-        <div class="step-card reveal reveal-delay-1">
-          <span class="step-number">01</span>
-          <div class="step-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            </svg>
-          </div>
-          <h3>Interpret</h3>
-          <p>Parses your natural language question to understand intent, entities, and the data domain being queried.</p>
+      <div class="agent__chain">
+        <!-- Chain visual (left column) -->
+        <div class="agent__chain-line reveal">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 480" role="img" aria-label="Reasoning chain visualization">
+            <title>6-Step Reasoning Chain</title>
+            <desc>Vertical flow showing the 6-step agent reasoning process</desc>
+            <path d="M100 70 Q95 120 100 170 Q105 220 100 270 Q95 320 100 370 Q105 400 100 430"
+                  stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.4"/>
+            <circle cx="100" cy="60" r="20" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+            <circle cx="100" cy="60" r="12" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+            <circle cx="100" cy="60" r="4" fill="#b5694a"/>
+            <text x="32" y="5" font-family="JetBrains Mono, monospace" font-size="11" fill="#8a7f75">01</text>
+          </svg>
         </div>
 
-        <div class="step-card reveal reveal-delay-2">
-          <span class="step-number">02</span>
-          <div class="step-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-          <h3>Plan</h3>
-          <p>Determines which systems to query and in what sequence to construct a complete answer.</p>
-        </div>
+        <!-- Steps (right column) -->
+        <div class="agent__steps reveal-stagger">
 
-        <div class="step-card reveal reveal-delay-3">
-          <span class="step-number">03</span>
-          <div class="step-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-            </svg>
+          <div class="agent__step">
+            <span class="agent__step-num">01</span>
+            <div class="agent__step-body">
+              <div class="agent__step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+                  <title>Receive</title>
+                  <path d="M8 12 Q8 6 16 6 L32 6 Q40 6 40 12 L40 28 Q40 34 32 34 L18 34 L12 42 L12 34 L16 34 Q8 34 8 28 Z" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+                  <path d="M24 14 L25 18 L29 19 L25 20 L24 24 L23 20 L19 19 L23 18 Z" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="agent__step-content">
+                <h3>Receive</h3>
+                <p>Accept a natural language query and parse intent, entities, and scope.</p>
+              </div>
+            </div>
           </div>
-          <h3>Query</h3>
-          <p>Translates intent into precise queries — SQL for Databricks, SOQL for Salesforce, or API calls.</p>
-        </div>
 
-        <div class="step-card reveal reveal-delay-4">
-          <span class="step-number">04</span>
-          <div class="step-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-            </svg>
+          <div class="agent__step">
+            <span class="agent__step-num">02</span>
+            <div class="agent__step-body">
+              <div class="agent__step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+                  <title>Query</title>
+                  <ellipse cx="24" cy="12" rx="14" ry="5" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+                  <line x1="10" y1="12" x2="10" y2="36" stroke="#b5694a" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="38" y1="12" x2="38" y2="36" stroke="#b5694a" stroke-width="1.5" stroke-linecap="round"/>
+                  <ellipse cx="24" cy="36" rx="14" ry="5" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+                  <ellipse cx="24" cy="24" rx="14" ry="5" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.5"/>
+                  <path d="M14 24 Q14 20 24 20 Q34 20 34 24" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+                </svg>
+              </div>
+              <div class="agent__step-content">
+                <h3>Query</h3>
+                <p>Formulate precise queries for each data source — Groq for reasoning, Databricks for data, Salesforce for records.</p>
+              </div>
+            </div>
           </div>
-          <h3>Reason</h3>
-          <p>Synthesizes results from multiple sources, applying business logic to construct a coherent response.</p>
-        </div>
 
-        <div class="step-card reveal reveal-delay-5">
-          <span class="step-number">05</span>
-          <div class="step-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-              <polyline points="2 17 12 22 22 17"></polyline>
-              <polyline points="2 12 12 17 22 12"></polyline>
-            </svg>
+          <div class="agent__step">
+            <span class="agent__step-num">03</span>
+            <div class="agent__step-body">
+              <div class="agent__step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+                  <title>Synthesize</title>
+                  <rect x="6" y="8" width="28" height="20" rx="3" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+                  <rect x="14" y="16" width="28" height="20" rx="3" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+                  <rect x="22" y="24" width="20" height="16" rx="3" stroke="#e8d5c4" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+                  <circle cx="10" cy="18" r="1.5" fill="#e8d5c4" fill-opacity="0.5"/>
+                  <circle cx="18" cy="26" r="1.5" fill="#e8d5c4" fill-opacity="0.5"/>
+                  <circle cx="26" cy="32" r="1.5" fill="#e8d5c4" fill-opacity="0.5"/>
+                </svg>
+              </div>
+              <div class="agent__step-content">
+                <h3>Synthesize</h3>
+                <p>Merge results from all sources into a coherent picture, resolving conflicts and gaps.</p>
+              </div>
+            </div>
           </div>
-          <h3>Format</h3>
-          <p>Presents results with clear explanations, supporting data, and actionable next steps.</p>
-        </div>
 
-        <div class="step-card reveal reveal-delay-6">
-          <span class="step-number">06</span>
-          <div class="step-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <polyline points="12 6 12 12 16 14"></polyline>
-            </svg>
+          <div class="agent__step">
+            <span class="agent__step-num">04</span>
+            <div class="agent__step-body">
+              <div class="agent__step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+                  <title>Plan</title>
+                  <circle cx="24" cy="24" r="10" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+                  <circle cx="24" cy="24" r="4" fill="#b5694a"/>
+                  <line x1="24" y1="14" x2="24" y2="4" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="24" y1="34" x2="24" y2="44" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="14" y1="24" x2="4" y2="24" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="34" y1="24" x2="44" y2="24" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="17" y1="17" x2="10" y2="10" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+                  <line x1="31" y1="17" x2="38" y2="10" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+                  <line x1="17" y1="31" x2="10" y2="38" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+                  <line x1="31" y1="31" x2="38" y2="38" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+                  <circle cx="24" cy="4" r="2" fill="#b5694a"/>
+                  <circle cx="24" cy="44" r="2" fill="#b5694a"/>
+                  <circle cx="4" cy="24" r="2" fill="#b5694a"/>
+                  <circle cx="44" cy="24" r="2" fill="#b5694a"/>
+                </svg>
+              </div>
+              <div class="agent__step-content">
+                <h3>Plan</h3>
+                <p>Determine the optimal sequence of actions based on the synthesized context and available tools.</p>
+              </div>
+            </div>
           </div>
-          <h3>Act</h3>
-          <p>Executes follow-up actions — sending emails, updating records, or triggering workflows.</p>
-        </div>
-      </div>
+
+          <div class="agent__step">
+            <span class="agent__step-num">05</span>
+            <div class="agent__step-body">
+              <div class="agent__step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+                  <title>Act</title>
+                  <path d="M28 4 L12 24 L22 24 L18 44 L36 20 L26 20 L28 4 Z" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+                  <path d="M26 12 L18 24 L24 24 L21 36" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.5" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="agent__step-content">
+                <h3>Act</h3>
+                <p>Execute the planned actions — reading, writing, updating, and notifying across connected systems.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="agent__step">
+            <span class="agent__step-num">06</span>
+            <div class="agent__step-body">
+              <div class="agent__step-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+                  <title>Report</title>
+                  <circle cx="24" cy="24" r="10" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+                  <circle cx="24" cy="24" r="4" fill="#b5694a"/>
+                  <line x1="24" y1="14" x2="24" y2="4" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="24" y1="34" x2="24" y2="44" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="14" y1="24" x2="4" y2="24" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="34" y1="24" x2="44" y2="24" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+                  <line x1="17" y1="17" x2="10" y2="10" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+                  <line x1="31" y1="17" x2="38" y2="10" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+                  <line x1="17" y1="31" x2="10" y2="38" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+                  <line x1="31" y1="31" x2="38" y2="38" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+                  <circle cx="24" cy="4" r="2" fill="#b5694a"/>
+                  <circle cx="24" cy="44" r="2" fill="#b5694a"/>
+                  <circle cx="4" cy="24" r="2" fill="#b5694a"/>
+                  <circle cx="44" cy="24" r="2" fill="#b5694a"/>
+                </svg>
+              </div>
+              <div class="agent__step-content">
+                <h3>Report</h3>
+                <p>Return a structured response with findings, reasoning trace, and next-step recommendations.</p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.agent__steps -->
+      </div><!-- /.agent__chain -->
+
     </div>
   </section>
 
-  <div class="divider"></div>
-
-  <!-- THE DATA -->
-  <section class="data">
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 3: THE DATA STACK
+  ════════════════════════════════════════════════════════ -->
+  <section class="data-stack" id="stack">
     <div class="container">
-      <h2 class="reveal">The Data Layer</h2>
 
-      <div class="data-grid">
-        <div class="data-row reveal">
-          <div class="data-content">
-            <h3>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-                <path d="M2 17l10 5 10-5"></path>
-                <path d="M2 12l10 5 10-5"></path>
-              </svg>
-              Groq LLM
-            </h3>
-            <p>The reasoning engine. Groq's LPU delivers millisecond-token inference, enabling real-time natural language understanding and response generation. Handles the cognitive heavy lifting — parsing intent, constructing queries, and synthesizing answers.</p>
-            <span class="data-tag">Natural Language → SQL / SOQL</span>
-          </div>
-          <div class="data-visual">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <circle cx="8.5" cy="8.5" r="1.5"></circle>
-              <polyline points="21 15 16 10 5 21"></polyline>
-            </svg>
-          </div>
+      <div class="data-stack__header reveal">
+        <p class="data-stack__tag">Connected Systems</p>
+        <h2 class="data-stack__title">The Data Stack</h2>
+      </div>
+
+      <!-- Groq -->
+      <div class="data-stack__item reveal">
+        <div class="data-stack__visual">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" role="img">
+            <title>Groq LLM Integration</title>
+            <!-- Groq Node (Left) -->
+            <g transform="translate(80,100)">
+              <circle r="40" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+              <circle r="28" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+              <path d="M0 -16 L3 0 L18 3 L3 6 L0 22 L-3 6 L-18 3 L-3 0 Z" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+            </g>
+            <!-- Central Agent -->
+            <g transform="translate(300,100)">
+              <circle r="36" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+              <circle r="26" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+              <circle r="6" fill="#b5694a"/>
+              <path d="M-10 -6 L0 -12 L10 -6 L10 6 L0 12 L-10 6 Z" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+            </g>
+            <!-- Connection lines -->
+            <path d="M120 100 Q200 100 264 100" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+            <path d="M480 100 Q400 100 336 100" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.3" stroke-dasharray="4 4"/>
+            <!-- Decorative dots -->
+            <circle cx="190" cy="60" r="3" fill="#b5694a" fill-opacity="0.3"/>
+            <circle cx="410" cy="140" r="2" fill="#e8d5c4" fill-opacity="0.3"/>
+          </svg>
         </div>
-
-        <div class="data-row reveal">
-          <div class="data-content">
-            <h3>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-              </svg>
-              Databricks
-            </h3>
-            <p>Enterprise data warehouse containing inventory, demand forecasting, shipping logistics, and historical sales data. queried via SQL, enabling complex aggregations and cross-table analysis that would be impossible through manual exploration.</p>
-            <span class="data-tag">9 Tables: Inventory, Demand, Shipping +</span>
-          </div>
-          <div class="data-visual">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M3 3h18v18H3z"></path>
-              <path d="M3 9h18"></path>
-              <path d="M3 15h18"></path>
-              <path d="M9 3v18"></path>
-              <path d="M15 3v18"></path>
-            </svg>
-          </div>
-        </div>
-
-        <div class="data-row reveal">
-          <div class="data-content">
-            <h3>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-              </svg>
-              Salesforce
-            </h3>
-            <p>CRM system housing accounts, opportunities, cases, and customer interactions. Provides the business context that transforms raw data into actionable intelligence — who are the key accounts, what deals are in motion, where are the pain points.</p>
-            <span class="data-tag">Accounts + Opportunities + Cases</span>
-          </div>
-          <div class="data-visual">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-              <line x1="7" y1="7" x2="7.01" y2="7"></line>
-            </svg>
+        <div class="data-stack__info">
+          <h3 class="data-stack__name">Groq LLM</h3>
+          <p class="data-stack__desc">
+            The reasoning engine — Groq's fast inference handles natural language understanding, 
+            context synthesis, and multi-step reasoning across the full conversation context.
+          </p>
+          <div class="data-stack__tags">
+            <span class="data-stack__tag-pill">llm推理</span>
+            <span class="data-stack__tag-pill">自然语言</span>
+            <span class="data-stack__tag-pill">上下文合成</span>
           </div>
         </div>
       </div>
+
+      <!-- Databricks -->
+      <div class="data-stack__item reveal">
+        <div class="data-stack__visual">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" role="img">
+            <title>Databricks Integration</title>
+            <!-- Central Agent -->
+            <g transform="translate(300,100)">
+              <circle r="36" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+              <circle r="26" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+              <circle r="6" fill="#b5694a"/>
+              <path d="M-10 -6 L0 -12 L10 -6 L10 6 L0 12 L-10 6 Z" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+            </g>
+            <!-- Databricks Node (Right) -->
+            <g transform="translate(480,100)">
+              <polygon points="0,-36 31,-18 31,18 0,36 -31,18 -31,-18" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+              <polygon points="0,-24 21,-12 21,12 0,24 -21,12 -21,-12" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+              <path d="M0 -10 L4 0 L0 10 L-4 0 Z" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+            </g>
+            <!-- Connection -->
+            <path d="M336 100 Q400 100 449 100" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+            <path d="M120 100 Q200 100 264 100" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.3" stroke-dasharray="4 4"/>
+            <!-- Decorative -->
+            <circle cx="180" cy="60" r="3" fill="#b5694a" fill-opacity="0.3"/>
+            <circle cx="420" cy="140" r="2" fill="#e8d5c4" fill-opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="data-stack__info">
+          <h3 class="data-stack__name">Databricks</h3>
+          <p class="data-stack__desc">
+            The data platform — Apache Spark-powered lakehouse for querying structured and 
+            unstructured data at scale, with Unity Catalog for governance.
+          </p>
+          <div class="data-stack__tags">
+            <span class="data-stack__tag-pill">spark</span>
+            <span class="data-stack__tag-pill">data lakehouse</span>
+            <span class="data-stack__tag-pill">delta lake</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Salesforce -->
+      <div class="data-stack__item reveal">
+        <div class="data-stack__visual">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" role="img">
+            <title>Salesforce Integration</title>
+            <!-- Salesforce Node (Left) -->
+            <g transform="translate(80,100)">
+              <rect x="-36" y="-24" width="72" height="48" rx="10" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+              <rect x="-26" y="-14" width="52" height="28" rx="5" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+              <path d="M-12 4 Q-16 0 -12 -4 Q-8 -8 0 -6 Q8 -8 12 -4 Q16 -2 14 4 Q18 4 16 10 Q12 14 6 12 Q-2 14 -6 12 Q-14 14 -12 4" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5" stroke-linecap="round"/>
+            </g>
+            <!-- Central Agent -->
+            <g transform="translate(300,100)">
+              <circle r="36" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+              <circle r="26" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+              <circle r="6" fill="#b5694a"/>
+              <path d="M-10 -6 L0 -12 L10 -6 L10 6 L0 12 L-10 6 Z" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+            </g>
+            <!-- Connection -->
+            <path d="M116 100 Q200 100 264 100" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+            <path d="M480 100 Q400 100 336 100" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.3" stroke-dasharray="4 4"/>
+            <!-- Decorative -->
+            <circle cx="190" cy="60" r="3" fill="#b5694a" fill-opacity="0.3"/>
+            <circle cx="410" cy="140" r="2" fill="#e8d5c4" fill-opacity="0.3"/>
+          </svg>
+        </div>
+        <div class="data-stack__info">
+          <h3 class="data-stack__name">Salesforce</h3>
+          <p class="data-stack__desc">
+            The CRM layer — unified access to accounts, opportunities, contacts, and custom objects 
+            via the Salesforce REST API, with real-time event streaming.
+          </p>
+          <div class="data-stack__tags">
+            <span class="data-stack__tag-pill">crm</span>
+            <span class="data-stack__tag-pill">rest api</span>
+            <span class="data-stack__tag-pill">platform events</span>
+          </div>
+        </div>
+      </div>
+
     </div>
   </section>
 
-  <div class="divider"></div>
-
-  <!-- THE FLOW -->
-  <section class="flow">
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 4: LIVE DEMO FLOW
+  ════════════════════════════════════════════════════════ -->
+  <section class="demo-flow" id="demo">
     <div class="container">
-      <h2 class="reveal">How It Works</h2>
-      <p class="flow-subtitle reveal">From question to answer in seconds</p>
 
-      <div class="flow-timeline">
-        <div class="flow-step reveal reveal-delay-1">
-          <div class="flow-step-number">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="10"></circle>
-              <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
-              <line x1="12" y1="17" x2="12.01" y2="17"></line>
-            </svg>
-          </div>
-          <div class="flow-connector"></div>
-          <h4>Ask a Question</h4>
-          <p>Type your question in plain English</p>
-        </div>
-
-        <div class="flow-step reveal reveal-delay-2">
-          <div class="flow-step-number">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="4 17 10 11 4 5"></polyline>
-              <line x1="12" y1="19" x2="20" y2="19"></line>
-            </svg>
-          </div>
-          <div class="flow-connector"></div>
-          <h4>Agent Thinks</h4>
-          <p>Visible reasoning across systems</p>
-        </div>
-
-        <div class="flow-step reveal reveal-delay-3">
-          <div class="flow-step-number">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
-          </div>
-          <div class="flow-connector"></div>
-          <h4>Get Results</h4>
-          <p>Structured answers with evidence</p>
-        </div>
-
-        <div class="flow-step reveal reveal-delay-4">
-          <div class="flow-step-number">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
-            </svg>
-          </div>
-          <h4>Take Action</h4>
-          <p>Email, update, or trigger workflows</p>
-        </div>
+      <div class="demo-flow__header reveal">
+        <p class="demo-flow__tag">See It In Action</p>
+        <h2 class="demo-flow__title">The Demo Flow</h2>
       </div>
+
+      <!-- Timeline SVG -->
+      <div class="demo-flow__timeline reveal">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 160" role="img" aria-label="Ask, Think, Act flow timeline">
+          <defs>
+            <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#b5694a" stop-opacity="0.3"/>
+              <stop offset="50%" stop-color="#b5694a" stop-opacity="0.7"/>
+              <stop offset="100%" stop-color="#b5694a" stop-opacity="0.3"/>
+            </linearGradient>
+          </defs>
+
+          <line x1="120" y1="80" x2="480" y2="80" stroke="url(#lineGrad)" stroke-width="2" fill="none"/>
+
+          <!-- Ask Station -->
+          <g transform="translate(120,80)">
+            <circle r="32" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+            <circle r="24" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+            <path d="M0 -12 L0 -4 M-6 2 Q-6 10 0 10 Q6 10 6 2" stroke="#e8d5c4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <rect x="-3" y="-2" width="6" height="8" rx="1" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+            <text x="0" y="56" font-family="Inter, sans-serif" font-size="12" fill="#e8d5c4" text-anchor="middle" font-weight="500">Ask</text>
+          </g>
+
+          <!-- Arrow 1 -->
+          <path d="M165 80 L180 80" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+          <path d="M176 76 L182 80 L176 84" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6" stroke-linejoin="round"/>
+
+          <!-- Think Station -->
+          <g transform="translate(300,80)">
+            <circle r="36" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+            <circle r="28" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+            <circle cx="-8" cy="-4" r="3" stroke="#b5694a" stroke-width="1" fill="none"/>
+            <circle cx="8" cy="-4" r="3" stroke="#b5694a" stroke-width="1" fill="none"/>
+            <circle cx="0" cy="8" r="3" stroke="#b5694a" stroke-width="1" fill="none"/>
+            <line x1="-5" y1="-4" x2="-3" y2="6" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+            <line x1="5" y1="-4" x2="3" y2="6" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+            <line x1="-5" y1="-4" x2="5" y2="-4" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+            <text x="0" y="60" font-family="Inter, sans-serif" font-size="12" fill="#e8d5c4" text-anchor="middle" font-weight="500">Think</text>
+          </g>
+
+          <!-- Arrow 2 -->
+          <path d="M348 80 L363 80" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+          <path d="M359 76 L365 80 L359 84" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.6" stroke-linejoin="round"/>
+
+          <!-- Act Station -->
+          <g transform="translate(480,80)">
+            <circle r="32" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+            <circle r="24" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+            <path d="M2 -14 L-6 2 L0 2 L-2 14 L8 -2 L2 -2 Z" stroke="#e8d5c4" stroke-width="1.5" fill="none" stroke-linejoin="round"/>
+            <text x="0" y="56" font-family="Inter, sans-serif" font-size="12" fill="#e8d5c4" text-anchor="middle" font-weight="500">Act</text>
+          </g>
+
+          <!-- Decorative dots -->
+          <circle cx="210" cy="50" r="2" fill="#b5694a" fill-opacity="0.3"/>
+          <circle cx="390" cy="110" r="2" fill="#e8d5c4" fill-opacity="0.3"/>
+        </svg>
+      </div>
+
+      <!-- Flow Cards -->
+      <div class="demo-flow__cards reveal-stagger">
+
+        <div class="demo-flow__card">
+          <p class="demo-flow__card-label">Step 1</p>
+          <h3 class="demo-flow__card-title">Ask</h3>
+          <p class="demo-flow__card-body">
+            You speak in plain English. Ask anything — "What's our Q3 pipeline by region?" 
+            — and Chaz receives the intent instantly.
+          </p>
+        </div>
+
+        <div class="demo-flow__card">
+          <p class="demo-flow__card-label">Step 2</p>
+          <h3 class="demo-flow__card-title">Think</h3>
+          <p class="demo-flow__card-body">
+            Behind the scenes, Chaz queries Groq for reasoning, Databricks for data, 
+            and Salesforce for CRM context — simultaneously.
+          </p>
+        </div>
+
+        <div class="demo-flow__card">
+          <p class="demo-flow__card-label">Step 3</p>
+          <h3 class="demo-flow__card-title">Act</h3>
+          <p class="demo-flow__card-body">
+            Chaz synthesizes a response, executes any needed writes, and delivers 
+            a structured answer with full reasoning trace.
+          </p>
+        </div>
+
+      </div>
+
     </div>
   </section>
 
-  <div class="divider"></div>
-
-  <!-- WHAT IT DOES -->
-  <section class="capabilities">
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 5: CAPABILITIES
+  ════════════════════════════════════════════════════════ -->
+  <section class="capabilities" id="capabilities">
     <div class="container">
-      <h2 class="reveal">What It Does</h2>
 
-      <div class="cap-grid">
-        <div class="cap-card reveal reveal-delay-1">
-          <div class="cap-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              <line x1="11" y1="8" x2="11" y2="14"></line>
-              <line x1="8" y1="11" x2="14" y2="11"></line>
-            </svg>
-          </div>
-          <h3>Cross-System Queries</h3>
-          <p>Ask about data across Databricks and Salesforce in a single question. The agent handles the routing.</p>
-        </div>
-
-        <div class="cap-card reveal reveal-delay-2">
-          <div class="cap-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-              <polyline points="14 2 14 8 20 8"></polyline>
-              <line x1="16" y1="13" x2="8" y2="13"></line>
-              <line x1="16" y1="17" x2="8" y2="17"></line>
-              <polyline points="10 9 9 9 8 9"></polyline>
-            </svg>
-          </div>
-          <h3>Natural Language to SQL</h3>
-          <p>No SQL knowledge required. Describe what you want, get query results with explanations.</p>
-        </div>
-
-        <div class="cap-card reveal reveal-delay-3">
-          <div class="cap-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-          </div>
-          <h3>Email Integration</h3>
-          <p>Send results directly to stakeholders. The agent drafts contextually relevant emails via Apple Mail.</p>
-        </div>
-
-        <div class="cap-card reveal reveal-delay-4">
-          <div class="cap-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="20" x2="18" y2="10"></line>
-              <line x1="12" y1="20" x2="12" y2="4"></line>
-              <line x1="6" y1="20" x2="6" y2="14"></line>
-            </svg>
-          </div>
-          <h3>Trend Analysis</h3>
-          <p>Identify patterns across inventory, demand, and shipping data. Surface insights automatically.</p>
-        </div>
-
-        <div class="cap-card reveal reveal-delay-5">
-          <div class="cap-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-              <circle cx="9" cy="7" r="4"></circle>
-              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-          </div>
-          <h3>Account Intelligence</h3>
-          <p>Surface CRM context alongside operational data. Know your accounts deeply, act on it quickly.</p>
-        </div>
-
-        <div class="cap-card reveal reveal-delay-6">
-          <div class="cap-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
-            </svg>
-          </div>
-          <h3>Real-Time Reasoning</h3>
-          <p>Watch the agent think. Every step is visible — query construction, execution, synthesis.</p>
-        </div>
+      <div class="capabilities__header reveal">
+        <p class="capabilities__tag">What Chaz Does</p>
+        <h2 class="capabilities__title">Capabilities</h2>
       </div>
+
+      <div class="capabilities__grid reveal-stagger">
+
+        <div class="capability-card">
+          <div class="capability-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+              <title>Natural Language</title>
+              <path d="M8 12 Q8 6 16 6 L32 6 Q40 6 40 12 L40 28 Q40 34 32 34 L18 34 L12 42 L12 34 L16 34 Q8 34 8 28 Z" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              <path d="M24 14 L25 18 L29 19 L25 20 L24 24 L23 20 L19 19 L23 18 Z" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="capability-card__title">Natural Language</h3>
+          <p class="capability-card__desc">
+            Talk to your data like a colleague. No SQL, no click-ops — just ask in plain English 
+            and get precise, structured answers.
+          </p>
+        </div>
+
+        <div class="capability-card">
+          <div class="capability-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+              <title>Multi-System Reasoning</title>
+              <ellipse cx="24" cy="12" rx="14" ry="5" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+              <line x1="10" y1="12" x2="10" y2="36" stroke="#b5694a" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="38" y1="12" x2="38" y2="36" stroke="#b5694a" stroke-width="1.5" stroke-linecap="round"/>
+              <ellipse cx="24" cy="36" rx="14" ry="5" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+              <ellipse cx="24" cy="24" rx="14" ry="5" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.5"/>
+              <path d="M14 24 Q14 20 24 20 Q34 20 34 24" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+            </svg>
+          </div>
+          <h3 class="capability-card__title">Multi-System Reasoning</h3>
+          <p class="capability-card__desc">
+            Simultaneously query Groq, Databricks, and Salesforce in a single session, 
+            then synthesize a unified response with cross-system context.
+          </p>
+        </div>
+
+        <div class="capability-card">
+          <div class="capability-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+              <title>Visible Reasoning Trace</title>
+              <circle cx="24" cy="24" r="10" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+              <circle cx="24" cy="24" r="4" fill="#b5694a"/>
+              <line x1="24" y1="14" x2="24" y2="4" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="24" y1="34" x2="24" y2="44" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="14" y1="24" x2="4" y2="24" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="34" y1="24" x2="44" y2="24" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round"/>
+              <line x1="17" y1="17" x2="10" y2="10" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+              <line x1="31" y1="17" x2="38" y2="10" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+              <line x1="17" y1="31" x2="10" y2="38" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+              <line x1="31" y1="31" x2="38" y2="38" stroke="#e8d5c4" stroke-width="1.5" stroke-linecap="round" stroke-opacity="0.7"/>
+              <circle cx="24" cy="4" r="2" fill="#b5694a"/>
+              <circle cx="24" cy="44" r="2" fill="#b5694a"/>
+              <circle cx="4" cy="24" r="2" fill="#b5694a"/>
+              <circle cx="44" cy="24" r="2" fill="#b5694a"/>
+            </svg>
+          </div>
+          <h3 class="capability-card__title">Visible Reasoning</h3>
+          <p class="capability-card__desc">
+            Every answer comes with a full reasoning trace — see exactly which data sources 
+            were queried, how results were synthesized, and what confidence the model has.
+          </p>
+        </div>
+
+        <div class="capability-card">
+          <div class="capability-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+              <title>Real-time Action</title>
+              <path d="M28 4 L12 24 L22 24 L18 44 L36 20 L26 20 L28 4 Z" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              <path d="M26 12 L18 24 L24 24 L21 36" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.5" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3 class="capability-card__title">Real-time Action</h3>
+          <p class="capability-card__desc">
+            Chaz doesn't just read — it writes. Update Salesforce records, create Databricks tables, 
+            trigger workflows, and send notifications, all from a single command.
+          </p>
+        </div>
+
+        <div class="capability-card">
+          <div class="capability-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+              <title>Multi-system Layers</title>
+              <rect x="6" y="8" width="28" height="20" rx="3" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+              <rect x="14" y="16" width="28" height="20" rx="3" stroke="#b5694a" stroke-width="1.5" fill="none"/>
+              <rect x="22" y="24" width="20" height="16" rx="3" stroke="#e8d5c4" stroke-width="1.5" fill="none" stroke-opacity="0.6"/>
+              <circle cx="10" cy="18" r="1.5" fill="#e8d5c4" fill-opacity="0.5"/>
+              <circle cx="18" cy="26" r="1.5" fill="#e8d5c4" fill-opacity="0.5"/>
+              <circle cx="26" cy="32" r="1.5" fill="#e8d5c4" fill-opacity="0.5"/>
+            </svg>
+          </div>
+          <h3 class="capability-card__title">Unified Context</h3>
+          <p class="capability-card__desc">
+            Stop context-switching. Chaz maintains a persistent memory of your session, 
+            building a coherent picture across all three systems as you work.
+          </p>
+        </div>
+
+        <div class="capability-card">
+          <div class="capability-card__icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+              <title>Salesforce Cloud</title>
+              <path d="M12 32 Q6 32 6 26 Q6 20 14 20 Q16 14 24 14 Q32 14 34 20 Q42 20 42 26 Q42 32 36 32 Z" stroke="#b5694a" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+              <path d="M14 28 Q12 28 12 25 Q12 22 16 22 Q18 18 24 18 Q30 18 31 22 Q34 22 34 25 Q34 28 30 28 Z" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+            </svg>
+          </div>
+          <h3 class="capability-card__title">CRM-Native</h3>
+          <p class="capability-card__desc">
+            Deep Salesforce integration — understand your accounts, opportunities, contacts, 
+            and custom objects as first-class citizens, not foreign keys.
+          </p>
+        </div>
+
+      </div>
+
     </div>
   </section>
 
-  <!-- TECH STACK -->
-  <section class="tech">
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 6: TECH STACK
+  ════════════════════════════════════════════════════════ -->
+  <section class="tech-strip">
     <div class="container">
-      <div class="tech-inner">
-        <span class="tech-item">Flask</span>
-        <span class="tech-item">Databricks</span>
-        <span class="tech-item">Salesforce</span>
-        <span class="tech-item">Groq</span>
-        <span class="tech-item">SSE</span>
-        <span class="tech-item">Apple Mail</span>
-        <span class="tech-item">GitHub Pages</span>
+      <div class="tech-strip__inner">
+        <span class="tech-strip__item">Groq LPU Inference</span>
+        <span class="tech-strip__sep"></span>
+        <span class="tech-strip__item">Databricks Lakehouse</span>
+        <span class="tech-strip__sep"></span>
+        <span class="tech-strip__item">Salesforce REST API</span>
+        <span class="tech-strip__sep"></span>
+        <span class="tech-strip__item">Node.js Runtime</span>
+        <span class="tech-strip__sep"></span>
+        <span class="tech-strip__item">TypeScript</span>
+        <span class="tech-strip__sep"></span>
+        <span class="tech-strip__item">OpenClaw Agent Framework</span>
       </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <section class="footer">
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 7: FOOTER
+  ════════════════════════════════════════════════════════ -->
+  <footer class="footer">
     <div class="container">
-      <p class="footer-brand serif">Chaz Agent Portal</p>
-      <div class="footer-links">
-        <a href="https://github.com/toddclawbot-cmyk/chaz-agent-portal" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://chaz-agent-portal.onrender.com" target="_blank" rel="noopener">Live Demo</a>
-      </div>
-      <p class="footer-credit">Built by Todd Ghidaleson + Chaz (AI Assistant)</p>
+      <p class="footer__brand">Chaz Agent Portal</p>
+      <nav class="footer__links">
+        <a href="https://github.com/toddclawbot-cmyk/chaz-agent-portal" class="footer__link" target="_blank" rel="noopener">GitHub</a>
+        <span class="footer__divider">/</span>
+        <a href="#demo" class="footer__link">Live Demo</a>
+      </nav>
+      <p class="footer__credit">Built by Todd Ghidaleson + Chaz (AI Assistant)</p>
     </div>
-  </section>
+  </footer>
 
+  <!-- ─── Scroll Reveal Script ──────────────────────────────── -->
   <script>
-    // Intersection Observer for scroll reveals
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1
-    };
+    (function() {
+      const observerOptions = {
+        root: null,
+        rootMargin: '0px 0px -60px 0px',
+        threshold: 0.1
+      };
 
-    const revealObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
+      const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(el) {
+        observer.observe(el);
       });
-    }, observerOptions);
-
-    document.querySelectorAll('.reveal').forEach(el => {
-      revealObserver.observe(el);
-    });
+    })();
   </script>
 
 </body>

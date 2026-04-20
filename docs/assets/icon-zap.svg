@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img">
+  <title>Real-time Action</title>
+  <!-- Lightning bolt -->
+  <path d="M28 4 L12 24 L22 24 L18 44 L36 20 L26 20 L28 4 Z"
+        stroke="#b5694a" stroke-width="1.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/>
+  <!-- Inner accent line -->
+  <path d="M26 12 L18 24 L24 24 L21 36" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.5" stroke-linejoin="round"/>
+</svg>

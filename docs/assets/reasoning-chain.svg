@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 480" role="img">
+  <title>6-Step Reasoning Chain</title>
+  <desc>Vertical flow showing the 6-step agent reasoning process</desc>
+
+  <!-- Connecting line (flowing, not rigid) -->
+  <path d="M100 70 Q95 120 100 170 Q105 220 100 270 Q95 320 100 370 Q105 400 100 430"
+        stroke="#b5694a" stroke-width="1.5" fill="none" stroke-opacity="0.4"/>
+
+  <!-- Node 01 -->
+  <g id="node-01" transform="translate(100,60)">
+    <circle r="20" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="12" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+    <circle r="4" fill="#b5694a"/>
+    <text x="32" y="5" font-family="JetBrains Mono, monospace" font-size="11" fill="#8a7f75">01</text>
+  </g>
+
+  <!-- Node 02 -->
+  <g id="node-02" transform="translate(100,160)">
+    <circle r="20" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="12" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+    <circle r="4" fill="#b5694a"/>
+    <text x="32" y="5" font-family="JetBrains Mono, monospace" font-size="11" fill="#8a7f75">02</text>
+  </g>
+
+  <!-- Node 03 -->
+  <g id="node-03" transform="translate(100,260)">
+    <circle r="20" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="12" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+    <circle r="4" fill="#b5694a"/>
+    <text x="32" y="5" font-family="JetBrains Mono, monospace" font-size="11" fill="#8a7f75">03</text>
+  </g>
+
+  <!-- Node 04 -->
+  <g id="node-04" transform="translate(100,360)">
+    <circle r="20" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="12" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+    <circle r="4" fill="#b5694a"/>
+    <text x="32" y="5" font-family="JetBrains Mono, monospace" font-size="11" fill="#8a7f75">04</text>
+  </g>
+
+  <!-- Node 05 -->
+  <g id="node-05" transform="translate(100,430)">
+    <circle r="20" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="12" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+    <circle r="4" fill="#b5694a"/>
+    <text x="32" y="5" font-family="JetBrains Mono, monospace" font-size="11" fill="#8a7f75">05</text>
+  </g>
+
+  <!-- Decorative dots -->
+  <circle cx="60" cy="110" r="2" fill="#b5694a" fill-opacity="0.3"/>
+  <circle cx="140" cy="210" r="2" fill="#b5694a" fill-opacity="0.3"/>
+  <circle cx="60" cy="310" r="2" fill="#b5694a" fill-opacity="0.3"/>
+  <circle cx="140" cy="390" r="2" fill="#b5694a" fill-opacity="0.3"/>
+</svg>

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 200" role="img">
+  <title>Data Systems Integration</title>
+  <desc>Groq, Databricks, and Salesforce connected to central agent</desc>
+
+  <!-- Central Agent -->
+  <g id="agent-center" transform="translate(300,100)">
+    <circle r="36" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="26" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+    <circle r="6" fill="#b5694a"/>
+    <path d="M-10 -6 L0 -12 L10 -6 L10 6 L0 12 L-10 6 Z" stroke="#e8d5c4" stroke-width="1" fill="none" stroke-opacity="0.6"/>
+  </g>
+
+  <!-- Groq (Left) - Circle with sparkle -->
+  <g id="groq" transform="translate(80,100)">
+    <circle r="32" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <circle r="22" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+    <path d="M0 -12 L2 0 L14 2 L2 4 L0 16 L-2 4 L-14 2 L-2 0 Z" stroke="#b5694a" stroke-width="1" fill="none" stroke-linejoin="round"/>
+    <text x="0" y="52" font-family="Inter, sans-serif" font-size="10" fill="#8a7f75" text-anchor="middle" letter-spacing="1">GROQ</text>
+    <!-- Connection -->
+    <path d="M112 100 Q180 100 264 100" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+  </g>
+
+  <!-- Databricks (Top Right) - Hexagon -->
+  <g id="databricks" transform="translate(480,60)">
+    <polygon points="0,-28 24,-14 24,14 0,28 -24,14 -24,-14" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <polygon points="0,-18 16,-9 16,9 0,18 -16,9 -16,-9" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+    <path d="M0 -8 L3 0 L0 8 L-3 0 Z" stroke="#b5694a" stroke-width="1" fill="none"/>
+    <text x="0" y="48" font-family="Inter, sans-serif" font-size="10" fill="#8a7f75" text-anchor="middle" letter-spacing="1">DATABRICKS</text>
+    <!-- Connection -->
+    <path d="M450 72 Q400 80 336 92" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+  </g>
+
+  <!-- Salesforce (Bottom Right) - Soft rectangle with cloud -->
+  <g id="salesforce" transform="translate(480,150)">
+    <rect x="-28" y="-18" width="56" height="36" rx="6" stroke="#e8d5c4" stroke-width="1.5" fill="none"/>
+    <rect x="-20" y="-10" width="40" height="20" rx="3" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.4"/>
+    <path d="M-10 4 Q-14 0 -10 -2 Q-6 -6 0 -4 Q6 -6 10 -2 Q14 -2 12 4 Q16 4 14 8 Q10 12 4 10 Q-2 12 -6 10 Q-12 12 -10 4" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5" stroke-linecap="round"/>
+    <text x="0" y="40" font-family="Inter, sans-serif" font-size="10" fill="#8a7f75" text-anchor="middle" letter-spacing="1">SALESFORCE</text>
+    <!-- Connection -->
+    <path d="M450 132 Q400 120 336 108" stroke="#b5694a" stroke-width="1" fill="none" stroke-opacity="0.5"/>
+  </g>
+
+  <!-- Decorative accents -->
+  <circle cx="180" cy="60" r="2" fill="#b5694a" fill-opacity="0.3"/>
+  <circle cx="420" cy="100" r="2" fill="#e8d5c4" fill-opacity="0.3"/>
+  <circle cx="200" cy="140" r="1.5" fill="#b5694a" fill-opacity="0.2"/>
+</svg>
