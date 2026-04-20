@@ -25,7 +25,7 @@ tasks = {}
 chat_history = []
 
 INVENTORY_KEYWORDS = ["inventory", "stock", "supply", "ingredients", "butter", "flour",
-                      "shortage", "low", "looking", "orders", "next 3 weeks", "demand"]
+                      "shortage", "low", "looking", "next 3 weeks", "demand"]
 
 
 def is_inventory_question(question):
@@ -365,39 +365,107 @@ Riley Torres | Sales Director | Chaz Bakery | rtorres@chazsbakery.com"""
             pass
 
 
+# ─── Groq LLM for natural language → SQL ─────────────────────────
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+
+DB_SCHEMA = {
+    "supplier_inventory":    "supplier_inventory    — ingredient_id, ingredient_name, category, supplier_name, unit_cost, unit_size, min_order, lead_days, current_stock, reorder_point, last_order, organic, gmo_free",
+    "shipping_logistics":    "shipping_logistics    — shipment_id, order_id, customer_id, customer_name, location_id, driver_name, vehicle_id, vehicle_type, pickup_time, est_delivery, actual_delivery, status, on_time, packages, weight_lbs, dist_miles, duration_mins, zone, temp_f, spoilage",
+    "demand_forecast_3week":"demand_forecast_3week — sku, product_name, category, wk1_qty, wk2_qty, wk3_qty, wk4_qty, wk5_qty, wk6_qty, wk7_qty, total_3week_qty, num_orders, num_customers",
+    "customer_satisfaction":"customer_satisfaction — review_id, customer_id, customer_name, customer_type, location_id, sku, product_name, rating, review_text, review_date, delivery_rating, freshness_rating, communication_rating, would_reorder, visit_type",
+    "inventory_coverage":   "inventory_coverage   — sku, product_name, category, total_demand_3week, flour_lbs_needed, flour_stock_lbs, flour_surplus_deficit, coverage_pct, flour_value_needed, status",
+    "sales_transactions":   "sales_transactions   — transaction_id, order_id, customer_id, customer_name, customer_type, location_id, sku, product_name, category, qty, unit_price, total, cogs, gross_margin, order_date, delivery_date, days_since_order, payment_method, order_channel, is_wholesale",
+    "franchise_locations":  "franchise_locations  — location_id, location_name, location_type, address, city, state, zip, lat, lng, opened_date, sq_footage, daily_capacity, has_retail, parking",
+    "production_schedule":  "production_schedule  — batch_id, location_id, location_name, sku, product_name, category, planned_qty, actual_qty, batch_date, shift, staff_hours, flour_lbs, butter_lbs, eggs_dozen, labor_cost, overhead_cost, yield_pct, waste_pct, quality_passed",
+    "products":             "products             — sku, product_name, category, unit_price, cost_per_unit"
+}
+
+def llm_generate_sql(question: str) -> str:
+    """Use Groq to convert a natural language question into a Databricks SQL query."""
+    schema_lines = "\n".join(f"  {v}" for v in DB_SCHEMA.values())
+    prompt = (
+        "You are a Databricks SQL expert. Convert the user's question into a single SQL SELECT statement.\n"
+        "Database: chazbakedgoods.sales\n"
+        "Tables:\n" + schema_lines + "\n"
+        "Rules:\n"
+        "- Always prefix table names with chazbakedgoods.sales. (e.g., chazbakedgoods.sales.supplier_inventory)\n"
+        "- For top-N results use ORDER BY column DESC LIMIT N\n"
+        "- Do NOT use backticks for identifiers\n"
+        "- Return ONLY the SQL query. No markdown, no explanation.\n\n"
+        "Question: " + question + "\n"
+        "SQL:"
+    )
+    resp = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+        json={
+            "model": "llama-3.3-70b-versatile",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.1,
+            "max_tokens": 400
+        },
+        timeout=30
+    )
+    resp.raise_for_status()
+    text = resp.json()["choices"][0]["message"]["content"].strip()
+    if text.startswith("```"):
+        parts = text.split("```")
+        text = parts[1].strip().lstrip("sql").lstrip("SQL").strip()
+    return text.strip()
+
+
 def run_general_agent(task_id, question):
-    """Handle non-inventory questions."""
+    """Handle any question — interpret with LLM, query Databricks live, respond."""
+    emit_sse_event(task_id, 1, "understand_question", "running", f"Understanding: {question}")
+
+    # Step 1: Generate SQL
     try:
-        emit_sse_event(task_id, 1, "analyze_question", "running",
-                       "Analyzing question...")
-        time.sleep(0.5)
-        emit_sse_event(task_id, 1, "analyze_question", "done",
-                       "This appears to be a general question — not inventory-related.")
-        time.sleep(0.3)
-
-        tasks[task_id]["status"] = "done"
-        tasks[task_id]["result"] = (
-            f"For inventory and supply chain questions, try asking:\n\n"
-            f"- *\"How is our inventory looking against orders for the next 3 weeks?\"*\n"
-            f"- *\"Do we have enough butter for next week's orders?\"*\n"
-            f"- *\"Which ingredients are below reorder point?\"*\n\n"
-            f"For other questions, I'm here to help with anything Salesforce, Databricks, "
-            f"or production data related to Chaz Bakery."
-        )
-        try:
-            tasks[task_id]["queue"].put_nowait(None)
-        except queue.Full:
-            pass
+        sql = llm_generate_sql(question)
+        emit_sse_event(task_id, 1, "generate_sql", "done", f"Query: {sql}")
     except Exception as e:
-        tasks[task_id]["status"] = "error"
-        tasks[task_id]["result"] = f"Error: {str(e)}"
-        try:
-            tasks[task_id]["queue"].put_nowait(None)
-        except queue.Full:
-            pass
+        emit_sse_event(task_id, 1, "generate_sql", "error", f"LLM error: {e}")
+        tasks[task_id]["result"] = f"I couldn't generate a query for that question. Error: {e}"
+        return
+
+    # Step 2: Run the SQL
+    emit_sse_event(task_id, 2, "run_query", "running", "Executing on Databricks...")
+    try:
+        result = db_req(sql)
+    except Exception as e:
+        emit_sse_event(task_id, 2, "run_query", "error", str(e))
+        tasks[task_id]["result"] = f"Query failed: {e}"
+        return
+
+    if result.get("error") or result.get("state") == "FAILED":
+        emit_sse_event(task_id, 2, "run_query", "error", result.get("error", "Query failed"))
+        tasks[task_id]["result"] = f"SQL error: {result.get('error', 'unknown')}\n\nQuery: {sql}"
+        return
+
+    cols = result.get("columns", [])
+    rows = result.get("rows", [])
+    emit_sse_event(task_id, 2, "run_query", "done", f"Got {len(rows)} row(s)")
+
+    # Step 3: Format results
+    if not rows:
+        response = "No results found for that question."
+    elif len(cols) == 1:
+        response = ", ".join(str(r[0]) for r in rows[:50])
+    else:
+        header = " | ".join(cols)
+        lines_out = [header, "-" * len(header)]
+        for row in rows[:25]:
+            lines_out.append(" | ".join(str(v) for v in row))
+        more = f"\n...and {len(rows)-25} more rows" if len(rows) > 25 else ""
+        response = "\n".join(lines_out) + more
+
+    tasks[task_id]["result"] = response
+    emit_sse_event(task_id, 3, "format_results", "done", "Done.")
+    try:
+        tasks[task_id]["queue"].put_nowait(None)
+    except queue.Full:
+        pass
 
 
-# ─── Routes ────────────────────────────────────────────────────────
 @app.route("/")
 def index():
     return render_template("index.html")
