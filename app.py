@@ -653,20 +653,36 @@ def llm_generate_soql(question: str) -> str:
         schema_lines.append(f" {obj}: {', '.join(fields)}")
     schema_str = "\n".join(schema_lines)
 
+    # Human-readable default column sets — focused, no Id noise, max 5 cols.
+    # Formatter switches to card layout if cols > 5, so keep it ≤ 5.
+    default_cols = {
+        "Opportunity": "Name, Amount, StageName, CloseDate, Account.Name",
+        "Account":    "Name, Industry, Type, BillingCity, AnnualRevenue",
+        "Contact":    "Name, Email, Title, Account.Name",
+        "Case":       "CaseNumber, Subject, Status, Priority, Account.Name",
+        "Lead":       "Name, Company, Status, Email, LeadSource",
+    }
+
     prompt = (
-        "You are a Salesforce SOQL expert. Convert the user's question into a single SOQL SELECT statement.\n"
-        "Allowed objects and fields (DO NOT use any field not listed here):\n"
-        + schema_str + "\n\n"
+        "You are a Salesforce SOQL expert. Convert the user's question into a SOQL SELECT.\n"
+        "Allowed objects and fields:\n" + schema_str + "\n\n"
+        "Column selection — follow this exactly:\n"
+        "- Opportunity: Name, Amount, StageName, CloseDate, Account.Name\n"
+        "- Account: Name, Industry, Type, BillingCity, AnnualRevenue\n"
+        "- Contact: Name, Email, Title, Account.Name\n"
+        "- Case: CaseNumber, Subject, Status, Priority, Account.Name\n"
+        "- Lead: Name, Company, Status, Email, LeadSource\n"
+        "- Only add fields the question explicitly asks for that aren't in the defaults above.\n"
+        "- NEVER include Id (it's not useful in a human-readable table).\n"
+        "- NEVER select more than 5 columns.\n\n"
         "Rules:\n"
-        "- SOQL syntax only. No SQL-isms: no JOIN, no GROUP BY unless using aggregate functions, no UNION.\n"
-        "- Parent relationship fields use dot notation: Account.Name, Owner.Name (NOT AccountName).\n"
-        "- For top-N use ORDER BY ... DESC LIMIT N.\n"
-        "- Do NOT use column aliases (no 'AS x', no trailing alias tokens).\n"
-        "- String comparisons: use LIKE with % wildcards for fuzzy matching.\n"
-        "- Date literals: YYYY-MM-DD, no quotes (e.g., CloseDate > 2025-01-01) OR use date functions like THIS_QUARTER, THIS_YEAR, LAST_N_DAYS:30.\n"
-        "- Default LIMIT to 25 if no limit is implied by the question.\n"
-        "- If the question is about 'top' or 'biggest' opportunities, ORDER BY Amount DESC.\n"
-        "- Return ONLY the SOQL statement, no explanation, no backticks.\n\n"
+        "- SOQL syntax only. No JOIN, no GROUP BY unless aggregate, no UNION.\n"
+        "- Parent fields: Account.Name, Owner.Name (NOT AccountName).\n"
+        "- Top-N: ORDER BY Amount DESC LIMIT N.\n"
+        "- No aliases (no 'AS x').\n"
+        "- Date literals: YYYY-MM-DD or THIS_QUARTER / LAST_N_DAYS:30.\n"
+        "- Default LIMIT 25.\n"
+        "- Return ONLY the SOQL, no explanation, no backticks.\n\n"
         "Question: " + question + "\n"
         "SOQL:"
     )
@@ -697,12 +713,14 @@ def llm_repair_soql(question: str, bad_soql: str, error_msg: str) -> str:
         schema_lines.append(f" {obj}: {', '.join(fields)}")
     schema_str = "\n".join(schema_lines)
 
+    # Same column discipline on repair to avoid regenerating a wide query
     prompt = (
         "The following SOQL query failed. Rewrite it to fix the error.\n\n"
         f"Original question: {question}\n"
         f"Failed SOQL: {bad_soql}\n"
         f"Salesforce error: {error_msg}\n\n"
         "Allowed objects and fields:\n" + schema_str + "\n\n"
+        "IMPORTANT: Select at most 6 columns. Use the most relevant fields only.\n"
         "Return ONLY the corrected SOQL statement, no explanation, no backticks."
     )
     resp = requests.post(
@@ -800,13 +818,23 @@ def run_general_agent(task_id, question):
     rows = result.get("rows", [])
     emit_sse_event(task_id, 2, "run_query", "done", f"Got {len(rows)} row(s)")
 
-    # Step 3: Format results as a markdown table (consistent for both sources)
+    # Step 3: Format results — card layout for wide tables (>6 cols), table otherwise
     if not rows:
         response = f"No results found for that question.\n\nQuery: `{query_str}`"
     elif len(cols) == 1:
         header = f"| {cols[0]} |\n|---|\n"
         body = "\n".join(f"| {r[0]} |" for r in rows[:50])
         response = header + body
+    elif len(cols) > 5:
+        # Card layout — one record per block, key:value pairs, max 25 records
+        lines = []
+        for row in rows[:25]:
+            lines.append("")
+            for i, col in enumerate(cols):
+                val = row[i] if i < len(row) and row[i] is not None else ""
+                lines.append(f"**{col}:** {val}")
+        more = f"\n\n_...and {len(rows) - 25} more records_" if len(rows) > 25 else ""
+        response = "\n".join(lines) + more
     else:
         header = "| " + " | ".join(cols) + " |"
         sep = "|" + "|".join("---" for _ in cols) + "|"
