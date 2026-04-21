@@ -233,6 +233,70 @@ def sf_req(method, path, data=None):
     return resp.json() if resp.content else {}
 
 
+def sf_soql_query(soql: str):
+    """
+    Execute a SOQL query and return {columns, rows, state} in the same
+    shape as db_req() so the formatter in run_general_agent can stay generic.
+    """
+    base = f"https://{SALESFORCE_INSTANCE}/services/data/v66.0"
+    headers = {"Authorization": f"Bearer {SALESFORCE_TOKEN}"}
+    import urllib.parse
+    url = f"{base}/query?q={urllib.parse.quote(soql)}"
+
+    try:
+        resp = requests.get(url, headers=headers, timeout=30)
+    except Exception as ex:
+        return {"error": f"Request failed: {ex}", "state": "FAILED"}
+
+    if resp.status_code != 200:
+        try:
+            body = resp.json()
+            if isinstance(body, list) and body:
+                msg = body[0].get("message", resp.text)
+                code = body[0].get("errorCode", "")
+                return {"error": f"{code}: {msg}", "state": "FAILED", "status_code": resp.status_code}
+        except Exception:
+            pass
+        return {"error": f"HTTP {resp.status_code}: {resp.text[:500]}", "state": "FAILED", "status_code": resp.status_code}
+
+    data = resp.json()
+    records = data.get("records", [])
+    if not records:
+        return {"columns": [], "rows": [], "state": "SUCCEEDED"}
+
+    # Derive column order from the SOQL itself so output matches what was asked.
+    m = re.search(r"select\s+(.+?)\s+from\s", soql, re.IGNORECASE | re.DOTALL)
+    if m:
+        cols = [c.strip() for c in m.group(1).split(",")]
+    else:
+        cols = [k for k in records[0].keys() if k != "attributes"]
+
+    def get_path(rec, path):
+        """Resolve 'Account.Name' into rec['Account']['Name'], returning '' if missing."""
+        cur = rec
+        for part in path.split("."):
+            if isinstance(cur, dict):
+                cur = cur.get(part)
+            else:
+                return ""
+            if cur is None:
+                return ""
+        # If we landed on a dict at the end (relationship with no leaf), return empty
+        if isinstance(cur, dict):
+            return ""
+        return cur
+
+    rows = []
+    for rec in records:
+        row = []
+        for col in cols:
+            key = col.strip()
+            row.append(get_path(rec, key))
+        rows.append(row)
+
+    return {"columns": cols, "rows": rows, "state": "SUCCEEDED", "total": data.get("totalSize", len(rows))}
+
+
 # ─── Agent Steps ────────────────────────────────────────────────────
 
 def run_inventory_agent(task_id, question):
@@ -498,6 +562,56 @@ DB_SCHEMA = {
     "products":             "products             — sku, product_name, category, unit_price, cost_per_unit"
 }
 
+# ─── Salesforce Schema (whitelist) ───────────────────────────────────
+# Only fields listed here are allowed in generated SOQL. The LLM sees
+# this verbatim in the prompt, and sf_soql_query sanity-checks against it.
+SF_SCHEMA = {
+ "Opportunity": [
+ "Id", "Name", "StageName", "Amount", "CloseDate", "Probability",
+ "Type", "LeadSource", "IsClosed", "IsWon", "ForecastCategoryName",
+ "CreatedDate", "LastModifiedDate", "AccountId",
+ "Account.Name", "Account.Industry", "Account.Type",
+ "Owner.Name",
+ ],
+ "Account": [
+ "Id", "Name", "Industry", "Type", "AnnualRevenue", "NumberOfEmployees",
+ "BillingCity", "BillingState", "BillingCountry", "Phone", "Website",
+ "CreatedDate", "LastModifiedDate", "OwnerId",
+ "Owner.Name",
+ ],
+ "Contact": [
+ "Id", "Name", "FirstName", "LastName", "Email", "Phone", "Title",
+ "AccountId", "CreatedDate", "LastModifiedDate",
+ "Account.Name", "Account.Industry",
+ ],
+ "Case": [
+ "Id", "CaseNumber", "Subject", "Status", "Priority", "Type",
+ "Origin", "Reason", "IsClosed", "ClosedDate", "CreatedDate",
+ "LastModifiedDate", "AccountId", "ContactId",
+ "Account.Name", "Contact.Name", "Owner.Name",
+ ],
+ "Lead": [
+ "Id", "Name", "FirstName", "LastName", "Company", "Title",
+ "Email", "Phone", "Status", "LeadSource", "Industry",
+ "IsConverted", "CreatedDate",
+ ],
+}
+
+# Keywords that route a question to Salesforce instead of Databricks.
+SALESFORCE_KEYWORDS = [
+ "opportunity", "opportunities", "pipeline", "deal", "deals",
+ "account", "accounts", "customer account", "client account",
+ "contact", "contacts", "lead", "leads",
+ "case", "cases", "ticket", "tickets",
+ "stage", "close date", "closing", "won", "lost",
+ "forecast", "quota", "revenue at risk", "crm",
+ "salesforce", "sfdc",
+]
+
+def is_salesforce_question(question: str) -> bool:
+ q = question.lower()
+ return any(kw in q for kw in SALESFORCE_KEYWORDS)
+
 def llm_generate_sql(question: str) -> str:
     """Use Groq to convert a natural language question into a Databricks SQL query."""
     schema_lines = "\n".join(f"  {v}" for v in DB_SCHEMA.values())
@@ -532,49 +646,175 @@ def llm_generate_sql(question: str) -> str:
     return text.strip()
 
 
-def run_general_agent(task_id, question):
-    """Handle any question — interpret with LLM, query Databricks live, respond."""
-    emit_sse_event(task_id, 1, "understand_question", "running", f"Understanding: {question}")
+def llm_generate_soql(question: str) -> str:
+    """Convert a natural-language question into a SOQL query against the whitelist."""
+    schema_lines = []
+    for obj, fields in SF_SCHEMA.items():
+        schema_lines.append(f" {obj}: {', '.join(fields)}")
+    schema_str = "\n".join(schema_lines)
 
-    # Step 1: Generate SQL
+    prompt = (
+        "You are a Salesforce SOQL expert. Convert the user's question into a single SOQL SELECT statement.\n"
+        "Allowed objects and fields (DO NOT use any field not listed here):\n"
+        + schema_str + "\n\n"
+        "Rules:\n"
+        "- SOQL syntax only. No SQL-isms: no JOIN, no GROUP BY unless using aggregate functions, no UNION.\n"
+        "- Parent relationship fields use dot notation: Account.Name, Owner.Name (NOT AccountName).\n"
+        "- For top-N use ORDER BY ... DESC LIMIT N.\n"
+        "- Do NOT use column aliases (no 'AS x', no trailing alias tokens).\n"
+        "- String comparisons: use LIKE with % wildcards for fuzzy matching.\n"
+        "- Date literals: YYYY-MM-DD, no quotes (e.g., CloseDate > 2025-01-01) OR use date functions like THIS_QUARTER, THIS_YEAR, LAST_N_DAYS:30.\n"
+        "- Default LIMIT to 25 if no limit is implied by the question.\n"
+        "- If the question is about 'top' or 'biggest' opportunities, ORDER BY Amount DESC.\n"
+        "- Return ONLY the SOQL statement, no explanation, no backticks.\n\n"
+        "Question: " + question + "\n"
+        "SOQL:"
+    )
+
+    resp = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+        json={
+            "model": "llama-3.3-70b-versatile",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.1,
+            "max_tokens": 400,
+        },
+        timeout=30,
+    )
+    resp.raise_for_status()
+    text = resp.json()["choices"][0]["message"]["content"].strip()
+    if text.startswith("```"):
+        parts = text.split("```")
+        text = parts[1].strip().lstrip("soql").lstrip("SOQL").lstrip("sql").lstrip("SQL").strip()
+    return text.strip().rstrip(";")
+
+
+def llm_repair_soql(question: str, bad_soql: str, error_msg: str) -> str:
+    """Given a SOQL error, ask the LLM to fix it. One-shot repair."""
+    schema_lines = []
+    for obj, fields in SF_SCHEMA.items():
+        schema_lines.append(f" {obj}: {', '.join(fields)}")
+    schema_str = "\n".join(schema_lines)
+
+    prompt = (
+        "The following SOQL query failed. Rewrite it to fix the error.\n\n"
+        f"Original question: {question}\n"
+        f"Failed SOQL: {bad_soql}\n"
+        f"Salesforce error: {error_msg}\n\n"
+        "Allowed objects and fields:\n" + schema_str + "\n\n"
+        "Return ONLY the corrected SOQL statement, no explanation, no backticks."
+    )
+    resp = requests.post(
+        "https://api.groq.com/openai/v1/chat/completions",
+        headers={"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"},
+        json={
+            "model": "llama-3.3-70b-versatile",
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.0,
+            "max_tokens": 400,
+        },
+        timeout=30,
+    )
+    resp.raise_for_status()
+    text = resp.json()["choices"][0]["message"]["content"].strip()
+    if text.startswith("```"):
+        parts = text.split("```")
+        text = parts[1].strip().lstrip("soql").lstrip("SOQL").lstrip("sql").lstrip("SQL").strip()
+    return text.strip().rstrip(";")
+
+
+def run_general_agent(task_id, question):
+    """Route to Salesforce (SOQL) or Databricks (SQL) based on keywords,
+    query live, format results as a markdown table."""
+
+    # Decide the source first so the UI shows the right step name
+    use_sf = is_salesforce_question(question)
+    source_label = "Salesforce" if use_sf else "Databricks"
+
+    emit_sse_event(task_id, 1, "understand_question", "running",
+                   f"Routing to {source_label}: {question}")
+
+    # Step 1: Generate the query
     try:
-        sql = llm_generate_sql(question)
-        emit_sse_event(task_id, 1, "generate_sql", "done", f"Query: {sql}")
+        if use_sf:
+            query_str = llm_generate_soql(question)
+            step_name = "generate_soql"
+        else:
+            query_str = llm_generate_sql(question)
+            step_name = "generate_sql"
+        emit_sse_event(task_id, 1, step_name, "done", f"Query: {query_str}")
     except Exception as e:
-        emit_sse_event(task_id, 1, "generate_sql", "error", f"LLM error: {e}")
+        emit_sse_event(task_id, 1, "generate_query", "error", f"LLM error: {e}")
         tasks[task_id]["result"] = f"I couldn't generate a query for that question. Error: {e}"
+        try:
+            tasks[task_id]["queue"].put_nowait(None)
+        except queue.Full:
+            pass
         return
 
-    # Step 2: Run the SQL
-    emit_sse_event(task_id, 2, "run_query", "running", "Executing on Databricks...")
+    # Step 2: Execute (with one-shot repair on Salesforce 400)
+    emit_sse_event(task_id, 2, "run_query", "running",
+                   f"Executing on {source_label}...")
+
     try:
-        result = db_req(sql)
+        if use_sf:
+            result = sf_soql_query(query_str)
+            # Auto-repair once if 400
+            if result.get("status_code") == 400 and result.get("error"):
+                emit_sse_event(task_id, 2, "repair_query", "running",
+                               f"SOQL rejected — attempting repair: {result['error']}")
+                try:
+                    repaired = llm_repair_soql(question, query_str, result["error"])
+                    emit_sse_event(task_id, 2, "repair_query", "done",
+                                   f"Repaired query: {repaired}")
+                    query_str = repaired
+                    result = sf_soql_query(repaired)
+                except Exception as rep_ex:
+                    emit_sse_event(task_id, 2, "repair_query", "error", str(rep_ex))
+        else:
+            result = db_req(query_str)
     except Exception as e:
         emit_sse_event(task_id, 2, "run_query", "error", str(e))
-        tasks[task_id]["result"] = f"Query failed: {e}"
+        tasks[task_id]["result"] = f"Query failed: {e}\n\nQuery: {query_str}"
+        try:
+            tasks[task_id]["queue"].put_nowait(None)
+        except queue.Full:
+            pass
         return
 
     if result.get("error") or result.get("state") == "FAILED":
-        emit_sse_event(task_id, 2, "run_query", "error", result.get("error", "Query failed"))
-        tasks[task_id]["result"] = f"SQL error: {result.get('error', 'unknown')}\n\nQuery: {sql}"
+        emit_sse_event(task_id, 2, "run_query", "error",
+                        result.get("error", "Query failed"))
+        tasks[task_id]["result"] = (
+            f"{source_label} error: {result.get('error', 'unknown')}\n\n"
+            f"Query: {query_str}"
+        )
+        try:
+            tasks[task_id]["queue"].put_nowait(None)
+        except queue.Full:
+            pass
         return
 
     cols = result.get("columns", [])
     rows = result.get("rows", [])
     emit_sse_event(task_id, 2, "run_query", "done", f"Got {len(rows)} row(s)")
 
-    # Step 3: Format results
+    # Step 3: Format results as a markdown table (consistent for both sources)
     if not rows:
-        response = "No results found for that question."
+        response = f"No results found for that question.\n\nQuery: `{query_str}`"
     elif len(cols) == 1:
-        response = ", ".join(str(r[0]) for r in rows[:50])
+        header = f"| {cols[0]} |\n|---|\n"
+        body = "\n".join(f"| {r[0]} |" for r in rows[:50])
+        response = header + body
     else:
-        header = " | ".join(cols)
-        lines_out = [header, "-" * len(header)]
+        header = "| " + " | ".join(cols) + " |"
+        sep = "|" + "|".join("---" for _ in cols) + "|"
+        body_lines = []
         for row in rows[:25]:
-            lines_out.append(" | ".join(str(v) for v in row))
-        more = f"\n...and {len(rows)-25} more rows" if len(rows) > 25 else ""
-        response = "\n".join(lines_out) + more
+            body_lines.append("| " + " | ".join(str(v) if v is not None else "" for v in row) + " |")
+        more = f"\n\n_...and {len(rows) - 25} more rows_" if len(rows) > 25 else ""
+        response = "\n".join([header, sep] + body_lines) + more
 
     tasks[task_id]["result"] = response
     emit_sse_event(task_id, 3, "format_results", "done", "Done.")

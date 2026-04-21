@@ -12,7 +12,7 @@
 
 ## Email Structure
 
-**Subject:** `{customer_name} — {order_description}: We have your back!`
+**Subject:** `{customer_name} — {order_description}: Update to your order!`
 
 **Opening (1-2 sentences):**
 - Reference the specific customer and order
