@@ -953,20 +953,32 @@
             return name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         }
 
-        // Render markdown-like formatting (bold, newlines) before HTML escaping
+        // Render agent message content with basic markdown + safe HTML insertion.
         function renderAgentContent(text) {
             if (!text) return '';
-            // Bold: **text** → <strong>text</strong>
-            let html = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-            // Double newlines → paragraph break
-            html = html.replace(/\n\n/g, '<br><br>');
-            // Single newlines → line break
-            html = html.replace(/\n/g, '<br>');
-            // Escape everything else (security: prevent XSS from raw user content)
-            const div = document.createElement('div');
-            div.textContent = html;
-            return div.innerHTML;
+            // Step 1: Convert deliberate markdown markers to placeholders
+            const BO = '\x01BO';
+            const BC = '\x01BC';
+            const BR = '\x01BR';
+            let html = text
+                .replace(/\*\*(.+?)\*\*/g, BO + '$1' + BC)
+                .replace(/\n\n/g, BR + BR)
+                .replace(/\n(?!\n)/g, BR);
+            // Step 2: HTML-escape everything else (user content from Salesforce)
+            html = html
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            // Step 3: Restore intentional HTML tags
+            html = html
+                .replace(new RegExp(BO, 'g'), '<strong>')
+                .replace(new RegExp(BC, 'g'), '</strong>')
+                .replace(new RegExp(BR, 'g'), '<br>');
+            return html;
         }
+
 
         // Load chat history on page load
         async function loadHistory() {
