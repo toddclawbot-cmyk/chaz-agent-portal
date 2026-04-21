@@ -155,6 +155,9 @@
         line-height: 1.6;
         overflow-x: hidden;
       }
+      html {
+        overflow-x: hidden;
+      }
 
       .container,
       .container--wide {
@@ -253,7 +256,7 @@
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         padding-bottom: 8px;
-        width: calc(85vw + 12px);
+        width: 100%;
         transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
       }
       .overview-cards-carousel__track::-webkit-scrollbar {
@@ -685,6 +688,19 @@
         width: 100%;
         border-radius: var(--radius-md);
         border: 1px solid var(--divider);
+        object-fit: cover;
+        height: 120px;
+      }
+      .proof-figure--top img {
+        object-position: top center;
+        border-radius: var(--radius-md) var(--radius-md) 0 0;
+      }
+      .proof-figure--bottom img {
+        object-position: bottom center;
+        border-radius: 0 0 var(--radius-md) var(--radius-md);
+      }
+      .proof-figure--bottom {
+        margin-top: -1px;
       }
       .proof-figure figcaption {
         font-family: var(--font-mono);
@@ -1394,33 +1410,6 @@
       font-size: 12px;
       color: var(--muted);
       opacity: 0.6;
-    }
-
-    /* ─── Responsive ─────────────────────────────────────── */
-    @media (max-width: 1024px) {
-      .capabilities__grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .data-stack__item {
-        grid-template-columns: 1fr;
-        gap: var(--space-lg);
-      }
-
-      .data-stack__item:nth-child(even) {
-        direction: ltr;
-      }
-
-      .demo-flow__cards {
-        grid-template-columns: repeat(3, 1fr);
-        gap: var(--space-sm);
-      }
-    }
-
-    @media (max-width: 860px) {
-      .account-card {
-        max-width: 100%;
-      }
     }
 
     /* Video — inside hero section (desktop: after CTA) */
@@ -3117,11 +3106,11 @@ order_date, order_qty, order_description, next_delivery</code></pre>
           >
         </div>
         <div class="proof-images-mobile">
-          <figure class="proof-figure">
+          <figure class="proof-figure proof-figure--top">
             <img src="assets/screenshots/closed-loop-proof.jpg" alt="Agent response in the portal" class="screenshot-img">
             <figcaption>In the portal</figcaption>
           </figure>
-          <figure class="proof-figure">
+          <figure class="proof-figure proof-figure--bottom">
             <img src="assets/screenshots/closed-loop-proof.jpg" alt="Case record in Salesforce" class="screenshot-img">
             <figcaption>In Salesforce</figcaption>
           </figure>
