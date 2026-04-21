@@ -154,6 +154,8 @@
         font-size: 15px;
         line-height: 1.6;
         overflow-x: hidden;
+        overflow-wrap: break-word;
+        word-break: break-word;
       }
       html {
         overflow-x: hidden;
@@ -578,10 +580,18 @@
 
       /* Skill code blocks — max-height with fade */
       .feature__body pre {
-        max-height: 200px;
+        overflow-x: auto !important;
         overflow-y: auto;
         -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        box-sizing: border-box;
         position: relative;
+      }
+      .feature__body pre code {
+        white-space: pre;
+        overflow-wrap: normal;
+        font-size: 10px;
+        line-height: 1.5;
       }
       .feature__body pre::after {
         content: '';
@@ -672,47 +682,14 @@
 
       /* ─── CLOSED-LOOP PROOF ──────────────────────────── */
       /* Original desktop image hidden on mobile */
-      /* Desktop proof image + caption hidden on mobile */
-      #proof .diagram-wrap,
-      #proof .caption {
-        display: none !important;
+      /* Desktop proof image + stacked mobile images — hide all on mobile, show single on mobile */
+      #proof .diagram-wrap {
+        display: block !important;
+        overflow: hidden;
       }
       .proof-images-mobile {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-        margin-top: 16px;
+        display: none !important;
       }
-      .proof-figure {
-        margin: 0;
-      }
-      .proof-figure img {
-        width: 100%;
-        border-radius: var(--radius-md);
-        border: 1px solid var(--divider);
-        object-fit: cover;
-        height: 120px;
-      }
-      .proof-figure--top img {
-        object-position: top center;
-        border-radius: var(--radius-md) var(--radius-md) 0 0;
-      }
-      .proof-figure--bottom img {
-        object-position: bottom center;
-        border-radius: 0 0 var(--radius-md) var(--radius-md);
-      }
-      .proof-figure--bottom {
-        margin-top: -1px;
-      }
-      .proof-figure figcaption {
-        font-family: var(--font-mono);
-        font-size: 11px;
-        color: var(--muted);
-        text-align: center;
-        margin-top: 6px;
-        letter-spacing: 0.05em;
-      }
-
       /* ─── IMPLEMENTATION ──────────────────────────────── */
       .tech-list li {
         padding: 14px 0;
@@ -1794,19 +1771,7 @@
         color: var(--text-secondary);
       }
 
-      /* ── Responsive ── */
-      @media (max-width: 860px) {
-        .overview-grid,
-        .scenario-grid {
-          grid-template-columns: 1fr;
-        }
-        .scenario-card-col {
-          position: static;
-        }
-        .account-card {
-          max-width: 380px;
-        }
-      }
+      /* ── Responsive (above 1024px handled by desktop block) ── */
 
 </style>
 </head>
