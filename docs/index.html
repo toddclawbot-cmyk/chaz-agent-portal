@@ -55,6 +55,724 @@
       overflow-x: hidden;
     }
 
+    /* ═══════════════════════════════════════════════════════
+       MOBILE NAVIGATION (always present, hidden on desktop)
+    ═══════════════════════════════════════════════════════ */
+    #scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      width: 0%;
+      background: var(--primary);
+      z-index: 9999;
+      transition: width 0.1s linear;
+      pointer-events: none;
+    }
+
+    .mobile-nav-btn {
+      display: none;
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 1px solid var(--divider);
+      color: var(--text);
+      cursor: pointer;
+      z-index: 9000;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-md);
+      transition: background 0.2s ease, transform 0.2s ease;
+    }
+    .mobile-nav-btn.is-active {
+      background: var(--primary);
+      color: var(--bg);
+    }
+    .mobile-nav-btn svg { pointer-events: none; }
+
+    .mobile-nav-panel {
+      display: none;
+      position: fixed;
+      bottom: 88px;
+      right: 24px;
+      width: 220px;
+      background: var(--surface);
+      border: 1px solid var(--divider);
+      border-radius: var(--radius-lg);
+      z-index: 9000;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+    }
+    .mobile-nav-panel.is-open {
+      display: block;
+    }
+    .mobile-nav-panel__inner {
+      padding: 8px 0 12px;
+    }
+    .mobile-nav-panel__header {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 8px 16px 10px;
+      border-bottom: 1px solid var(--divider);
+      margin-bottom: 4px;
+    }
+    .mobile-nav-panel__link {
+      display: block;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      text-decoration: none;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .mobile-nav-panel__link:hover,
+    .mobile-nav-panel__link:focus {
+      background: rgba(181, 105, 74, 0.12);
+      color: var(--primary);
+      outline: none;
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       GLOBAL MOBILE TYPOGRAPHY & SPACING (≤640px)
+    ═══════════════════════════════════════════════════════ */
+    @media (max-width: 640px) {
+      :root {
+        --space-md: 20px;
+        --space-lg: 40px;
+        --space-xl: 60px;
+        --space-2xl: 90px;
+      }
+
+      body {
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .container,
+      .container--wide {
+        padding: 0 var(--space-md);
+      }
+
+      /* Tighter section padding */
+      section {
+        padding: var(--space-lg) 0;
+      }
+
+      /* Section labels */
+      .section-label {
+        font-size: 10px;
+        margin-bottom: 8px;
+      }
+
+      /* H2 section headings */
+      h2 {
+        font-size: clamp(22px, 6vw, 32px) !important;
+        line-height: 1.2 !important;
+        margin-bottom: 16px !important;
+      }
+
+      h3 {
+        font-size: 17px !important;
+        line-height: 1.3 !important;
+      }
+
+      /* Stronger section dividers */
+      section {
+        border-top: 2px solid var(--divider);
+      }
+      section:first-of-type,
+      body > section:first-of-type {
+        border-top: none;
+      }
+
+      /* Content prose */
+      .content p {
+        font-size: 15px;
+        line-height: 1.65;
+        color: var(--muted);
+      }
+
+      /* ─── HERO ──────────────────────────────────────── */
+      .hero {
+        padding: var(--space-lg) var(--space-md);
+        min-height: unset;
+        padding-top: 48px;
+      }
+      .hero__headline {
+        font-size: clamp(36px, 10vw, 56px);
+      }
+      .hero__subtitle {
+        font-size: 14px;
+        margin-bottom: var(--space-md);
+      }
+      .hero__cta-no-link {
+        font-size: 12px;
+        letter-spacing: 0.08em;
+      }
+      /* Slow hero animation on mobile */
+      .agent-flow-svg {
+        animation-duration: 12s !important;
+      }
+
+      /* ─── OVERVIEW — CAROUSEL ────────────────────────── */
+      .overview-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px;
+      }
+      .overview-prose {
+        min-width: 0;
+      }
+      .overview-prose p {
+        font-size: 14px;
+      }
+
+      /* Carousel: replace card grid with horizontal scroll */
+      .overview-cards {
+        display: none !important;
+      }
+      .overview-cards-carousel {
+        display: block;
+        position: relative;
+        margin-top: 16px;
+      }
+      .overview-cards-carousel__track {
+        display: flex;
+        gap: 12px;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 8px;
+        /* Show ~85% of next card */
+        width: 85vw;
+        transform: none;
+        transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
+      }
+      .overview-cards-carousel__track::-webkit-scrollbar {
+        display: none;
+      }
+      .overview-cards-carousel__track .decision-card {
+        flex: 0 0 85vw;
+        scroll-snap-align: start;
+        width: 85vw;
+        max-width: 85vw;
+      }
+      .overview-cards-carousel__dots {
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        margin-top: 12px;
+      }
+      .overview-cards-carousel__dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--divider);
+        border: none;
+        cursor: pointer;
+        transition: background 0.2s ease, transform 0.2s ease;
+        padding: 0;
+      }
+      .overview-cards-carousel__dot.is-active {
+        background: var(--primary);
+        transform: scale(1.3);
+      }
+
+      /* Overview pullquote — tighter */
+      .overview-pullquote {
+        font-size: 13px;
+        font-style: normal;
+        text-align: center;
+        padding: 12px 16px;
+        margin-top: 16px;
+        border-left: none;
+        border-top: 2px solid var(--primary);
+        border-radius: 0;
+        background: none;
+      }
+
+      /* ─── SCENARIO ──────────────────────────────────── */
+      .scenario-grid {
+        display: flex !important;
+        flex-direction: column;
+        gap: 16px;
+      }
+      /* Card ABOVE prose on mobile */
+      .scenario-card-col {
+        order: -1;
+      }
+      .account-card {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      .scenario-prose {
+        min-width: 0;
+      }
+      .scenario-prose p {
+        font-size: 14px;
+      }
+
+      /* Stats strip — hidden on desktop, shown on mobile */
+      .scenario-stats-strip {
+        display: flex;
+        gap: 12px;
+        margin-top: 12px;
+        padding: 14px;
+        background: var(--surface);
+        border: 1px solid var(--divider);
+        border-radius: var(--radius-md);
+      }
+      .scenario-stat {
+        flex: 1;
+        text-align: center;
+      }
+      .scenario-stat__value {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--primary);
+      }
+      .scenario-stat__label {
+        display: block;
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 2px;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+
+      /* ─── VIDEO ──────────────────────────────────────── */
+      #video-section {
+        order: -1;
+        margin-top: var(--space-md);
+        width: 100%;
+      }
+      #video-section video {
+        border-radius: 8px;
+      }
+
+      /* ─── WALKTHROUGH ───────────────────────────────── */
+      .feature {
+        gap: 12px;
+        padding: 20px 0;
+      }
+      .feature__number {
+        font-size: 28px;
+        min-width: 36px;
+      }
+      .feature__body h3 {
+        font-size: 16px;
+      }
+      .feature__body p {
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .feature__query {
+        font-size: 11px;
+        padding: 8px 12px;
+      }
+      .feature__body ul {
+        display: none; /* Hide plain bullet list on mobile — replaced by timeline */
+      }
+
+      /* Timeline collapsible (Turn 3) */
+      .timeline-collapsible {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .timeline-step {
+        background: var(--surface);
+        border: 1px solid var(--divider);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+      .timeline-step summary {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        cursor: pointer;
+        list-style: none;
+        font-size: 13px;
+        font-weight: 500;
+        color: var(--text);
+        transition: background 0.15s ease;
+      }
+      .timeline-step summary::-webkit-details-marker { display: none; }
+      .timeline-step summary:hover { background: rgba(255,255,255,0.03); }
+      .timeline-step__num {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--primary);
+        min-width: 20px;
+      }
+      .timeline-step__label {
+        flex: 1;
+      }
+      .timeline-step__chevron {
+        color: var(--muted);
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+      }
+      .timeline-step[open] .timeline-step__chevron {
+        transform: rotate(180deg);
+      }
+      .timeline-step__detail {
+        padding: 0 14px 14px 44px;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.6;
+        border-top: 1px solid var(--divider);
+        padding-top: 10px;
+        margin-top: 0;
+      }
+
+      /* Pre blocks scroll cleanly */
+      .feature__body pre {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      .feature__body pre code {
+        white-space: pre;
+        font-size: 11px;
+      }
+
+      /* ─── ARCHITECTURE ───────────────────────────────── */
+      /* Desktop diagram hidden on mobile */
+      .arch-diagram-desktop .diagram-wrap {
+        display: none;
+      }
+      /* Mobile vertical flow shown on mobile */
+      .arch-diagram-mobile {
+        display: block;
+      }
+
+      /* Architecture accordion */
+      .why-accordion {
+        border: 1px solid var(--divider);
+        border-radius: var(--radius-md);
+        margin-bottom: 8px;
+        overflow: hidden;
+      }
+      .why-accordion > summary {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        cursor: pointer;
+        list-style: none;
+        font-family: var(--font-serif);
+        font-size: 15px;
+        color: var(--secondary);
+        background: var(--surface);
+        transition: background 0.15s ease;
+      }
+      .why-accordion > summary::-webkit-details-marker { display: none; }
+      .why-accordion > summary:hover { background: rgba(255,255,255,0.03); }
+      .why-accordion__chevron {
+        color: var(--muted);
+        transition: transform 0.25s ease;
+        flex-shrink: 0;
+      }
+      .why-accordion[open] .why-accordion__chevron {
+        transform: rotate(180deg);
+      }
+      .why-accordion__body {
+        padding: 4px 16px 16px;
+        border-top: 1px solid var(--divider);
+      }
+      .why-accordion__body p {
+        font-size: 14px !important;
+        line-height: 1.65 !important;
+        color: var(--muted) !important;
+        margin-top: 12px !important;
+      }
+      .why-accordion__body p:first-child { margin-top: 12px !important; }
+
+      /* Mobile arch flow diagram */
+      .arch-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        background: var(--surface);
+        border: 1px solid var(--divider);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        margin-bottom: 16px;
+      }
+      .arch-flow__row {
+        padding: 14px 16px;
+      }
+      .arch-flow__box {
+        background: rgba(14, 34, 54, 0.6);
+        border: 1px solid rgba(74, 143, 168, 0.2);
+        border-radius: var(--radius-md);
+        padding: 12px 14px;
+      }
+      .arch-flow__box-label {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--secondary);
+        margin-bottom: 4px;
+      }
+      .arch-flow__box-sub {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.5;
+      }
+      .arch-flow__bindings {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 8px;
+      }
+      .arch-flow__binding {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--primary);
+        background: rgba(181, 105, 74, 0.1);
+        border: 1px solid rgba(181, 105, 74, 0.2);
+        padding: 3px 8px;
+        border-radius: var(--radius-full);
+      }
+      .arch-flow__connector {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 8px 0;
+        gap: 4px;
+      }
+      .arch-flow__connector-label {
+        font-family: var(--font-mono);
+        font-size: 9px;
+        color: var(--muted);
+        letter-spacing: 0.05em;
+      }
+
+      /* ─── SKILL LAYER ────────────────────────────────── */
+      .capabilities__grid {
+        grid-template-columns: 1fr !important;
+      }
+      .capability-card {
+        padding: 16px;
+      }
+
+      /* Skill code blocks — max-height with fade */
+      .feature__body pre {
+        max-height: 200px;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+      }
+      .feature__body pre::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 40px;
+        background: linear-gradient(transparent, var(--surface));
+        pointer-events: none;
+        border-radius: 0 0 8px 8px;
+      }
+      .feature__body pre code {
+        font-size: 10px;
+        line-height: 1.5;
+      }
+
+      /* Section C — extra emphasis */
+      .feature:nth-child(3) .feature__body h3 {
+        border-left: 3px solid var(--primary);
+        padding-left: 12px;
+      }
+
+      /* ─── REASONING TRANSPARENCY ──────────────────────── */
+      /* Screenshot — full width, rounded */
+      .diagram-wrap .screenshot-img {
+        border-radius: var(--radius-md);
+      }
+      .diagram-wrap + .caption {
+        font-size: 12px;
+      }
+
+      /* Reasoning collapsible timeline */
+      .reasoning-step {
+        border: 1px solid var(--divider);
+        border-radius: var(--radius-md);
+        margin-bottom: 8px;
+        overflow: hidden;
+        background: var(--surface);
+      }
+      .reasoning-step > summary {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        cursor: pointer;
+        list-style: none;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text);
+        background: var(--surface);
+        transition: background 0.15s ease;
+      }
+      .reasoning-step > summary::-webkit-details-marker { display: none; }
+      .reasoning-step > summary:hover { background: rgba(255,255,255,0.03); }
+      .reasoning-step > summary strong { color: var(--primary); font-weight: 600; }
+      .reasoning-step__chevron {
+        color: var(--muted);
+        transition: transform 0.25s ease;
+        margin-left: auto;
+        flex-shrink: 0;
+      }
+      .reasoning-step[open] .reasoning-step__chevron { transform: rotate(180deg); }
+      .reasoning-step__body {
+        padding: 4px 14px 14px 14px;
+        border-top: 1px solid var(--divider);
+      }
+      .reasoning-step__body p {
+        font-size: 13px !important;
+        color: var(--muted) !important;
+        line-height: 1.65 !important;
+        margin-top: 10px !important;
+      }
+
+      /* ─── HEADLESS PATTERN ────────────────────────────── */
+      .headless-pullquote {
+        font-family: var(--font-serif);
+        font-size: clamp(18px, 5vw, 24px);
+        font-style: normal;
+        color: var(--secondary);
+        line-height: 1.4;
+        border-left: 3px solid var(--primary);
+        padding: 12px 20px;
+        margin: 20px 0;
+        background: rgba(181, 105, 74, 0.06);
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      }
+
+      /* ─── CLOSED-LOOP PROOF ──────────────────────────── */
+      /* Original image hidden on mobile */
+      .proof-images-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        margin-top: 16px;
+      }
+      .proof-figure {
+        margin: 0;
+      }
+      .proof-figure img {
+        width: 100%;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--divider);
+      }
+      .proof-figure figcaption {
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--muted);
+        text-align: center;
+        margin-top: 6px;
+        letter-spacing: 0.05em;
+      }
+
+      /* ─── IMPLEMENTATION ──────────────────────────────── */
+      .tech-list li {
+        padding: 14px 0;
+        font-size: 13px;
+      }
+
+      /* ─── CLOSING ────────────────────────────────────── */
+      .content > p {
+        font-size: 14px !important;
+        line-height: 1.7 !important;
+      }
+
+      /* ─── FOOTER ─────────────────────────────────────── */
+      .footer {
+        padding: var(--space-lg) 0;
+      }
+      .footer__links {
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       TABLET ADJUSTMENTS (641px – 1024px)
+    ═══════════════════════════════════════════════════════ */
+    @media (min-width: 641px) and (max-width: 1024px) {
+      :root {
+        --space-lg: 52px;
+      }
+      section {
+        padding: var(--space-lg) 0;
+      }
+      .overview-cards {
+        gap: 12px;
+      }
+      .scenario-grid {
+        gap: 24px;
+      }
+      /* Stats strip hidden on tablet+ */
+      .scenario-stats-strip {
+        display: none;
+      }
+      /* Mobile arch diagram hidden on tablet+ */
+      .arch-diagram-mobile {
+        display: none;
+      }
+      /* Mobile carousel hidden on tablet+ */
+      .overview-cards-carousel {
+        display: none !important;
+      }
+      /* Why accordion hidden on tablet+ */
+      .why-accordion {
+        display: none;
+      }
+      /* Mobile reasoning timeline hidden on tablet+ */
+      .timeline-collapsible,
+      .reasoning-step {
+        display: none;
+      }
+      /* Proof images mobile hidden on tablet+ */
+      .proof-images-mobile {
+        display: none;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════════
+       DESKTOP-ONLY ELEMENT VISIBILITY
+    ═══════════════════════════════════════════════════════ */
+    @media (min-width: 641px) {
+      /* Hide mobile-only elements on desktop */
+      #scroll-progress { display: none; }
+      .mobile-nav-btn { display: none !important; }
+      .mobile-nav-panel { display: none !important; }
+      .scenario-stats-strip { display: none; }
+      .arch-diagram-mobile { display: none; }
+      .overview-cards-carousel { display: none !important; }
+      .timeline-collapsible { display: none; }
+      .why-accordion { display: none; }
+      .reasoning-step { display: none; }
+      .headless-pullquote { display: none; }
+      .proof-images-mobile { display: none; }
+    }
+
     /* ─── Scroll Reveal ─────────────────────────────────── */
     .reveal {
       opacity: 0;
@@ -711,175 +1429,6 @@
       order: 0;
     }
 
-    @media (max-width: 640px) {
-      :root {
-        --space-md: 20px;
-        --space-lg: 48px;
-        --space-xl: 80px;
-        --space-2xl: 120px;
-      }
-
-      .container,
-      .container--wide {
-        padding: 0 var(--space-md);
-      }
-
-      /* Hero SVG — scale to viewport width */
-      .hero__agent-flow {
-        overflow-x: hidden;
-      }
-      .agent-flow-svg {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-      }
-
-      /* Architecture SVG — allow horizontal scroll */
-      .diagram-wrap {
-        overflow: auto !important;
-        -webkit-overflow-scrolling: touch;
-      }
-      .diagram-wrap svg {
-        width: 100%;
-        height: auto;
-        min-width: 560px;
-      }
-
-      /* Demo flow timeline */
-      .demo-flow__timeline {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: var(--space-xs);
-      }
-
-      /* Chain / step layout */
-      .agent__chain {
-        grid-template-columns: 1fr;
-      }
-
-      .agent__chain-line {
-        display: none;
-      }
-
-      .capabilities__grid {
-        grid-template-columns: 1fr;
-      }
-
-      .demo-flow__cards {
-        grid-template-columns: 1fr;
-      }
-
-      .agent__step-body {
-        flex-direction: column;
-        gap: var(--space-sm);
-      }
-
-      /* Walkthrough / feature section — mobile-safe */
-      .feature {
-        gap: 16px;
-        padding: 24px 0;
-      }
-      .feature__body {
-        min-width: 0;
-        max-width: 100%;
-      }
-      .feature__body h3 {
-        font-size: 18px;
-      }
-      .feature__body p {
-        font-size: 14px;
-        overflow-wrap: break-word;
-        word-break: break-word;
-      }
-      .feature__query {
-        font-size: 12px;
-        padding: 8px 12px;
-        overflow-wrap: break-word;
-        word-break: break-word;
-      }
-      .feature__body ul {
-        overflow-wrap: break-word;
-      }
-      .feature__body li {
-        font-size: 13px;
-        overflow-wrap: break-word;
-        word-break: break-word;
-      }
-      /* Pre blocks — scroll horizontally, never overflow */
-      .feature__body pre {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        max-width: 100%;
-        box-sizing: border-box;
-      }
-      .feature__body pre code {
-        white-space: pre;
-        font-size: 11px;
-      }
-
-      /* Account card — full width on mobile */
-      .account-card {
-        width: 100%;
-        max-width: 100%;
-        box-sizing: border-box;
-      }
-
-      /* Scenario grid — ensure stacked column doesn't overflow */
-      .scenario-grid {
-        gap: 24px;
-      }
-      .scenario-prose {
-        min-width: 0;
-      }
-      .scenario-prose p {
-        font-size: 14px;
-        overflow-wrap: break-word;
-        word-break: break-word;
-      }
-
-      /* Decision cards */
-      .overview-cards {
-        gap: 10px;
-      }
-      .decision-card {
-        padding: 12px;
-      }
-      .decision-card__title {
-        font-size: 0.78rem;
-      }
-      .decision-card__desc {
-        font-size: 0.73rem;
-      }
-
-      /* Overview pullquote */
-      .overview-pullquote {
-        font-size: 0.84rem;
-        padding: 14px 18px;
-      }
-
-      /* Footer */
-      .footer__links {
-        flex-wrap: wrap;
-        gap: var(--space-sm);
-      }
-
-      /* Data stack visual */
-      .data-stack__visual svg {
-        width: 100%;
-        max-width: 100%;
-        height: auto;
-      }
-
-      /* Video — inside hero section (mobile: pull to top, before CTA) */
-      #video-section {
-        order: -1;
-        margin-top: var(--space-md);
-      }
-      .hero__cta-no-link {
-        order: 1;
-      }
-    }
-
       /* Page section labels */
       .section-label {
         font-family: var(--font-mono);
@@ -1267,6 +1816,28 @@
 </head>
 <body>
 
+  <!-- Mobile progress bar -->
+  <div id="scroll-progress" aria-hidden="true"></div>
+
+  <!-- Mobile floating jump-nav -->
+  <button class="mobile-nav-btn" id="mobile-nav-btn" aria-label="Jump to section" aria-expanded="false">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <nav class="mobile-nav-panel" id="mobile-nav-panel" aria-label="Page sections">
+    <div class="mobile-nav-panel__inner">
+      <div class="mobile-nav-panel__header">Jump to</div>
+      <a href="#overview" class="mobile-nav-panel__link">Overview</a>
+      <a href="#scenario" class="mobile-nav-panel__link">The Scenario</a>
+      <a href="#walkthrough" class="mobile-nav-panel__link">Walkthrough</a>
+      <a href="#architecture" class="mobile-nav-panel__link">Architecture</a>
+      <a href="#skill-layer" class="mobile-nav-panel__link">Skill Layer</a>
+      <a href="#reasoning" class="mobile-nav-panel__link">Reasoning</a>
+      <a href="#headless" class="mobile-nav-panel__link">Headless Pattern</a>
+      <a href="#proof" class="mobile-nav-panel__link">Closed-Loop Proof</a>
+      <a href="#implementation" class="mobile-nav-panel__link">Implementation</a>
+    </div>
+  </nav>
+
   <!-- ═══════════════════════════════════════════════════════
        SECTION 1: HERO
   ════════════════════════════════════════════════════════ -->
@@ -1649,6 +2220,62 @@
             </p>
           </div>
 
+          <!-- Mobile: swipeable carousel -->
+          <div class="overview-cards-carousel" id="overview-cards-carousel" aria-label="Design decision cards">
+            <div class="overview-cards-carousel__track" id="overview-cards-track">
+              <div class="decision-card">
+                <div class="decision-card__icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                  </svg>
+                </div>
+                <div class="decision-card__body">
+                  <div class="decision-card__title">Purpose-built UI</div>
+                  <div class="decision-card__desc">Not a generic chat widget. The interface is a product decision, made per workflow.</div>
+                </div>
+              </div>
+
+              <div class="decision-card">
+                <div class="decision-card__icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
+                    <path d="M6 21V9a9 9 0 0 0 9 9"/>
+                  </svg>
+                </div>
+                <div class="decision-card__body">
+                  <div class="decision-card__title">Two data planes</div>
+                  <div class="decision-card__desc">Operational data stays in the warehouse. Relationship data stays in the CRM. Federated at query time.</div>
+                </div>
+              </div>
+
+              <div class="decision-card">
+                <div class="decision-card__icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                </div>
+                <div class="decision-card__body">
+                  <div class="decision-card__title">Skills in version control</div>
+                  <div class="decision-card__desc">Agent behavior lives in markdown files, not a vendor console. Reviewable, diffable, portable.</div>
+                </div>
+              </div>
+
+              <div class="decision-card">
+                <div class="decision-card__icon">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                  </svg>
+                </div>
+                <div class="decision-card__body">
+                  <div class="decision-card__title">Reasoning as first-class feature</div>
+                  <div class="decision-card__desc">The Activity Log is the audit trail and the trust primitive. Not a debug view.</div>
+                </div>
+              </div>
+            </div>
+            <div class="overview-cards-carousel__dots" id="overview-cards-dots" aria-label="Carousel pagination"></div>
+          </div>
+
+          <!-- Desktop: original grid (hidden on mobile via CSS) -->
           <div class="overview-cards">
 
             <div class="decision-card">
@@ -1785,6 +2412,21 @@
                 </div>
               </div>
             </div>
+
+            <div class="scenario-stats-strip">
+              <div class="scenario-stat">
+                <span class="scenario-stat__value">$83K</span>
+                <span class="scenario-stat__label">Opportunity at risk</span>
+              </div>
+              <div class="scenario-stat">
+                <span class="scenario-stat__value">667 lbs</span>
+                <span class="scenario-stat__label">Butter shortfall</span>
+              </div>
+              <div class="scenario-stat">
+                <span class="scenario-stat__value">3 wks</span>
+                <span class="scenario-stat__label">Demand window</span>
+              </div>
+            </div>
           </div>
 
         </div>
@@ -1862,7 +2504,7 @@ LIMIT 25</code></pre>
               signal the user did not explicitly ask about. The Activity Log shows
               seven steps:
             </p>
-            <ul>
+            <ul style="display:none">
               <li>Query Databricks Inventory — finds butter below reorder point across all suppliers</li>
               <li>Analyze Databricks Results — cross-references against confirmed delivery windows and three-week demand forecast</li>
               <li>Search Salesforce — retrieves open opportunities and account contacts for at-risk customers</li>
@@ -1871,6 +2513,78 @@ LIMIT 25</code></pre>
               <li>Draft Outreach — generates customer email governed by email-skill.md: Riley Torres to Taylor Nguyen at Cafe Lumiere, shortage confirmed, delivery window protected</li>
               <li>Send Email — fires via Gmail; lands in customer's inbox and logs to the Case feed in Salesforce</li>
             </ul>
+            <div class="timeline-collapsible">
+              <details class="timeline-step" open>
+                <summary>
+                  <span class="timeline-step__num">1</span>
+                  <span class="timeline-step__label">Query Databricks Inventory</span>
+                  <span class="timeline-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </summary>
+                <div class="timeline-step__detail">
+                  Finds butter below reorder point across all suppliers.
+                </div>
+              </details>
+              <details class="timeline-step">
+                <summary>
+                  <span class="timeline-step__num">2</span>
+                  <span class="timeline-step__label">Analyze Databricks Results</span>
+                  <span class="timeline-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </summary>
+                <div class="timeline-step__detail">
+                  Cross-references against confirmed delivery windows and three-week demand forecast.
+                </div>
+              </details>
+              <details class="timeline-step">
+                <summary>
+                  <span class="timeline-step__num">3</span>
+                  <span class="timeline-step__label">Search Salesforce</span>
+                  <span class="timeline-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </summary>
+                <div class="timeline-step__detail">
+                  Retrieves open opportunities and account contacts for at-risk customers.
+                </div>
+              </details>
+              <details class="timeline-step">
+                <summary>
+                  <span class="timeline-step__num">4</span>
+                  <span class="timeline-step__label">Risk Assessment</span>
+                  <span class="timeline-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </summary>
+                <div class="timeline-step__detail">
+                  MEDIUM severity: 667 lbs butter shortage, Cafe Lumiere's $83,000 opportunity at risk, outreach window 24 hours.
+                </div>
+              </details>
+              <details class="timeline-step">
+                <summary>
+                  <span class="timeline-step__num">5</span>
+                  <span class="timeline-step__label">Create Case</span>
+                  <span class="timeline-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </summary>
+                <div class="timeline-step__detail">
+                  Writes Case 00001077 to Salesforce with full context: subject, priority High, linked Account and Contact, current stock levels, shortage percentage.
+                </div>
+              </details>
+              <details class="timeline-step">
+                <summary>
+                  <span class="timeline-step__num">6</span>
+                  <span class="timeline-step__label">Draft Outreach</span>
+                  <span class="timeline-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </summary>
+                <div class="timeline-step__detail">
+                  Generates customer email governed by email-skill.md: Riley Torres to Taylor Nguyen at Cafe Lumiere, shortage confirmed, delivery window protected.
+                </div>
+              </details>
+              <details class="timeline-step">
+                <summary>
+                  <span class="timeline-step__num">7</span>
+                  <span class="timeline-step__label">Send Email</span>
+                  <span class="timeline-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+                </summary>
+                <div class="timeline-step__detail">
+                  Fires via Gmail; lands in customer's inbox and logs to the Case feed in Salesforce.
+                </div>
+              </details>
+            </div>
             <p>
               The loop closes without a human in the path after the initial
               question. The Case exists in the CRM's Recently Viewed. The sent
@@ -1900,9 +2614,10 @@ LIMIT 25</code></pre>
           and write actions land in the system of record.
         </p>
 
-        <!-- Architecture diagram: inline SVG -->
-        <div class="diagram-wrap reveal">
-          <svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agent architecture diagram">
+        <!-- Desktop: full SVG diagram -->
+        <div class="arch-diagram-desktop">
+          <div class="diagram-wrap reveal">
+            <svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agent architecture diagram">
             <defs>
               <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" style="stop-color:#081525"/>
@@ -2012,69 +2727,157 @@ LIMIT 25</code></pre>
             <text x="870" y="312" fill="#1e3a55" font-size="7" font-family="monospace" text-anchor="end">SYSTEMS</text>
           </svg>
         </div>
+        </div>
 
+        <!-- Mobile: vertical flow diagram -->
+        <div class="arch-diagram-mobile">
+          <div class="arch-flow">
+            <div class="arch-flow__row">
+              <div class="arch-flow__box">
+                <div class="arch-flow__box-label">Purpose-built UI</div>
+                <div class="arch-flow__box-sub">Chat panel · Activity Log · Write-back surfaces</div>
+              </div>
+              <div class="arch-flow__connector">
+                <svg width="16" height="24" viewBox="0 0 16 24"><line x1="8" y1="0" x2="8" y2="24" stroke="#4a8fa8" stroke-width="1.5" stroke-dasharray="3,3"/><polyline points="3,17 8,23 13,17" fill="none" stroke="#4a8fa8" stroke-width="1.5"/></svg>
+                <span class="arch-flow__connector-label">SSE trace ↑</span>
+              </div>
+            </div>
+            <div class="arch-flow__row">
+              <div class="arch-flow__box">
+                <div class="arch-flow__box-label">Agent Runtime</div>
+                <div class="arch-flow__box-sub">Tool-use loop · Reasoning trace · Groq model</div>
+              </div>
+              <div class="arch-flow__connector">
+                <svg width="16" height="24" viewBox="0 0 16 24"><line x1="8" y1="0" x2="8" y2="24" stroke="#4a8fa8" stroke-width="1.5" stroke-dasharray="3,3"/><polyline points="3,17 8,23 13,17" fill="none" stroke="#4a8fa8" stroke-width="1.5"/></svg>
+                <span class="arch-flow__connector-label">Tool calls ↓</span>
+              </div>
+            </div>
+            <div class="arch-flow__row">
+              <div class="arch-flow__box">
+                <div class="arch-flow__box-label">Tool Bindings</div>
+                <div class="arch-flow__box-sub">CRM · Warehouse · Email — each swappable</div>
+                <div class="arch-flow__bindings">
+                  <span class="arch-flow__binding">CRM ↔</span>
+                  <span class="arch-flow__binding">Warehouse ↔</span>
+                  <span class="arch-flow__binding">Email ↔</span>
+                </div>
+              </div>
+              <div class="arch-flow__connector">
+                <svg width="16" height="24" viewBox="0 0 16 24"><line x1="8" y1="0" x2="8" y2="24" stroke="#4a8fa8" stroke-width="1.5" stroke-dasharray="3,3"/><polyline points="3,17 8,23 13,17" fill="none" stroke="#4a8fa8" stroke-width="1.5"/></svg>
+                <span class="arch-flow__connector-label">Queries + writes ↓</span>
+              </div>
+            </div>
+            <div class="arch-flow__row">
+              <div class="arch-flow__box">
+                <div class="arch-flow__box-label">Systems of Record</div>
+                <div class="arch-flow__box-sub">Salesforce · Databricks · Gmail</div>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <!-- Architecture prose — Why sections as accordions -->
+        <details class="why-accordion" open>
+          <summary>
+            <span class="why-accordion__heading">Why a purpose-built UI</span>
+            <span class="why-accordion__chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </summary>
+          <div class="why-accordion__body">
+            <p>
+              The UI is a product decision. An agent that can be invoked from a
+              chat panel, a partner portal, a field service app, or an internal
+              operations dashboard is the same runtime in each case. Decoupling the
+              interface from the agent means the business logic never changes when
+              the surface changes. The agent is infrastructure; the interface is
+              wherever the workflow demands it.
+            </p>
+          </div>
+        </details>
 
-        <!-- Architecture prose -->
-        <h3>Why a purpose-built UI</h3>
-        <p>
-          The UI is a product decision. An agent that can be invoked from a
-          chat panel, a partner portal, a field service app, or an internal
-          operations dashboard is the same runtime in each case. Decoupling the
-          interface from the agent means the business logic never changes when
-          the surface changes. The agent is infrastructure; the interface is
-          wherever the workflow demands it.
-        </p>
+        <details class="why-accordion">
+          <summary>
+            <span class="why-accordion__heading">Why Groq and an open model</span>
+            <span class="why-accordion__chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </summary>
+          <div class="why-accordion__body">
+            <p>
+              The demo uses Groq for inference and an open-weights model as the
+              reasoner. Latency is suitable for real-time tool-use loops — typically
+              under two seconds for a full round-trip including a warehouse or CRM
+              query. Per-token cost is negligible at this scale. Critically, the
+              architecture treats the model as a swappable component: swapping the
+              model does not require changing the tools, the skills, the UI, or the
+              orchestration logic.
+            </p>
+          </div>
+        </details>
 
-        <h3>Why Groq and an open model</h3>
-        <p>
-          The demo uses Groq for inference and an open-weights model as the
-          reasoner. Latency is suitable for real-time tool-use loops — typically
-          under two seconds for a full round-trip including a warehouse or CRM
-          query. Per-token cost is negligible at this scale. Critically, the
-          architecture treats the model as a swappable component: swapping the
-          model does not require changing the tools, the skills, the UI, or the
-          orchestration logic.
-        </p>
+        <details class="why-accordion">
+          <summary>
+            <span class="why-accordion__heading">Why two data planes</span>
+            <span class="why-accordion__chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </summary>
+          <div class="why-accordion__body">
+            <p>
+              Operational data belongs in the warehouse. Relationship data belongs in
+              the CRM. These are different systems for different purposes, with
+              different governance models and different access patterns. Federating
+              queries at runtime is faster to build, cheaper to operate, and easier
+              to govern than centralizing everything into one store. The agent does
+              not try to be a data platform — it is a reasoning layer that queries
+              each system in turn and synthesizes the results.
+            </p>
+          </div>
+        </details>
 
-        <h3>Why two data planes</h3>
-        <p>
-          Operational data belongs in the warehouse. Relationship data belongs in
-          the CRM. These are different systems for different purposes, with
-          different governance models and different access patterns. Federating
-          queries at runtime is faster to build, cheaper to operate, and easier
-          to govern than centralizing everything into one store. The agent does
-          not try to be a data platform — it is a reasoning layer that queries
-          each system in turn and synthesizes the results.
-        </p>
+        <details class="why-accordion">
+          <summary>
+            <span class="why-accordion__heading">Why skills as markdown</span>
+            <span class="why-accordion__chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </summary>
+          <div class="why-accordion__body">
+            <p>
+              Agent behavior — voice, tone, escalation thresholds, email structure,
+              decision rules — lives in markdown files checked into source control.
+              A sales ops lead can propose a voice change via pull request. An
+              engineer can review it. The change ships without a model retrain or a
+              runtime redeployment. Behavior authored this way is reviewable by
+              humans who are not engineers, diffable, and portable across runtimes.
+            </p>
+          </div>
+        </details>
 
-        <h3>Why skills as markdown</h3>
-        <p>
-          Agent behavior — voice, tone, escalation thresholds, email structure,
-          decision rules — lives in markdown files checked into source control.
-          A sales ops lead can propose a voice change via pull request. An
-          engineer can review it. The change ships without a model retrain or a
-          runtime redeployment. Behavior authored this way is reviewable by
-          humans who are not engineers, diffable, and portable across runtimes.
-        </p>
+        <details class="why-accordion">
+          <summary>
+            <span class="why-accordion__heading">Why the Activity Log is first-class</span>
+            <span class="why-accordion__chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </summary>
+          <div class="why-accordion__body">
+            <p>
+              In regulated and semi-regulated environments, "the agent decided" is not
+              an acceptable answer. The Activity Log streams the sequence of tool
+              invocations and their arguments in real time. It is the debug surface,
+              the audit trail, and the trust primitive. When someone asks why the
+              agent opened a case, the answer is in the log.
+            </p>
+          </div>
+        </details>
 
-        <h3>Why the Activity Log is first-class</h3>
-        <p>
-          In regulated and semi-regulated environments, "the agent decided" is not
-          an acceptable answer. The Activity Log streams the sequence of tool
-          invocations and their arguments in real time. It is the debug surface,
-          the audit trail, and the trust primitive. When someone asks why the
-          agent opened a case, the answer is in the log.
-        </p>
-
-        <h3>Why writes matter</h3>
-        <p>
-          An agent that answers questions is a search bar. An agent that
-          identifies risk, opens a case, drafts communication, sends it, and
-          logs the action back to the system of record has replaced a workflow.
-          The test for whether an agent is useful is whether removing it from
-          the loop would reintroduce work.
-        </p>
+        <details class="why-accordion">
+          <summary>
+            <span class="why-accordion__heading">Why writes matter</span>
+            <span class="why-accordion__chevron"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
+          </summary>
+          <div class="why-accordion__body">
+            <p>
+              An agent that answers questions is a search bar. An agent that
+              identifies risk, opens a case, drafts communication, sends it, and
+              logs the action back to the system of record has replaced a workflow.
+              The test for whether an agent is useful is whether removing it from
+              the loop would reintroduce work.
+            </p>
+          </div>
+        </details>
 
       </div>
     </div>
@@ -2192,52 +2995,54 @@ order_date, order_qty, order_description, next_delivery</code></pre>
           agent decided and why.
         </p>
 
-        <p>
-          Step 1: <strong>Query Databricks Inventory.</strong> The agent reaches
-          into the warehouse and retrieves current stock levels against reorder
-          points across all ingredients. This is the ground truth of what is
-          on hand.
-        </p>
-        <p>
-          Step 2: <strong>Analyze Databricks Results.</strong> The agent
-          cross-references stock levels against confirmed delivery windows and
-          the three-week demand forecast. This is where it identifies the
-          signal — not a raw inventory number, but a coverage ratio against
-          future demand.
-        </p>
-        <p>
-          Step 3: <strong>Search Salesforce.</strong> The agent retrieves open
-          opportunities and account contacts for accounts that appear in the
-          at-risk set. It is looking for business exposure — who has money at
-          stake in an at-risk delivery.
-        </p>
-        <p>
-          Step 4: <strong>Risk Assessment.</strong> The agent synthesizes the
-          warehouse signal and the CRM signal into a structured risk call. In
-          this case: MEDIUM severity, 667 lbs butter shortfall, Cafe Lumiere's
-          $83,000 opportunity exposed, outreach window 24 hours. This is the
-          decision point — everything before it was data retrieval; this is
-          judgment.
-        </p>
-        <p>
-          Step 5: <strong>Create Case.</strong> The agent writes to Salesforce.
-          The Case record includes the subject, priority, linked Account and
-          Contact, current stock levels, shortage percentage, and recommended
-          action. This is the first closed-loop write — it exists in the system
-          of record independent of the chat session.
-        </p>
-        <p>
-          Step 6: <strong>Draft Outreach.</strong> The agent invokes the email
-          skill and generates a customer-facing message governed by the skill
-          file's template, tone rules, and dynamic variables. The output is
-          not free-form — it is the result of applying a structured prompt to
-          the skill.
-        </p>
-        <p>
-          Step 7: <strong>Send Email.</strong> The email fires through the
-          Gmail integration and lands in the customer's inbox. A copy is logged
-          to the Salesforce Case feed, completing the audit trail.
-        </p>
+        <details class="reasoning-step" open>
+          <summary>Step 1: <strong>Query Databricks Inventory</strong><span class="reasoning-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></summary>
+          <div class="reasoning-step__body">
+            <p>The agent reaches into the warehouse and retrieves current stock levels against reorder points across all ingredients. This is the ground truth of what is on hand.</p>
+          </div>
+        </details>
+
+        <details class="reasoning-step">
+          <summary>Step 2: <strong>Analyze Databricks Results</strong><span class="reasoning-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></summary>
+          <div class="reasoning-step__body">
+            <p>The agent cross-references stock levels against confirmed delivery windows and the three-week demand forecast. This is where it identifies the signal — not a raw inventory number, but a coverage ratio against future demand.</p>
+          </div>
+        </details>
+
+        <details class="reasoning-step">
+          <summary>Step 3: <strong>Search Salesforce</strong><span class="reasoning-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></summary>
+          <div class="reasoning-step__body">
+            <p>The agent retrieves open opportunities and account contacts for accounts that appear in the at-risk set. It is looking for business exposure — who has money at stake in an at-risk delivery.</p>
+          </div>
+        </details>
+
+        <details class="reasoning-step">
+          <summary>Step 4: <strong>Risk Assessment</strong><span class="reasoning-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></summary>
+          <div class="reasoning-step__body">
+            <p>The agent synthesizes the warehouse signal and the CRM signal into a structured risk call. In this case: MEDIUM severity, 667 lbs butter shortfall, Cafe Lumiere's $83,000 opportunity exposed, outreach window 24 hours. This is the decision point — everything before it was data retrieval; this is judgment.</p>
+          </div>
+        </details>
+
+        <details class="reasoning-step">
+          <summary>Step 5: <strong>Create Case</strong><span class="reasoning-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></summary>
+          <div class="reasoning-step__body">
+            <p>The agent writes to Salesforce. The Case record includes the subject, priority, linked Account and Contact, current stock levels, shortage percentage, and recommended action. This is the first closed-loop write — it exists in the system of record independent of the chat session.</p>
+          </div>
+        </details>
+
+        <details class="reasoning-step">
+          <summary>Step 6: <strong>Draft Outreach</strong><span class="reasoning-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></summary>
+          <div class="reasoning-step__body">
+            <p>The agent invokes the email skill and generates a customer-facing message governed by the skill file's template, tone rules, and dynamic variables. The output is not free-form — it is the result of applying a structured prompt to the skill.</p>
+          </div>
+        </details>
+
+        <details class="reasoning-step">
+          <summary>Step 7: <strong>Send Email</strong><span class="reasoning-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></summary>
+          <div class="reasoning-step__body">
+            <p>The email fires through the Gmail integration and lands in the customer's inbox. A copy is logged to the Salesforce Case feed, completing the audit trail.</p>
+          </div>
+        </details>
 
       </div>
     </div>
@@ -2267,6 +3072,11 @@ order_date, order_qty, order_description, next_delivery</code></pre>
           agent, not a different deployment. A field service app needs the same
           reasoning, surfaced differently.
         </p>
+
+        <blockquote class="headless-pullquote">
+          A headless agent is a backend runtime that surfaces in whatever interface the workflow demands.
+        </blockquote>
+
         <p>
           When the agent is decoupled from the interface, it can live in all
           of those places simultaneously — one runtime, many surfaces. The
@@ -2300,6 +3110,16 @@ order_date, order_qty, order_description, next_delivery</code></pre>
             alt="Side-by-side: portal response, Salesforce Case, and sent email"
             class="screenshot-img"
           >
+        </div>
+        <div class="proof-images-mobile">
+          <figure class="proof-figure">
+            <img src="assets/screenshots/closed-loop-proof.jpg" alt="Agent response in the portal" class="screenshot-img">
+            <figcaption>In the portal</figcaption>
+          </figure>
+          <figure class="proof-figure">
+            <img src="assets/screenshots/closed-loop-proof.jpg" alt="Case record in Salesforce" class="screenshot-img">
+            <figcaption>In Salesforce</figcaption>
+          </figure>
         </div>
         <p class="caption">
           Left: the agent's response in the portal — risk identified, case
@@ -2400,6 +3220,116 @@ order_date, order_qty, order_description, next_delivery</code></pre>
       // but the SVG plays once and stays static, so this is a no-op.
       window.replayAgentFlow = function() {};
     })();
+  </script>
+
+  <!-- Mobile nav + interactions -->
+  <script>
+    // ── Progress bar ────────────────────────────────────
+    (function() {
+      var bar = document.getElementById('scroll-progress');
+      if (!bar) return;
+      window.addEventListener('scroll', function() {
+        var scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        var scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        var progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+        bar.style.width = progress + '%';
+      }, { passive: true });
+    })();
+
+    // ── Floating nav toggle ──────────────────────────────
+    (function() {
+      var btn = document.getElementById('mobile-nav-btn');
+      var panel = document.getElementById('mobile-nav-panel');
+      if (!btn || !panel) return;
+      btn.addEventListener('click', function() {
+        var isOpen = panel.classList.toggle('is-open');
+        btn.setAttribute('aria-expanded', isOpen);
+        btn.classList.toggle('is-active', isOpen);
+      });
+      // Close on link click
+      panel.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          panel.classList.remove('is-open');
+          btn.classList.remove('is-active');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+      // Close on outside click
+      document.addEventListener('click', function(e) {
+        if (!panel.contains(e.target) && !btn.contains(e.target)) {
+          panel.classList.remove('is-open');
+          btn.classList.remove('is-active');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    })();
+
+    // ── Overview cards carousel ───────────────────────────
+    (function() {
+      var track = document.getElementById('overview-cards-track');
+      var dots = document.getElementById('overview-cards-dots');
+      if (!track || !dots) return;
+      var cards = track.querySelectorAll('.decision-card');
+      var total = cards.length;
+      var current = 0;
+
+      // Create dots
+      for (var i = 0; i < total; i++) {
+        var dot = document.createElement('button');
+        dot.className = 'overview-cards-carousel__dot' + (i === 0 ? ' is-active' : '');
+        dot.setAttribute('aria-label', 'Go to card ' + (i + 1));
+        dot.dataset.index = i;
+        dots.appendChild(dot);
+      }
+
+      function goTo(index) {
+        current = Math.max(0, Math.min(index, total - 1));
+        track.style.transform = 'translateX(-' + (current * 85) + 'vw)';
+        dots.querySelectorAll('.overview-cards-carousel__dot').forEach(function(d, i) {
+          d.classList.toggle('is-active', i === current);
+        });
+      }
+
+      dots.addEventListener('click', function(e) {
+        if (e.target.classList.contains('overview-cards-carousel__dot')) {
+          goTo(parseInt(e.target.dataset.index));
+        }
+      });
+
+      // Keyboard navigation
+      document.addEventListener('keydown', function(e) {
+        if (!document.getElementById('overview-cards-carousel').getBoundingClientRect) return;
+        var rect = track.getBoundingClientRect();
+        var isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        if (!isVisible) return;
+        if (e.key === 'ArrowRight') { e.preventDefault(); goTo(current + 1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+      });
+
+      // Touch/swipe
+      var startX = 0;
+      track.addEventListener('touchstart', function(e) { startX = e.touches[0].clientX; }, { passive: true });
+      track.addEventListener('touchend', function(e) {
+        var delta = e.changedTouches[0].clientX - startX;
+        if (Math.abs(delta) > 40) {
+          goTo(delta < 0 ? current + 1 : current - 1);
+        }
+      });
+    })();
+
+    // ── Accordion: single-open behavior ─────────────────
+    document.querySelectorAll('.why-accordion, .reasoning-step').forEach(function(accordion) {
+      accordion.addEventListener('toggle', function() {
+        if (accordion.open) {
+          var group = accordion.classList.contains('why-accordion')
+            ? '.why-accordion'
+            : '.reasoning-step';
+          document.querySelectorAll(group).forEach(function(other) {
+            if (other !== accordion) other.open = false;
+          });
+        }
+      });
+    });
   </script>
 
 </body>
