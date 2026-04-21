@@ -856,7 +856,7 @@
                                     <button class="btn-send-email" onclick="sendOutreachEmail(this, '${taskId}')">Send Email</button>
                                     <button class="btn-dismiss-email" onclick="this.closest('.email-action-btn').remove()">Dismiss</button>
                                 </div>
-                                <div class="email-preview">${escapeHtml(data.outreach_email).split('\n').slice(4).join('<br>')}</div>
+                                <div class="email-preview">${(data.outreach_email || '').split('\n').slice(4).join('<br>')}</div>
                             </div>
                         `;
                         chatMessages.appendChild(emailBtn);
@@ -953,10 +953,10 @@
             return name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
         }
 
-        // Render agent message content with basic markdown + safe HTML insertion.
+        // Render markdown-like formatting (bold, newlines) before HTML escaping
         function renderAgentContent(text) {
             if (!text) return '';
-            // Step 1: Convert deliberate markdown markers to placeholders
+            // Step 1: Convert deliberate markdown markers to safe placeholders
             const BO = '\x01BO';
             const BC = '\x01BC';
             const BR = '\x01BR';
@@ -964,21 +964,20 @@
                 .replace(/\*\*(.+?)\*\*/g, BO + '$1' + BC)
                 .replace(/\n\n/g, BR + BR)
                 .replace(/\n(?!\n)/g, BR);
-            // Step 2: HTML-escape everything else (user content from Salesforce)
+            // Step 2: HTML-escape everything else
             html = html
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#39;');
-            // Step 3: Restore intentional HTML tags
+            // Step 3: Restore our intentional tags
             html = html
                 .replace(new RegExp(BO, 'g'), '<strong>')
                 .replace(new RegExp(BC, 'g'), '</strong>')
                 .replace(new RegExp(BR, 'g'), '<br>');
             return html;
         }
-
 
         // Load chat history on page load
         async function loadHistory() {
