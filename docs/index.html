@@ -158,6 +158,9 @@
       html {
         overflow-x: hidden;
       }
+      html {
+        overflow-x: hidden;
+      }
 
       .container,
       .container--wide {
@@ -223,6 +226,10 @@
       /* Slow hero animation on mobile */
       .agent-flow-svg {
         animation-duration: 12s !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0;
+        height: auto;
       }
 
       /* ─── OVERVIEW — CAROUSEL ────────────────────────── */
@@ -250,24 +257,17 @@
       }
       .overview-cards-carousel__track {
         display: flex;
-        gap: 12px;
-        overflow-x: scroll;
-        scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        padding-bottom: 8px;
-        width: 100%;
+        gap: 0;
+        /* No overflow-x scroll — JS transforms handle the swipe, no black square */
+        width: 400vw;
         transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
-      }
-      .overview-cards-carousel__track::-webkit-scrollbar {
-        display: none;
       }
       .overview-cards-carousel__track .decision-card {
         flex: 0 0 85vw;
-        scroll-snap-align: start;
         width: 85vw;
         max-width: 85vw;
         min-width: 85vw;
+        scroll-snap-align: none;
       }
       .overview-cards-carousel__dots {
         display: flex;
@@ -672,8 +672,10 @@
 
       /* ─── CLOSED-LOOP PROOF ──────────────────────────── */
       /* Original desktop image hidden on mobile */
-      #proof .diagram-wrap {
-        display: none;
+      /* Desktop proof image + caption hidden on mobile */
+      #proof .diagram-wrap,
+      #proof .caption {
+        display: none !important;
       }
       .proof-images-mobile {
         display: flex;
@@ -3278,7 +3280,8 @@ order_date, order_qty, order_description, next_delivery</code></pre>
 
       function goTo(index) {
         current = Math.max(0, Math.min(index, total - 1));
-        track.style.transform = 'translateX(-' + (current * 85) + 'vw)';
+        var pct = (current * 85 / 400 * 100).toFixed(4);
+        track.style.transform = 'translateX(-' + pct + '%)';
         dots.querySelectorAll('.overview-cards-carousel__dot').forEach(function(d, i) {
           d.classList.toggle('is-active', i === current);
         });
