@@ -700,6 +700,17 @@
       }
     }
 
+    /* Video — inside hero section (desktop: after CTA) */
+    #video-section {
+      order: 1;
+      width: 100%;
+      max-width: 780px;
+      margin: var(--space-lg) auto 0;
+    }
+    .hero__cta-no-link {
+      order: 0;
+    }
+
     @media (max-width: 640px) {
       :root {
         --space-md: 20px;
@@ -859,17 +870,13 @@
         height: auto;
       }
 
-      /* Hero + video layout — stack on mobile, video after hero */
-      .hero-layout {
-        display: flex;
-        flex-direction: column;
+      /* Video — inside hero section (mobile: pull to top, before CTA) */
+      #video-section {
+        order: -1;
+        margin-top: var(--space-md);
       }
-      .hero-layout .hero {
+      .hero__cta-no-link {
         order: 1;
-      }
-      .hero-layout #video-section {
-        order: 2;
-        margin-top: 0;
       }
     }
 
@@ -1263,7 +1270,6 @@
   <!-- ═══════════════════════════════════════════════════════
        SECTION 1: HERO
   ════════════════════════════════════════════════════════ -->
-  <div class="hero-layout">
   <section class="hero" id="hero">
     <div class="container--wide">
 
@@ -1591,6 +1597,22 @@
       <!-- CTA -->
       <p class="hero__cta-no-link">Groq · Databricks · Salesforce</p>
 
+      <!-- Demo Video — lives inside hero; order CSS pulls it to top on mobile -->
+      <div id="video-section" style="width: 100%; max-width: 780px; margin: 0 auto;">
+        <video
+          class="hero__video"
+          controls
+          playsinline
+          preload="none"
+          title="Chaz Agent Portal Demo"
+          poster="assets/screenshots/video-poster.svg"
+          style="width: 100%; border-radius: 12px; display: block;"
+        >
+          <source src="https://github.com/toddclawbot-cmyk/chaz-agent-portal/releases/download/v1.0-demo/Chaz.Bakery.Demo.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+
     </div>
   </section>
 
@@ -1769,27 +1791,6 @@
       </div>
     </div>
   </section>
-
-      <!-- Demo Video -->
-      <div class="container" id="video-section">
-        <div class="content">
-          <div class="hero__video-wrap reveal" style="text-align: center; margin: 32px 0;">
-            <video
-              class="hero__video"
-              controls
-              playsinline
-              preload="none"
-              title="Chaz Agent Portal Demo"
-              poster="assets/screenshots/video-poster.svg"
-              style="max-width: 840px; width: 100%; display: block; margin: 0 auto; border-radius: 12px;"
-            >
-              <source src="https://github.com/toddclawbot-cmyk/chaz-agent-portal/releases/download/v1.0-demo/Chaz.Bakery.Demo.mp4" type="video/mp4">
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </div>
-      </div>
-  </div><!-- end hero-layout -->
 
   <!-- ═══════════════════════════════════════════════════════
        WALKTHROUGH OF THREE TURNS
