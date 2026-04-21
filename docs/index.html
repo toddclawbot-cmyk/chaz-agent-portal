@@ -1,171 +1,3 @@
-  <section class="data-stack" id="scenario">
-    <div class="container">
-      <div class="content">
-        <p class="section-label">The Scenario</p>
-        <h2>Chaz's Bakery and Its Restaurant Accounts</h2>
-
-        <div class="scenario-grid">
-
-          <div class="scenario-prose">
-            <p>
-              Chaz's Bakery is a wholesale bakery serving restaurant accounts in the
-              Boston area. The operations team manages order volume, ingredient
-              procurement, and delivery logistics across dozens of active accounts —
-              Cafe Lumiere, Grand Hotels &amp; Resorts, United Oil &amp; Gas, and others.
-              They run their planning in a data warehouse; they run their account
-              relationships in a CRM. These two systems do not talk to each other.
-            </p>
-            <p>
-              The portal is their interface. When a team member asks a question, the
-              agent decides which system to query and returns an answer grounded in
-              live data. When conditions warrant it — a shortage detected, a
-              delivery at risk — the agent closes the loop autonomously: it opens a
-              case in the CRM, drafts a customer email governed by a skill file
-              checked into source control, sends it, and logs the action against the
-              account record.
-            </p>
-            <p>
-              In the walkthrough below, the specific numbers are real: a $83,000
-              opportunity at Cafe Lumiere, a 667-pound butter shortage identified
-              across a three-week demand window, Case 00001077 created and
-              resolved in the CRM, and an outbound email that landed in the
-              customer's inbox — all triggered by a natural-language question about
-              inventory risk.
-            </p>
-          </div>
-
-          <div class="scenario-card-col">
-            <div class="account-card">
-              <div class="account-card__header">
-                <div class="account-card__avatar">
-                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4a8fa8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 11l19-9-9 19-2-8-8-2z"/>
-                  </svg>
-                </div>
-                <div class="account-card__name-block">
-                  <div class="account-card__name">Cafe Lumiere</div>
-                  <div class="account-card__meta">Restaurant · Boston, MA</div>
-                </div>
-              </div>
-              <div class="account-card__divider"></div>
-              <div class="account-card__section">
-                <div class="account-card__label">Primary Contact</div>
-                <div class="account-card__value">Taylor Nguyen — Owner</div>
-              </div>
-              <div class="account-card__section">
-                <div class="account-card__opp-name">Full Pastry Program</div>
-                <div class="account-card__opp-amount">$83,000</div>
-                <div class="account-card__opp-details">Close 2026-05-15 · Perception Analysis</div>
-              </div>
-              <div class="account-card__risk">
-                <div class="account-card__risk-dot"></div>
-                <div class="account-card__risk-text">
-                  <span class="account-card__risk-label">At Risk</span>
-                  <span class="account-card__risk-detail">667 lbs butter shortfall</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="agent" id="agent">
-    <div class="container">
-      <div class="content">
-        <p class="section-label">Overview</p>
-        <h2>What This Page Documents</h2>
-
-        <!-- Two-column layout -->
-        <div class="overview-grid">
-
-          <!-- Left: prose (55%) -->
-          <div class="overview-prose">
-            <p>
-              An internal web app — purpose-built for an operations team — that routes
-              natural-language questions to live data systems, reasons across them, and
-              writes back to a system of record when action is warranted. The agent
-              is headless: it runs as a backend service, not a chatbot widget. The
-              interface is a product decision, not a runtime constraint.
-            </p>
-            <p>
-              Three integrations are wired in this demonstration: a data warehouse
-              holding operational tables, a CRM managing account relationships, and an
-              email system completing the write-back path. The pattern is
-              tool-agnostic. Every binding shown is swappable.
-            </p>
-          </div>
-
-          <!-- Right: design decision cards (40%) -->
-          <div class="overview-cards">
-
-            <div class="decision-card">
-              <div class="decision-card__icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-                </svg>
-              </div>
-              <div class="decision-card__body">
-                <div class="decision-card__title">Purpose-built UI</div>
-                <div class="decision-card__desc">Not a generic chat widget. The interface is a product decision, made per workflow.</div>
-              </div>
-            </div>
-
-            <div class="decision-card">
-              <div class="decision-card__icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
-                  <path d="M6 21V9a9 9 0 0 0 9 9"/>
-                </svg>
-              </div>
-              <div class="decision-card__body">
-                <div class="decision-card__title">Two data planes</div>
-                <div class="decision-card__desc">Operational data stays in the warehouse. Relationship data stays in the CRM. Federated at query time.</div>
-              </div>
-            </div>
-
-            <div class="decision-card">
-              <div class="decision-card__icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-                </svg>
-              </div>
-              <div class="decision-card__body">
-                <div class="decision-card__title">Skills in version control</div>
-                <div class="decision-card__desc">Agent behavior lives in markdown files, not a vendor console. Reviewable, diffable, portable.</div>
-              </div>
-            </div>
-
-            <div class="decision-card">
-              <div class="decision-card__icon">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
-                </svg>
-              </div>
-              <div class="decision-card__body">
-                <div class="decision-card__title">Reasoning as first-class feature</div>
-                <div class="decision-card__desc">The Activity Log is the audit trail and the trust primitive. Not a debug view.</div>
-              </div>
-            </div>
-
-          </div>
-        </div><!-- /overview-grid -->
-
-        <!-- Pull quote -->
-        <div class="overview-pullquote">
-          What makes this worth documenting is not the integrations — those are straightforward API work.
-          It is the design decisions that surround them: why a purpose-built UI instead of a generic
-          chat surface, why two separate data planes instead of one, why agent behavior lives in
-          version control rather than a vendor console, and why the reasoning trace is a
-          first-class feature of the system rather than a debug view.
-        </div>
-
-      </div>
-    </div>
-  </section>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -293,6 +125,17 @@
     @keyframes pulse-bg {
       0%, 100% { opacity: 0.6; transform: scale(1); }
       50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    .hero__agent-flow {
+      width: 100%;
+      max-width: 960px;
+      margin: 0 auto var(--space-lg);
+    }
+    .agent-flow-svg {
+      width: 100%;
+      height: auto;
+      display: block;
     }
 
     .hero__illustration {
@@ -1034,163 +877,190 @@
         line-height: 1.8;
       }
 
-
+  
 
       /* ── Overview: two-column grid ── */
       .overview-grid {
         display: grid;
-        grid-template-columns: 55% 1fr;
-        gap: 40px;
-        align-items: start;
-        margin-top: 8px;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px 40px;
+        margin-top: 28px;
+      }
+      .overview-prose {
+        padding-top: 4px;
       }
       .overview-prose p {
         color: var(--text-secondary);
-        font-size: 15px;
         line-height: 1.8;
-        margin: 0 0 16px;
+        font-size: 0.97rem;
       }
-      .overview-prose p:last-child { margin-bottom: 0; }
+      .overview-prose p + p {
+        margin-top: 14px;
+      }
 
-      /* ── Decision cards ── */
+      /* ── Decision cards (4-up) ── */
       .overview-cards {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
       }
       .decision-card {
-        display: flex;
-        gap: 14px;
-        align-items: flex-start;
-        padding: 14px 16px;
-        background: rgba(6, 14, 28, 0.6);
+        background: rgba(14, 34, 54, 0.6);
         border: 1px solid rgba(74, 143, 168, 0.18);
-        border-radius: 8px;
-        transition: border-color 0.2s;
+        border-radius: 10px;
+        padding: 14px 16px;
+        display: flex;
+        gap: 10px;
+        align-items: flex-start;
       }
-      .decision-card:hover { border-color: rgba(74, 143, 168, 0.35); }
       .decision-card__icon {
-        color: var(--accent-cyan);
         flex-shrink: 0;
-        margin-top: 2px;
-        opacity: 0.7;
+        width: 28px;
+        height: 28px;
+        background: rgba(74, 143, 168, 0.1);
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #4a8fa8;
+        margin-top: 1px;
       }
-      .decision-card__body { flex: 1; }
+      .decision-card__body {
+        flex: 1;
+        min-width: 0;
+      }
       .decision-card__title {
-        font-family: var(--font-mono);
-        font-size: 10px;
-        font-weight: 700;
-        color: var(--accent-cyan);
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
+        font-family: var(--font-heading);
+        font-size: 0.82rem;
+        font-weight: 600;
+        color: var(--text-primary);
         margin-bottom: 4px;
+        line-height: 1.3;
       }
       .decision-card__desc {
-        font-size: 12px;
-        color: var(--text-secondary);
+        font-size: 0.78rem;
+        color: var(--text-muted);
         line-height: 1.55;
       }
 
       /* ── Overview pull quote ── */
       .overview-pullquote {
-        margin-top: 36px;
-        padding: 22px 32px;
-        border-left: 2px solid rgba(74, 143, 168, 0.3);
-        font-family: var(--font-serif);
-        font-size: 15px;
-        font-style: italic;
+        margin-top: 24px;
+        padding: 16px 24px;
+        border-left: 3px solid var(--accent);
+        background: rgba(74, 143, 168, 0.06);
+        border-radius: 0 8px 8px 0;
+        font-size: 0.9rem;
         color: var(--text-secondary);
         line-height: 1.75;
-        background: rgba(6, 14, 28, 0.3);
-        border-radius: 0 6px 6px 0;
+        font-style: italic;
       }
 
       /* ── Scenario: two-column grid ── */
       .scenario-grid {
         display: grid;
-        grid-template-columns: 58% 1fr;
-        gap: 40px;
+        grid-template-columns: 1fr 340px;
+        gap: 32px 40px;
+        margin-top: 28px;
         align-items: start;
-        margin-top: 8px;
       }
       .scenario-prose p {
         color: var(--text-secondary);
-        font-size: 15px;
         line-height: 1.8;
-        margin: 0 0 16px;
+        font-size: 0.97rem;
       }
-      .scenario-prose p:last-child { margin-bottom: 0; }
-
-      /* ── Account card ── */
+      .scenario-prose p + p {
+        margin-top: 14px;
+      }
       .scenario-card-col {
         position: sticky;
-        top: 80px;
+        top: 24px;
       }
+
+      /* ── Account card ── */
       .account-card {
-        background: #081525;
-        border: 1px solid rgba(74, 143, 168, 0.2);
-        border-radius: 10px;
-        padding: 20px;
-        font-family: var(--font-mono);
+        background: rgba(14, 34, 54, 0.7);
+        border: 1px solid rgba(74, 143, 168, 0.25);
+        border-radius: 12px;
+        padding: 18px 20px;
+        font-size: 0.82rem;
       }
       .account-card__header {
         display: flex;
-        align-items: center;
         gap: 12px;
+        align-items: center;
         margin-bottom: 14px;
       }
       .account-card__avatar {
         width: 40px;
         height: 40px;
-        border-radius: 8px;
-        background: rgba(74, 143, 168, 0.1);
-        border: 1px solid rgba(74, 143, 168, 0.2);
+        background: rgba(74, 143, 168, 0.12);
+        border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
       }
+      .account-card__name-block {
+        flex: 1;
+        min-width: 0;
+      }
       .account-card__name {
-        font-size: 13px;
-        font-weight: 700;
-        color: #c8d4e0;
-        letter-spacing: 0.04em;
-        text-transform: uppercase;
+        font-family: var(--font-heading);
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: var(--text-primary);
       }
       .account-card__meta {
-        font-size: 10px;
-        color: #2a4a6a;
+        font-size: 0.75rem;
+        color: var(--text-muted);
         margin-top: 2px;
       }
       .account-card__divider {
         height: 1px;
-        background: rgba(74, 143, 168, 0.12);
-        margin: 14px 0;
+        background: rgba(74, 143, 168, 0.15);
+        margin: 12px 0;
       }
-      .account-card__section { margin-bottom: 12px; }
+      .account-card__section {
+        margin-bottom: 12px;
+      }
+      .account-card__label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        margin-bottom: 3px;
+      }
+      .account-card__value {
+        color: var(--text-secondary);
+        font-size: 0.82rem;
+      }
       .account-card__opp-name {
-        font-size: 12px;
-        color: #c8d4e0;
+        color: var(--accent);
+        font-weight: 500;
+        font-size: 0.82rem;
         margin-bottom: 2px;
       }
       .account-card__opp-amount {
-        font-size: 15px;
+        font-family: var(--font-heading);
+        font-size: 1.4rem;
         font-weight: 700;
-        color: #c8d4e0;
-        margin-bottom: 2px;
+        color: var(--text-primary);
+        line-height: 1.2;
       }
       .account-card__opp-details {
-        font-size: 9px;
-        color: #2a4a6a;
+        font-size: 0.72rem;
+        color: var(--text-muted);
+        margin-top: 2px;
       }
       .account-card__risk {
         display: flex;
         align-items: center;
         gap: 10px;
+        background: rgba(181, 105, 74, 0.12);
+        border: 1px solid rgba(181, 105, 74, 0.3);
+        border-radius: 8px;
         padding: 10px 12px;
-        background: rgba(181, 105, 74, 0.08);
-        border: 1px solid rgba(181, 105, 74, 0.25);
-        border-radius: 6px;
         margin-top: 14px;
       }
       .account-card__risk-dot {
@@ -1199,32 +1069,27 @@
         border-radius: 50%;
         background: #b5694a;
         flex-shrink: 0;
-        box-shadow: 0 0 6px rgba(181, 105, 74, 0.6);
+      }
+      .account-card__risk-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
       }
       .account-card__risk-label {
-        font-size: 10px;
-        font-weight: 700;
+        font-size: 0.75rem;
+        font-weight: 600;
         color: #b5694a;
-        letter-spacing: 0.06em;
-        text-transform: uppercase;
-        display: block;
       }
       .account-card__risk-detail {
-        font-size: 10px;
-        color: #8a6050;
-        display: block;
-        margin-top: 1px;
+        font-size: 0.72rem;
+        color: var(--text-secondary);
       }
 
       /* ── Responsive ── */
-      @media (max-width: 900px) {
+      @media (max-width: 860px) {
         .overview-grid,
         .scenario-grid {
           grid-template-columns: 1fr;
-          gap: 28px;
-        }
-        .overview-pullquote {
-          padding: 18px 24px;
         }
         .scenario-card-col {
           position: static;
@@ -1234,30 +1099,438 @@
         }
       }
 
+</style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 1: HERO
+  ════════════════════════════════════════════════════════ -->
+  <section class="hero" id="hero">
+    <div class="container--wide">
+
+      <!-- Hero Animation: Agent Reasoning Flow -->
+      <!--
+        Animation: 3-stage horizontal flow (Question → 7 Steps → Case Record)
+        Loop: ~9s total — 0.5s question, 3.2s steps (400ms × 8), 2s hold, 1.5s fade, 1.8s reset
+        Reduced motion: static final state (all steps done, case card visible)
+      -->
+      <div class="hero__agent-flow" aria-label="Animation showing an AI agent receiving a question, executing seven reasoning steps, and creating a case record">
+        <svg class="agent-flow-svg" viewBox="0 0 900 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true">
+
+          <defs>
+            <style>
+              /* ── Base states ── */
+              .s, .step-label, .step-icon, .step-dot, .case-card {
+                opacity: 0;
+              }
+              .step-connector {
+                opacity: 0;
+                stroke-dasharray: 40;
+                stroke-dashoffset: 40;
+              }
+              /* ── Reduced motion: show final state immediately ── */
+              @media (prefers-reduced-motion: reduce) {
+                .s { opacity: 1 !important; }
+                .step-label, .step-icon, .step-dot, .case-card { opacity: 1 !important; }
+                .step-connector { opacity: 0.4 !important; stroke-dashoffset: 0 !important; }
+                .agent-flow-svg { animation: none !important; }
+                .q-bubble { opacity: 1 !important; transform: none !important; }
+                .q-cursor { display: none !important; }
+              }
+              /* ── Question bubble ── */
+              .q-bubble {
+                opacity: 0;
+                transform: translateX(-16px);
+                animation: qIn 0.5s ease-out 0.3s forwards;
+              }
+              @keyframes qIn {
+                to { opacity: 1; transform: translateX(0); }
+              }
+              .q-cursor {
+                animation: blink 1s step-end 0.8s 3;
+              }
+              @keyframes blink {
+                0%, 100% { opacity: 1; }
+                50% { opacity: 0; }
+              }
+              /* ── Step row: slide + fade in ── */
+              .s {
+                animation: stepIn 0.35s ease-out forwards;
+              }
+              @keyframes stepIn {
+                from { opacity: 0; transform: translateX(10px); }
+                to   { opacity: 1; transform: translateX(0); }
+              }
+              /* ── Pulsing dot while "running" ── */
+              .step-dot.run {
+                animation: pulse 0.9s ease-in-out 1 forwards;
+              }
+              @keyframes pulse {
+                0%   { r: 3; opacity: 0.7; }
+                50%  { r: 5; opacity: 1; }
+                100% { r: 3; opacity: 0.7; }
+              }
+              /* ── Connector line draws in ── */
+              .step-connector {
+                animation: drawLine 0.25s ease-out forwards;
+              }
+              @keyframes drawLine {
+                to { stroke-dashoffset: 0; opacity: 0.35; }
+              }
+              /* ── Case card slides in ── */
+              .case-card {
+                animation: cardIn 0.45s cubic-bezier(0.22,1,0.36,1) forwards;
+              }
+              @keyframes cardIn {
+                from { opacity: 0; transform: translateX(20px); }
+                to   { opacity: 1; transform: translateX(0); }
+              }
+              @keyframes cardGlow {
+                0%   { stroke-opacity: 0.6; }
+                50%  { stroke-opacity: 0; }
+                100% { stroke-opacity: 0; }
+              }
+              /* ── Entire SVG fades out at end of loop ── */
+              .agent-flow-svg {
+                animation: flowLoop 9.5s ease-in-out infinite;
+              }
+              @keyframes flowLoop {
+                0%   { opacity: 1; }
+                79%  { opacity: 1; }   /* hold 7.5s */
+                92%  { opacity: 0; }   /* fade out 1.3s */
+                93%  { opacity: 0; }   /* stay hidden during reset */
+                100% { opacity: 1; }   /* restart */
+              }
+            </style>
+          </defs>
+
+          <!-- Background -->
+          <rect width="900" height="320" fill="none"/>
+
+          <!-- ─────────── STAGE 1: QUESTION ─────────── -->
+          <g class="stage-label" opacity="0.4">
+            <text x="85" y="18" font-family="monospace" font-size="8" fill="#4a6e8a" letter-spacing="2">QUESTION</text>
+          </g>
+
+          <!-- Chat bubble + cursor -->
+          <g class="q-bubble">
+            <!-- Bubble -->
+            <rect x="18" y="30" width="162" height="50" rx="10"
+              fill="#0e2236" stroke="#1e3a55" stroke-width="1"/>
+            <!-- Tail -->
+            <polygon points="14,50 10,58 22,52" fill="#0e2236"/>
+            <!-- Text -->
+            <text x="32" y="49" font-family="monospace" font-size="9" fill="#c8d4e0">
+              <tspan>Is there any inventory</tspan>
+              <tspan x="32" dy="13">risk over the next</tspan>
+              <tspan x="32" dy="13">three weeks?</tspan>
+            </text>
+            <!-- Cursor -->
+            <rect class="q-cursor" x="172" y="35" width="6" height="11" rx="1" fill="#4a8fa8"/>
+          </g>
+
+          <!-- "User" label -->
+          <text x="85" y="98" font-family="monospace" font-size="7" fill="#2a4a6a" text-anchor="middle">user</text>
+
+          <!-- Arrow 1→2 -->
+          <line x1="188" y1="55" x2="222" y2="55"
+            stroke="#4a8fa8" stroke-width="1" stroke-opacity="0.35"
+            marker-end="url(#arr)"/>
+          <defs>
+            <marker id="arr" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <polygon points="0 0,6 2.5,0 5" fill="#4a8fa8" fill-opacity="0.35"/>
+            </marker>
+          </defs>
+
+          <!-- ─────────── STAGE 2: REASONING TRACE ─────────── -->
+          <!-- Header -->
+          <g class="stage-label" opacity="0.4">
+            <text x="465" y="18" font-family="monospace" font-size="8" fill="#4a6e8a" letter-spacing="2">AGENT ACTIVITY LOG</text>
+          </g>
+
+          <!-- Step definitions (all invisible initially, JS controls timing) -->
+          <!-- Steps are positioned at x=225, y=30+i*36 -->
+
+          <!-- Step 1: Query Databricks Inventory -->
+          <g class="s" id="step1" style="animation-delay:0.8s">
+            <rect x="225" y="30" width="295" height="30" rx="6"
+              fill="#0e2236" stroke="#1e3a55" stroke-width="1"/>
+            <!-- Icon: warehouse/database -->
+            <g transform="translate(236,45)">
+              <rect x="0" y="0" width="10" height="8" rx="1" fill="none" stroke="#4a8fa8" stroke-width="1"/>
+              <line x1="0" y1="3" x2="10" y2="3" stroke="#4a8fa8" stroke-width="0.7"/>
+              <line x1="0" y1="6" x2="10" y2="6" stroke="#4a8fa8" stroke-width="0.7"/>
+            </g>
+            <text x="252" y="49" font-family="monospace" font-size="9" fill="#c8d4e0">Query Databricks Inventory</text>
+            <!-- Dot -->
+            <circle id="dot1" cx="510" cy="45" r="3" fill="#4a8fa8"/>
+            <!-- Connector to step 2 -->
+            <line class="step-connector" x1="515" y1="45" x2="515" y2="61"
+              stroke="#4a8fa8" style="animation-delay:1.15s"/>
+          </g>
+
+          <!-- Step 2: Analyze Databricks Results -->
+          <g class="s" id="step2" style="animation-delay:1.2s">
+            <rect x="225" y="66" width="295" height="30" rx="6"
+              fill="#0e2236" stroke="#1e3a55" stroke-width="1"/>
+            <!-- Icon: chart -->
+            <g transform="translate(236,81)">
+              <polyline points="0,8 4,4 7,6 10,2" fill="none" stroke="#4a8fa8" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"/>
+            </g>
+            <text x="252" y="85" font-family="monospace" font-size="9" fill="#c8d4e0">Analyze Databricks Results</text>
+            <circle id="dot2" cx="510" cy="81" r="3" fill="#4a8fa8"/>
+            <line class="step-connector" x1="515" y1="81" x2="515" y2="97"
+              stroke="#4a8fa8" style="animation-delay:1.55s"/>
+          </g>
+
+          <!-- Step 3: Search Salesforce -->
+          <g class="s" id="step3" style="animation-delay:1.6s">
+            <rect x="225" y="102" width="295" height="30" rx="6"
+              fill="#0e2236" stroke="#1e3a55" stroke-width="1"/>
+            <!-- Icon: cloud -->
+            <g transform="translate(236,117)">
+              <path d="M4,10 Q0,10 0,7 Q0,4 3,4 Q4,1 7,3 Q9,1 10,3 Q13,4 13,7 Q13,10 10,10 Z"
+                fill="none" stroke="#4a8fa8" stroke-width="1"/>
+            </g>
+            <text x="252" y="121" font-family="monospace" font-size="9" fill="#c8d4e0">Search Salesforce</text>
+            <circle id="dot3" cx="510" cy="117" r="3" fill="#4a8fa8"/>
+            <line class="step-connector" x1="515" y1="117" x2="515" y2="133"
+              stroke="#4a8fa8" style="animation-delay:1.95s"/>
+          </g>
+
+          <!-- Step 4: Risk Assessment — AMBER accent -->
+          <g class="s" id="step4" style="animation-delay:2.0s">
+            <rect x="225" y="138" width="295" height="30" rx="6"
+              fill="#1a1400" stroke="#b5694a" stroke-width="1.5"/>
+            <!-- Icon: warning shield -->
+            <g transform="translate(236,153)">
+              <path d="M5,0 L10,3 L10,7 Q10,10 5,12 Q0,10 0,7 L0,3 Z"
+                fill="none" stroke="#b5694a" stroke-width="1"/>
+              <line x1="5" y1="4" x2="5" y2="8" stroke="#b5694a" stroke-width="1" stroke-linecap="round"/>
+              <circle cx="5" cy="9.5" r="0.7" fill="#b5694a"/>
+            </g>
+            <text x="252" y="157" font-family="monospace" font-size="9" fill="#e8c4a0">Risk Assessment: MEDIUM</text>
+            <circle id="dot4" cx="510" cy="153" r="3" fill="#b5694a"/>
+            <line class="step-connector" x1="515" y1="153" x2="515" y2="169"
+              stroke="#b5694a" style="animation-delay:2.35s"/>
+          </g>
+
+          <!-- Step 5: Create Case -->
+          <g class="s" id="step5" style="animation-delay:2.4s">
+            <rect x="225" y="174" width="295" height="30" rx="6"
+              fill="#0e2236" stroke="#1e3a55" stroke-width="1"/>
+            <!-- Icon: document -->
+            <g transform="translate(236,189)">
+              <rect x="2" y="0" width="7" height="10" rx="1" fill="none" stroke="#4a8fa8" stroke-width="1"/>
+              <line x1="4" y1="3" x2="7" y2="3" stroke="#4a8fa8" stroke-width="0.7"/>
+              <line x1="4" y1="5" x2="7" y2="5" stroke="#4a8fa8" stroke-width="0.7"/>
+              <line x1="4" y1="7" x2="6" y2="7" stroke="#4a8fa8" stroke-width="0.7"/>
+            </g>
+            <text x="252" y="193" font-family="monospace" font-size="9" fill="#c8d4e0">Create Case</text>
+            <circle id="dot5" cx="510" cy="189" r="3" fill="#4a8fa8"/>
+            <line class="step-connector" x1="515" y1="189" x2="515" y2="205"
+              stroke="#4a8fa8" style="animation-delay:2.75s"/>
+          </g>
+
+          <!-- Step 6: Draft Outreach -->
+          <g class="s" id="step6" style="animation-delay:2.8s">
+            <rect x="225" y="210" width="295" height="30" rx="6"
+              fill="#0e2236" stroke="#1e3a55" stroke-width="1"/>
+            <!-- Icon: pencil -->
+            <g transform="translate(236,225)">
+              <path d="M1,11 L3,7 L8,2 L9,3 L4,8 Z" fill="none" stroke="#4a8fa8" stroke-width="1" stroke-linejoin="round"/>
+              <line x1="3" y1="7" x2="5" y2="9" stroke="#4a8fa8" stroke-width="1" stroke-linecap="round"/>
+            </g>
+            <text x="252" y="229" font-family="monospace" font-size="9" fill="#c8d4e0">Draft Outreach</text>
+            <circle id="dot6" cx="510" cy="225" r="3" fill="#4a8fa8"/>
+            <line class="step-connector" x1="515" y1="225" x2="515" y2="241"
+              stroke="#4a8fa8" style="animation-delay:3.15s"/>
+          </g>
+
+          <!-- Step 7: Send Email -->
+          <g class="s" id="step7" style="animation-delay:3.2s">
+            <rect x="225" y="246" width="295" height="30" rx="6"
+              fill="#0e2236" stroke="#1e3a55" stroke-width="1"/>
+            <!-- Icon: paper plane -->
+            <g transform="translate(236,261)">
+              <polygon points="1,5 11,1 6,12" fill="none" stroke="#4a8fa8" stroke-width="1" stroke-linejoin="round"/>
+            </g>
+            <text x="252" y="265" font-family="monospace" font-size="9" fill="#c8d4e0">Send Email</text>
+            <circle id="dot7" cx="510" cy="261" r="3" fill="#4a8fa8"/>
+          </g>
+
+          <!-- Arrow 2→3 -->
+          <g opacity="0">
+            <line x1="530" y1="161" x2="568" y2="161"
+              stroke="#4a8fa8" stroke-width="1" stroke-opacity="0.35"
+              marker-end="url(#arr2)"/>
+          </g>
+          <defs>
+            <marker id="arr2" markerWidth="6" markerHeight="5" refX="5" refY="2.5" orient="auto">
+              <polygon points="0 0,6 2.5,0 5" fill="#4a8fa8" fill-opacity="0.35"/>
+            </marker>
+          </defs>
+
+          <!-- ─────────── STAGE 3: CASE RECORD ─────────── -->
+          <g class="stage-label" opacity="0.4">
+            <text x="790" y="18" font-family="monospace" font-size="8" fill="#4a6e8a" letter-spacing="2" text-anchor="end">CASE RECORD</text>
+          </g>
+
+          <!-- Case card -->
+          <g class="case-card" style="animation-delay:3.65s">
+            <rect x="578" y="30" width="190" height="190" rx="10"
+              fill="#0a1825" stroke="#2a5a7a" stroke-width="1"/>
+            <!-- Glow on arrival -->
+            <rect x="578" y="30" width="190" height="190" rx="10"
+              fill="none" stroke="#4a8fa8" stroke-width="1.5" stroke-opacity="0"
+              style="animation:cardGlow 0.8s ease-out 3.65s forwards"/>
+            <!-- Header -->
+            <rect x="578" y="30" width="190" height="36" rx="10"
+              fill="#0e2236"/>
+            <!-- clip bottom of header -->
+            <rect x="578" y="56" width="190" height="10" fill="#0e2236"/>
+            <text x="673" y="53" font-family="monospace" font-size="10" font-weight="bold"
+              fill="#4a8fa8" text-anchor="middle" letter-spacing="1">CASE 00001077</text>
+            <!-- Divider -->
+            <line x1="590" y1="74" x2="756" y2="74" stroke="#1e3a55" stroke-width="1"/>
+            <!-- Fields -->
+            <text x="592" y="91" font-family="monospace" font-size="8" fill="#2a4a6a">Account</text>
+            <text x="592" y="103" font-family="monospace" font-size="9" fill="#c8d4e0">Cafe Lumiere</text>
+
+            <text x="592" y="121" font-family="monospace" font-size="8" fill="#2a4a6a">Priority</text>
+            <rect x="592" y="127" width="36" height="14" rx="3" fill="#1a1400" stroke="#b5694a" stroke-width="0.7"/>
+            <text x="600" y="137" font-family="monospace" font-size="8" fill="#b5694a" font-weight="bold">HIGH</text>
+
+            <text x="650" y="121" font-family="monospace" font-size="8" fill="#2a4a6a">Status</text>
+            <rect x="650" y="127" width="30" height="14" rx="3" fill="#0e2236" stroke="#1e3a55" stroke-width="0.7"/>
+            <text x="656" y="137" font-family="monospace" font-size="8" fill="#4a8fa8">New</text>
+
+            <text x="592" y="157" font-family="monospace" font-size="8" fill="#2a4a6a">Subject</text>
+            <text x="592" y="169" font-family="monospace" font-size="9" fill="#c8d4e0">Butter Shortage</text>
+
+            <text x="592" y="186" font-family="monospace" font-size="8" fill="#b5694a">$83K Opp at Risk</text>
+
+            <!-- Checkmark in corner -->
+            <circle cx="752" cy="48" r="10" fill="#0e2236" stroke="#4a8fa8" stroke-width="1"/>
+            <polyline points="747,48 751,52 758,44" fill="none" stroke="#4a8fa8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </svg>
+      </div>
+
+
+      <h1 class="hero__headline reveal">
+        An AI Agent That<br>
+        <span class="hero__headline--fade">REASONS</span><br>
+        Across Data Sources
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="hero__subtitle reveal">
+        From natural language to autonomous action — a live demonstration.
+      </p>
+
+      <!-- CTA -->
+      <p class="hero__cta-no-link">Groq · Databricks · Salesforce</p>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SECTION 2: THE AGENT
+  ════════════════════════════════════════════════════════ -->
+  
+
+  <!-- ═══════════════════════════════════════════════════════
+       OPENING — The Thesis
+  ═══════════════════════════════════════════════════════ -->
+  <section class="agent" id="overview">
+    <div class="container">
       <div class="content">
+
         <p class="section-label">Overview</p>
         <h2>What This Page Documents</h2>
-        <p>
-          An internal web app — purpose-built for an operations team — that routes
-          natural-language questions to live data systems, reasons across them, and
-          writes back to a system of record when action is warranted. The agent
-          is headless: it runs as a backend service, not a chatbot widget. The
-          interface is a product decision, not a runtime constraint.
-        </p>
-        <p>
-          Three integrations are wired in this demonstration: a data warehouse
-          holding operational tables, a CRM managing account relationships, and an
-          email system completing the write-back path. The pattern is
-          tool-agnostic. Every binding shown is swappable.
-        </p>
-        <p>
-          What makes this worth documenting is not the integrations — those are
-          straightforward API work. It is the design decisions that surround them:
-          why a purpose-built UI instead of a generic chat surface, why two
-          separate data planes instead of one, why agent behavior lives in
-          version control rather than a vendor console, and why the reasoning
-          trace is a first-class feature of the system rather than a debug view.
-        </p>
+
+        <div class="overview-grid">
+
+          <div class="overview-prose">
+            <p>
+              An internal web app — purpose-built for an operations team — that routes
+              natural-language questions to live data systems, reasons across them, and
+              writes back to a system of record when action is warranted. The agent
+              is headless: it runs as a backend service, not a chatbot widget. The
+              interface is a product decision, not a runtime constraint.
+            </p>
+            <p>
+              Three integrations are wired in this demonstration: a data warehouse
+              holding operational tables, a CRM managing account relationships, and an
+              email system completing the write-back path. The pattern is
+              tool-agnostic. Every binding shown is swappable.
+            </p>
+          </div>
+
+          <div class="overview-cards">
+
+            <div class="decision-card">
+              <div class="decision-card__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
+              <div class="decision-card__body">
+                <div class="decision-card__title">Purpose-built UI</div>
+                <div class="decision-card__desc">Not a generic chat widget. The interface is a product decision, made per workflow.</div>
+              </div>
+            </div>
+
+            <div class="decision-card">
+              <div class="decision-card__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
+                  <path d="M6 21V9a9 9 0 0 0 9 9"/>
+                </svg>
+              </div>
+              <div class="decision-card__body">
+                <div class="decision-card__title">Two data planes</div>
+                <div class="decision-card__desc">Operational data stays in the warehouse. Relationship data stays in the CRM. Federated at query time.</div>
+              </div>
+            </div>
+
+            <div class="decision-card">
+              <div class="decision-card__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </div>
+              <div class="decision-card__body">
+                <div class="decision-card__title">Skills in version control</div>
+                <div class="decision-card__desc">Agent behavior lives in markdown files, not a vendor console. Reviewable, diffable, portable.</div>
+              </div>
+            </div>
+
+            <div class="decision-card">
+              <div class="decision-card__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+              </div>
+              <div class="decision-card__body">
+                <div class="decision-card__title">Reasoning as first-class feature</div>
+                <div class="decision-card__desc">The Activity Log is the audit trail and the trust primitive. Not a debug view.</div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="overview-pullquote">
+          What makes this worth documenting is not the integrations — those are straightforward API work.
+          It is the design decisions that surround them: why a purpose-built UI instead of a generic
+          chat surface, why two separate data planes instead of one, why agent behavior lives in
+          version control rather than a vendor console, and why the reasoning trace is a
+          first-class feature of the system rather than a debug view.
+        </div>
+
       </div>
     </div>
   </section>
@@ -1270,31 +1543,71 @@
       <div class="content">
         <p class="section-label">The Scenario</p>
         <h2>Chaz's Bakery and Its Restaurant Accounts</h2>
-        <p>
-          Chaz's Bakery is a wholesale bakery serving restaurant accounts in the
-          Boston area. The operations team manages order volume, ingredient
-          procurement, and delivery logistics across dozens of active accounts —
-          Cafe Lumiere, Grand Hotels &amp; Resorts, United Oil &amp; Gas, and others.
-          They run their planning in a data warehouse; they run their account
-          relationships in a CRM. These two systems do not talk to each other.
-        </p>
-        <p>
-          The portal is their interface. When a team member asks a question, the
-          agent decides which system to query and returns an answer grounded in
-          live data. When conditions warrant it — a shortage detected, a
-          delivery at risk — the agent closes the loop autonomously: it opens a
-          case in the CRM, drafts a customer email governed by a skill file
-          checked into source control, sends it, and logs the action against the
-          account record.
-        </p>
-        <p>
-          In the walkthrough below, the specific numbers are real: a $83,000
-          opportunity at Cafe Lumiere, a 667-pound butter shortage identified
-          across a three-week demand window, Case 00001077 created and
-          resolved in the CRM, and an outbound email that landed in the
-          customer's inbox — all triggered by a natural-language question about
-          inventory risk.
-        </p>
+
+        <div class="scenario-grid">
+
+          <div class="scenario-prose">
+            <p>
+              Chaz's Bakery is a wholesale bakery serving restaurant accounts in the
+              Boston area. The operations team manages order volume, ingredient
+              procurement, and delivery logistics across dozens of active accounts —
+              Cafe Lumiere, Grand Hotels &amp; Resorts, United Oil &amp; Gas, and others.
+              They run their planning in a data warehouse; they run their account
+              relationships in a CRM. These two systems do not talk to each other.
+            </p>
+            <p>
+              The portal is their interface. When a team member asks a question, the
+              agent decides which system to query and returns an answer grounded in
+              live data. When conditions warrant it — a shortage detected, a
+              delivery at risk — the agent closes the loop autonomously: it opens a
+              case in the CRM, drafts a customer email governed by a skill file
+              checked into source control, sends it, and logs the action against the
+              account record.
+            </p>
+            <p>
+              In the walkthrough below, the specific numbers are real: a $83,000
+              opportunity at Cafe Lumiere, a 667-pound butter shortage identified
+              across a three-week demand window, Case 00001077 created and
+              resolved in the CRM, and an outbound email that landed in the
+              customer's inbox — all triggered by a natural-language question about
+              inventory risk.
+            </p>
+          </div>
+
+          <div class="scenario-card-col">
+            <div class="account-card">
+              <div class="account-card__header">
+                <div class="account-card__avatar">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4a8fa8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+                  </svg>
+                </div>
+                <div class="account-card__name-block">
+                  <div class="account-card__name">Cafe Lumiere</div>
+                  <div class="account-card__meta">Restaurant · Boston, MA</div>
+                </div>
+              </div>
+              <div class="account-card__divider"></div>
+              <div class="account-card__section">
+                <div class="account-card__label">Primary Contact</div>
+                <div class="account-card__value">Taylor Nguyen — Owner</div>
+              </div>
+              <div class="account-card__section">
+                <div class="account-card__opp-name">Full Pastry Program</div>
+                <div class="account-card__opp-amount">$83,000</div>
+                <div class="account-card__opp-details">Close 2026-05-15 · Perception Analysis</div>
+              </div>
+              <div class="account-card__risk">
+                <div class="account-card__risk-dot"></div>
+                <div class="account-card__risk-text">
+                  <span class="account-card__risk-label">At Risk</span>
+                  <span class="account-card__risk-detail">667 lbs butter shortfall</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   </section>
