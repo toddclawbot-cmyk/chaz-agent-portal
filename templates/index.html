@@ -1028,28 +1028,8 @@
             btn.classList.add('active');
         }
 
-        // ── Agent flow SVG animation restart ──────────────────────
-        function replayAgentFlow(svgEl) {
-            if (!svgEl) return;
-            var animated = svgEl.querySelectorAll(
-                '.s, .step-label, .step-icon, .step-dot, .case-card, ' +
-                '.step-connector, .q-bubble, .q-cursor'
-            );
-            animated.forEach(function(el) {
-                el.style.animation = 'none';
-                el.offsetHeight; // force reflow
-                el.style.animation = '';
-            });
-        }
-
-        // Attach to hero SVG: replay every time the 9.5s flowLoop restarts
-        var heroSvg = document.querySelector('.agent-flow-svg');
-        if (heroSvg) {
-            heroSvg.addEventListener('animationiteration', function() {
-                replayAgentFlow(heroSvg);
-            });
-        }
-        window.replayAgentFlow = function() { replayAgentFlow(heroSvg); };
+        // replayAgentFlow — SVG plays once and stays static
+        window.replayAgentFlow = function() {};
 
         // Load history on page load
         loadHistory();
