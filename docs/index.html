@@ -153,6 +153,7 @@
       body {
         font-size: 15px;
         line-height: 1.6;
+        overflow-x: hidden;
       }
 
       .container,
@@ -241,6 +242,8 @@
         display: block;
         position: relative;
         margin-top: 16px;
+        overflow: hidden;
+        width: 100%;
       }
       .overview-cards-carousel__track {
         display: flex;
@@ -250,9 +253,7 @@
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         padding-bottom: 8px;
-        /* Show ~85% of next card */
-        width: 85vw;
-        transform: none;
+        width: calc(85vw + 12px);
         transition: transform 0.35s cubic-bezier(0.25, 0.1, 0.25, 1);
       }
       .overview-cards-carousel__track::-webkit-scrollbar {
@@ -263,6 +264,7 @@
         scroll-snap-align: start;
         width: 85vw;
         max-width: 85vw;
+        min-width: 85vw;
       }
       .overview-cards-carousel__dots {
         display: flex;
@@ -666,7 +668,10 @@
       }
 
       /* ─── CLOSED-LOOP PROOF ──────────────────────────── */
-      /* Original image hidden on mobile */
+      /* Original desktop image hidden on mobile */
+      #proof .diagram-wrap {
+        display: none;
+      }
       .proof-images-mobile {
         display: flex;
         flex-direction: column;
