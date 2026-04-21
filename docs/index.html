@@ -723,12 +723,14 @@
         height: auto;
       }
 
-      /* Architecture SVG — constrain to viewport */
+      /* Architecture SVG — allow horizontal scroll */
       .diagram-wrap {
-        overflow-x: auto;
+        overflow: auto;
         -webkit-overflow-scrolling: touch;
       }
       .diagram-wrap svg {
+        width: 100%;
+        height: auto;
         min-width: 560px;
       }
 
