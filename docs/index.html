@@ -2235,6 +2235,35 @@ order_date, order_qty, order_description, next_delivery</code></pre>
       document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(el) {
         observer.observe(el);
       });
+
+      // ── Agent flow SVG animation restart ──────────────────────
+      // The SVG's flowLoop (9.5s infinite) fades out+in to restart.
+      // Individual step animations only run once (fill:forwards), so they
+      // get stuck at their final state. We force a reflow on each
+      // animationiteration so steps replay every time the SVG loops.
+      function replayAgentFlow(svgEl) {
+        if (!svgEl) return;
+        var animated = svgEl.querySelectorAll(
+          '.s, .step-label, .step-icon, .step-dot, .case-card, ' +
+          '.step-connector, .q-bubble, .q-cursor'
+        );
+        animated.forEach(function(el) {
+          el.style.animation = 'none';
+          el.offsetHeight; // force reflow
+          el.style.animation = '';
+        });
+      }
+
+      var heroSvg = document.querySelector('.agent-flow-svg');
+      if (heroSvg) {
+        // Replay when the SVG loop restarts (~every 9.5s)
+        heroSvg.addEventListener('animationiteration', function() {
+          replayAgentFlow(heroSvg);
+        });
+        // Also expose replayAgentFlow globally so it can be called from
+        // the query submission flow (sendMessage in templates/index.html)
+        window.replayAgentFlow = function() { replayAgentFlow(heroSvg); };
+      }
     })();
   </script>
 
