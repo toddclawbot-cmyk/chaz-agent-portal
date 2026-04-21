@@ -941,6 +941,13 @@
       </div>
 
 
+      <!-- Headline -->
+      <h1 class="hero__headline reveal">
+        An AI Agent That<br>
+        <span class="hero__headline--fade">REASONS</span><br>
+        Across Data Sources
+      </h1>
+
       <!-- Demo Video -->
       <div class="hero__video-wrap reveal" style="transition-delay: 0.1s;">
         <video
@@ -949,18 +956,12 @@
           playsinline
           preload="none"
           title="Chaz Agent Portal Demo"
+          poster="assets/screenshots/video-poster.svg"
         >
           <source src="https://github.com/toddclawbot-cmyk/chaz-agent-portal/releases/download/v1.0-demo/Chaz.Bakery.Demo.mp4" type="video/mp4">
           Your browser does not support the video tag.
         </video>
       </div>
-
-      <!-- Headline -->
-      <h1 class="hero__headline reveal">
-        An AI Agent That<br>
-        <span class="hero__headline--fade">REASONS</span><br>
-        Across Data Sources
-      </h1>
 
       <!-- Subtitle -->
       <p class="hero__subtitle reveal">
@@ -1158,7 +1159,7 @@ LIMIT 25</code></pre>
 
         <!-- Architecture diagram: inline SVG -->
         <div class="diagram-wrap reveal">
-          <svg viewBox="0 0 900 420" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agent architecture diagram">
+          <svg viewBox="0 0 900 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Agent architecture diagram">
             <defs>
               <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" style="stop-color:#081525"/>
@@ -1168,100 +1169,108 @@ LIMIT 25</code></pre>
                 <stop offset="0%" style="stop-color:#0e2236"/>
                 <stop offset="100%" style="stop-color:#0a1a2e"/>
               </linearGradient>
-              <filter id="glow">
-                <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                <feMerge>
-                  <feMergeNode in="coloredBlur"/>
-                  <feMergeNode in="SourceGraphic"/>
-                </feMerge>
-              </filter>
-              <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="#4a8fa8"/>
+              <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#4a8fa8"/>
               </marker>
-              <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-                <polygon points="0 0, 10 3.5, 0 7" fill="#b5694a"/>
+              <marker id="arrowhead-red" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+                <polygon points="0 0, 8 3, 0 6" fill="#b5694a"/>
               </marker>
             </defs>
 
             <!-- Background -->
-            <rect width="900" height="420" fill="url(#bgGrad)" rx="16"/>
+            <rect width="900" height="460" fill="url(#bgGrad)" rx="12"/>
 
-            <!-- Layer labels (right side) -->
-            <text x="870" y="48" fill="#4a6e8a" font-size="10" text-anchor="end" font-family="monospace">PURPOSE-BUILT UI</text>
-            <text x="870" y="148" fill="#4a6e8a" font-size="10" text-anchor="end" font-family="monospace">AGENT RUNTIME</text>
-            <text x="870" y="248" fill="#4a6e8a" font-size="10" text-anchor="end" font-family="monospace">SKILLS</text>
-            <text x="870" y="348" fill="#4a6e8a" font-size="10" text-anchor="end" font-family="monospace">TOOLS</text>
-            <text x="870" y="405" fill="#4a6e8a" font-size="10" text-anchor="end" font-family="monospace">SYSTEMS OF RECORD</text>
+            <!-- ── Row: Purpose-built UI ── -->
+            <rect x="16" y="16" width="868" height="52" rx="8" fill="#0d2035" stroke="#1e3a55" stroke-width="1"/>
+            <text x="30" y="40" fill="#c8d4e0" font-size="11" font-family="monospace" font-weight="bold">Purpose-built UI</text>
+            <text x="30" y="56" fill="#4a6e8a" font-size="9" font-family="monospace">Chat panel · Agent Activity Log · Write-back surfaces</text>
+            <!-- SSE arrow right -->
+            <line x1="620" y1="42" x2="710" y2="42" stroke="#4a8fa8" stroke-width="1" stroke-dasharray="3,3"/>
+            <text x="790" y="46" fill="#4a8fa8" font-size="9" font-family="monospace">SSE</text>
 
-            <!-- Row 1: UI -->
-            <rect x="20" y="20" width="820" height="50" rx="8" fill="#0d2035" stroke="#1e3a55" stroke-width="1"/>
-            <text x="40" y="42" fill="#c8d8e4" font-size="12" font-family="monospace" font-weight="bold">Purpose-built UI</text>
-            <text x="40" y="58" fill="#6a8fa8" font-size="10" font-family="monospace">Chat panel · Agent Activity Log · Write-back surfaces</text>
-            <text x="580" y="42" fill="#4a8fa8" font-size="11" font-family="monospace">SSE streaming</text>
-            <line x1="580" y1="35" x2="580" y2="60" stroke="#4a8fa8" stroke-width="1" stroke-dasharray="3,2"/>
+            <!-- Arrow: UI → Agent Runtime -->
+            <line x1="50" y1="68" x2="50" y2="90" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
-            <!-- Arrow down to Agent Runtime -->
-            <line x1="80" y1="70" x2="80" y2="95" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <!-- ── Row: Agent Runtime ── -->
+            <rect x="16" y="94" width="868" height="52" rx="8" fill="url(#cardGrad)" stroke="#1e3a55" stroke-width="1"/>
+            <text x="30" y="118" fill="#c8d4e0" font-size="11" font-family="monospace" font-weight="bold">Agent Runtime</text>
+            <text x="30" y="132" fill="#4a6e8a" font-size="9" font-family="monospace">Tool-use loop · Reasoning trace · Groq + open-weights model</text>
 
-            <!-- Row 2: Agent Runtime -->
-            <rect x="20" y="100" width="820" height="50" rx="8" fill="url(#cardGrad)" stroke="#1e3a55" stroke-width="1"/>
-            <text x="40" y="122" fill="#c8d8e4" font-size="12" font-family="monospace" font-weight="bold">Agent Runtime</text>
-            <text x="40" y="138" fill="#6a8fa8" font-size="10" font-family="monospace">Tool-use orchestration loop · Streaming reasoning trace · Groq + open-weights model</text>
+            <!-- Arrow: Agent → Tools -->
+            <line x1="200" y1="146" x2="200" y2="195" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
-            <!-- Arrows down: Agent → Tools -->
-            <line x1="200" y1="150" x2="200" y2="200" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-            <line x1="380" y1="150" x2="380" y2="200" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-            <line x1="560" y1="150" x2="560" y2="200" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <!-- ── Skills (above tools, dashed) ── -->
+            <rect x="16" y="168" width="868" height="22" rx="6" fill="none" stroke="#1e3a55" stroke-width="1" stroke-dasharray="5,4"/>
+            <text x="30" y="183" fill="#4a6e8a" font-size="9" font-family="monospace" font-weight="bold">Skills</text>
+            <text x="82" y="183" fill="#2a4a6a" font-size="9" font-family="monospace">email-skill.md · voice · tone · escalation thresholds</text>
+            <!-- Dashed line: Skills → Agent Runtime -->
+            <line x1="50" y1="168" x2="50" y2="146" stroke="#4a8fa8" stroke-width="1" stroke-dasharray="3,3"/>
 
-            <!-- Row 3: Skills (below tools visually) -->
-            <rect x="20" y="200" width="820" height="40" rx="8" fill="#0e2236" stroke="#1e3a55" stroke-width="1" stroke-dasharray="4,3"/>
-            <text x="40" y="222" fill="#c8d8e4" font-size="12" font-family="monospace" font-weight="bold">Skills</text>
-            <text x="40" y="235" fill="#6a8fa8" font-size="10" font-family="monospace">email-skill.md · voice · tone · escalation thresholds · template structure</text>
-            <!-- Dotted arrow: Skills → Agent -->
-            <line x1="80" y1="200" x2="80" y2="165" stroke="#4a8fa8" stroke-width="1" stroke-dasharray="3,3"/>
+            <!-- Arrow: Agent Runtime → Tools -->
+            <line x1="380" y1="146" x2="380" y2="195" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+            <line x1="560" y1="146" x2="560" y2="195" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
-            <!-- Row 4: Tools -->
-            <rect x="20" y="250" width="820" height="50" rx="8" fill="url(#cardGrad)" stroke="#1e3a55" stroke-width="1"/>
-            <text x="40" y="272" fill="#c8d8e4" font-size="12" font-family="monospace" font-weight="bold">Tool Bindings</text>
+            <!-- ── Row: Tools ── -->
+            <rect x="16" y="200" width="868" height="52" rx="8" fill="url(#cardGrad)" stroke="#1e3a55" stroke-width="1"/>
+            <text x="30" y="220" fill="#c8d4e0" font-size="11" font-family="monospace" font-weight="bold">Tool Bindings</text>
 
-            <!-- Tool cards -->
-            <rect x="130" y="255" width="170" height="40" rx="6" fill="#0d2035" stroke="#2a5a7a" stroke-width="1"/>
-            <text x="145" y="270" fill="#b5694a" font-size="9" font-family="monospace">CRM (swappable)</text>
-            <text x="145" y="283" fill="#6a8fa8" font-size="9" font-family="monospace">Salesforce · SOQL</text>
+            <!-- CRM -->
+            <rect x="136" y="205" width="162" height="42" rx="6" fill="#0d2035" stroke="#2a5a7a" stroke-width="1"/>
+            <text x="148" y="221" fill="#b5694a" font-size="8" font-family="monospace">CRM (swappable)</text>
+            <text x="148" y="234" fill="#3a6a8a" font-size="8" font-family="monospace">Salesforce · SOQL</text>
 
-            <rect x="315" y="255" width="170" height="40" rx="6" fill="#0d2035" stroke="#2a5a7a" stroke-width="1"/>
-            <text x="330" y="270" fill="#b5694a" font-size="9" font-family="monospace">Warehouse (swappable)</text>
-            <text x="330" y="283" fill="#6a8fa8" font-size="9" font-family="monospace">Databricks · SQL</text>
+            <!-- Warehouse -->
+            <rect x="308" y="205" width="162" height="42" rx="6" fill="#0d2035" stroke="#2a5a7a" stroke-width="1"/>
+            <text x="320" y="221" fill="#b5694a" font-size="8" font-family="monospace">Warehouse (swappable)</text>
+            <text x="320" y="234" fill="#3a6a8a" font-size="8" font-family="monospace">Databricks · SQL</text>
 
-            <rect x="500" y="255" width="170" height="40" rx="6" fill="#0d2035" stroke="#2a5a7a" stroke-width="1"/>
-            <text x="515" y="270" fill="#b5694a" font-size="9" font-family="monospace">Email (swappable)</text>
-            <text x="515" y="283" fill="#6a8fa8" font-size="9" font-family="monospace">Gmail · SMTP/API</text>
+            <!-- Email -->
+            <rect x="480" y="205" width="162" height="42" rx="6" fill="#0d2035" stroke="#2a5a7a" stroke-width="1"/>
+            <text x="492" y="221" fill="#b5694a" font-size="8" font-family="monospace">Email (swappable)</text>
+            <text x="492" y="234" fill="#3a6a8a" font-size="8" font-family="monospace">Gmail · SMTP/API</text>
 
             <!-- Arrow: Tools → Systems -->
-            <line x1="585" y1="300" x2="585" y2="325" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
-
-            <!-- Row 5: Systems of Record -->
-            <rect x="20" y="330" width="820" height="50" rx="8" fill="#0d2035" stroke="#1e3a55" stroke-width="1"/>
-            <text x="40" y="352" fill="#c8d8e4" font-size="12" font-family="monospace" font-weight="bold">Systems of Record</text>
-
-            <rect x="130" y="338" width="170" height="34" rx="6" fill="#0a1825" stroke="#2a4a6a" stroke-width="1"/>
-            <text x="145" y="354" fill="#6a8fa8" font-size="10" font-family="monospace">Salesforce — Cases, Contacts, Accounts</text>
-
-            <rect x="315" y="338" width="170" height="34" rx="6" fill="#0a1825" stroke="#2a4a6a" stroke-width="1"/>
-            <text x="330" y="354" fill="#6a8fa8" font-size="10" font-family="monospace">Databricks — Operational Tables</text>
-
-            <rect x="500" y="338" width="170" height="34" rx="6" fill="#0a1825" stroke="#2a4a6a" stroke-width="1"/>
-            <text x="515" y="354" fill="#6a8fa8" font-size="10" font-family="monospace">Gmail — Sent Mail Logged to CRM</text>
+            <line x1="580" y1="252" x2="580" y2="278" stroke="#4a8fa8" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
             <!-- Write-back arrow from Tools to CRM -->
-            <path d="M 585 295 Q 640 295 640 325" fill="none" stroke="#b5694a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead-red)"/>
-            <text x="645" y="310" fill="#b5694a" font-size="9" font-family="monospace">writes</text>
+            <path d="M 580 246 Q 640 246 640 278" fill="none" stroke="#b5694a" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arrowhead-red)"/>
+            <text x="642" y="265" fill="#b5694a" font-size="8" font-family="monospace">writes</text>
 
-            <!-- SSE trace arrow (right side) -->
-            <path d="M 700 65 Q 760 90 700 115" fill="none" stroke="#4a8fa8" stroke-width="1" stroke-dasharray="3,3"/>
-            <text x="763" y="92" fill="#4a8fa8" font-size="9" font-family="monospace">trace</text>
+            <!-- Trace arrow (right side) -->
+            <path d="M 748 42 Q 820 90 748 146" fill="none" stroke="#4a8fa8" stroke-width="1" stroke-dasharray="3,3"/>
+            <text x="822" y="96" fill="#4a8fa8" font-size="8" font-family="monospace">trace</text>
+
+            <!-- ── Row: Systems of Record ── -->
+            <rect x="16" y="282" width="868" height="52" rx="8" fill="#0d2035" stroke="#1e3a55" stroke-width="1"/>
+            <text x="30" y="302" fill="#c8d4e0" font-size="11" font-family="monospace" font-weight="bold">Systems of Record</text>
+
+            <!-- Systems sub-cards -->
+            <rect x="136" y="288" width="162" height="40" rx="6" fill="#0a1825" stroke="#1e3a55" stroke-width="1"/>
+            <text x="148" y="302" fill="#4a6e8a" font-size="8" font-family="monospace">Salesforce</text>
+            <text x="148" y="314" fill="#2a4a6a" font-size="8" font-family="monospace">Cases · Contacts · Accounts</text>
+
+            <rect x="308" y="288" width="162" height="40" rx="6" fill="#0a1825" stroke="#1e3a55" stroke-width="1"/>
+            <text x="320" y="302" fill="#4a6e8a" font-size="8" font-family="monospace">Databricks</text>
+            <text x="320" y="314" fill="#2a4a6a" font-size="8" font-family="monospace">Operational Tables</text>
+
+            <rect x="480" y="288" width="162" height="40" rx="6" fill="#0a1825" stroke="#1e3a55" stroke-width="1"/>
+            <text x="492" y="302" fill="#4a6e8a" font-size="8" font-family="monospace">Gmail</text>
+            <text x="492" y="314" fill="#2a4a6a" font-size="8" font-family="monospace">Sent Mail · Logged to CRM</text>
+
+            <!-- Legend (bottom right) -->
+            <text x="640" y="350" fill="#2a4a6a" font-size="8" font-family="monospace">→ data query</text>
+            <text x="640" y="363" fill="#b5694a" font-size="8" font-family="monospace">→→ write action</text>
+            <text x="640" y="376" fill="#4a8fa8" font-size="8" font-family="monospace">⤳ trace stream</text>
+
+            <!-- Column headers (faint, top-right) -->
+            <text x="870" y="36" fill="#1e3a55" font-size="7" font-family="monospace" text-anchor="end">PURPOSE-BUILT UI</text>
+            <text x="870" y="114" fill="#1e3a55" font-size="7" font-family="monospace" text-anchor="end">AGENT RUNTIME</text>
+            <text x="870" y="220" fill="#1e3a55" font-size="7" font-family="monospace" text-anchor="end">TOOLS</text>
+            <text x="870" y="312" fill="#1e3a55" font-size="7" font-family="monospace" text-anchor="end">SYSTEMS</text>
           </svg>
         </div>
+
+
 
         <!-- Architecture prose -->
         <h3>Why a purpose-built UI</h3>
