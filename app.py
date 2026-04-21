@@ -818,15 +818,13 @@ def run_general_agent(task_id, question):
     rows = result.get("rows", [])
     emit_sse_event(task_id, 2, "run_query", "done", f"Got {len(rows)} row(s)")
 
-    # Step 3: Format results — card layout for wide tables (>6 cols), table otherwise
+    # Step 3: Format results
+    # Salesforce → vertical card layout (one field per line, easy to scan)
+    # Databricks → markdown table (narrow, consistent)
     if not rows:
         response = f"No results found for that question.\n\nQuery: `{query_str}`"
-    elif len(cols) == 1:
-        header = f"| {cols[0]} |\n|---|\n"
-        body = "\n".join(f"| {r[0]} |" for r in rows[:50])
-        response = header + body
-    elif len(cols) > 5:
-        # Card layout — one record per block, key:value pairs, max 25 records
+    elif use_sf:
+        # Card layout — bold field name + value, blank line between records
         lines = []
         for row in rows[:25]:
             lines.append("")
@@ -835,6 +833,10 @@ def run_general_agent(task_id, question):
                 lines.append(f"**{col}:** {val}")
         more = f"\n\n_...and {len(rows) - 25} more records_" if len(rows) > 25 else ""
         response = "\n".join(lines) + more
+    elif len(cols) == 1:
+        header = f"| {cols[0]} |\n|---|\n"
+        body = "\n".join(f"| {r[0]} |" for r in rows[:50])
+        response = header + body
     else:
         header = "| " + " | ".join(cols) + " |"
         sep = "|" + "|".join("---" for _ in cols) + "|"
