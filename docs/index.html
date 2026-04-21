@@ -369,8 +369,19 @@
 
       /* ─── WALKTHROUGH ───────────────────────────────── */
       .feature {
-        gap: 12px;
+        display: flex;
+        flex-direction: row;
+        gap: 8px;
         padding: 20px 0;
+        align-items: flex-start;
+        overflow-x: hidden;
+      }
+      .feature__body {
+        flex: 1;
+        min-width: 0;
+        max-width: 100%;
+        overflow-x: auto;
+        padding-right: 4px;
       }
       .feature__number {
         font-size: 28px;
@@ -586,6 +597,15 @@
         max-width: 100%;
         box-sizing: border-box;
         position: relative;
+        width: 100%;
+      }
+      .feature__query {
+        font-size: 11px;
+        padding: 8px 12px;
+        overflow-wrap: break-word;
+        word-break: break-word;
+        max-width: 100%;
+        box-sizing: border-box;
       }
       .feature__body pre code {
         white-space: pre;
