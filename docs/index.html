@@ -131,6 +131,7 @@
       width: 100%;
       max-width: 960px;
       margin: 0 auto var(--space-lg);
+      overflow: hidden;
     }
     .agent-flow-svg {
       width: 100%;
@@ -693,7 +694,52 @@
       }
     }
 
+    @media (max-width: 860px) {
+      .account-card {
+        max-width: 100%;
+      }
+    }
+
     @media (max-width: 640px) {
+      :root {
+        --space-md: 20px;
+        --space-lg: 48px;
+        --space-xl: 80px;
+        --space-2xl: 120px;
+      }
+
+      .container,
+      .container--wide {
+        padding: 0 var(--space-md);
+      }
+
+      /* Hero SVG — scale to viewport width */
+      .hero__agent-flow {
+        overflow-x: hidden;
+      }
+      .agent-flow-svg {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
+      }
+
+      /* Architecture SVG — constrain to viewport */
+      .diagram-wrap {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      .diagram-wrap svg {
+        min-width: 560px;
+      }
+
+      /* Demo flow timeline */
+      .demo-flow__timeline {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: var(--space-xs);
+      }
+
+      /* Chain / step layout */
       .agent__chain {
         grid-template-columns: 1fr;
       }
@@ -713,6 +759,102 @@
       .agent__step-body {
         flex-direction: column;
         gap: var(--space-sm);
+      }
+
+      /* Walkthrough / feature section — mobile-safe */
+      .feature {
+        gap: 16px;
+        padding: 24px 0;
+      }
+      .feature__body {
+        min-width: 0;
+        max-width: 100%;
+      }
+      .feature__body h3 {
+        font-size: 18px;
+      }
+      .feature__body p {
+        font-size: 14px;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+      .feature__query {
+        font-size: 12px;
+        padding: 8px 12px;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+      .feature__body ul {
+        overflow-wrap: break-word;
+      }
+      .feature__body li {
+        font-size: 13px;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+      /* Pre blocks — scroll horizontally, never overflow */
+      .feature__body pre {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+      .feature__body pre code {
+        white-space: pre;
+        font-size: 11px;
+      }
+
+      /* Account card — full width on mobile */
+      .account-card {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      /* Scenario grid — ensure stacked column doesn't overflow */
+      .scenario-grid {
+        gap: 24px;
+      }
+      .scenario-prose {
+        min-width: 0;
+      }
+      .scenario-prose p {
+        font-size: 14px;
+        overflow-wrap: break-word;
+        word-break: break-word;
+      }
+
+      /* Decision cards */
+      .overview-cards {
+        gap: 10px;
+      }
+      .decision-card {
+        padding: 12px;
+      }
+      .decision-card__title {
+        font-size: 0.78rem;
+      }
+      .decision-card__desc {
+        font-size: 0.73rem;
+      }
+
+      /* Overview pullquote */
+      .overview-pullquote {
+        font-size: 0.84rem;
+        padding: 14px 18px;
+      }
+
+      /* Footer */
+      .footer__links {
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+      }
+
+      /* Data stack visual */
+      .data-stack__visual svg {
+        width: 100%;
+        max-width: 100%;
+        height: auto;
       }
     }
 
