@@ -1,6 +1,5 @@
 import os
 import json
-import re
 import time
 import uuid
 import queue
@@ -10,126 +9,9 @@ from datetime import datetime
 from flask import Flask, render_template, request, jsonify, Response
 from dotenv import load_dotenv
 
-
-# ─── Load Email Skill ───────────────────────────────────────────────
-def load_email_skill():
-    """Read the email skill file for voice/tone/template config."""
-    skill_path = os.path.join(os.path.dirname(__file__), 'skills', 'email-skill.md')
-    if os.path.exists(skill_path):
-        with open(skill_path, 'r') as f:
-            return f.read()
-    return None
-
-
-def build_outreach_email(ctx: dict) -> str:
-    """Generate outreach email using the skill file + Groq LLM for flexible generation."""
-    skill = load_email_skill()
-    if not skill:
-        # Fallback to existing hardcoded template
-        return _build_fallback_email(ctx)
-
-    system_prompt = (
-        "You are Riley Torres, Sales Director at Chaz Bakery. "
-        "Use the email skill below to write personalized customer outreach.\n\n"
-        + skill + "\n\n"
-        "Write the full email — subject line + body. Return ONLY the email."
-    )
-
-    context_vars = {
-        "customer_name": ctx.get("customer_name", "there"),
-        "customer_full": ctx.get("customer_full", ctx.get("customer_name", "")),
-        "customer_email": ctx.get("customer_email", ""),
-        "opp_name": ctx.get("opp_name", ""),
-        "opp_value": ctx.get("opp_value", 0),
-        "opp_close_date": ctx.get("opp_close_date", ""),
-        "order_qty": int(ctx.get("cafe_units", 0) or 0),
-        "order_date": ctx.get("order_date", ""),
-        "order_description": ctx.get("order_date", "") + " Pastry Delivery",
-        "shortage_lbs": ctx.get("butter_shortage", 0),
-        "shortage_pct": ctx.get("coverage_pct", 0),
-        "butter_need": ctx.get("butter_need", 0),
-        "case_id": ctx.get("case_id", ""),
-    }
-
-    user_prompt = (
-        f"Write the outreach email for:\n"
-        + "\n".join(f"  - {k}: {v}" for k, v in context_vars.items())
-        + "\n\nThe subject line format is defined in the skill file — follow it exactly."
-        + f"\n\nContext: This is for customer '{context_vars['customer_name']}'."
-        + f" Order qty: {context_vars['order_qty']} units."
-        + f" Butter shortage: {context_vars['shortage_lbs']} lbs."
-        + f" Opportunity: {context_vars['opp_name']} (${context_vars['opp_value']:,}, close {context_vars['opp_close_date']})."
-        + f" Case: {context_vars['case_id']}."
-        + "\n\nInclude: subject line + full body, sign off as Riley Torres, Sales Director, Chaz Bakery."
-    )
-
-    key = os.getenv("GROQ_API_KEY", "")
-    resp = requests.post(
-        "https://api.groq.com/openai/v1/chat/completions",
-        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-        json={
-            "model": "llama-3.3-70b-versatile",
-            "messages": [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_prompt}
-            ],
-            "temperature": 0.7,
-            "max_tokens": 600
-        },
-        timeout=30
-    )
-    resp.raise_for_status()
-    return resp.json()["choices"][0]["message"]["content"].strip()
-
-
-def _build_fallback_email(ctx: dict) -> str:
-    """Original hardcoded email template — used if no skill file exists."""
-    customer = ctx.get("customer_name", "there")
-    opp_name = ctx.get("opp_name", "")
-    opp_val = ctx.get("opp_value", 0)
-    opp_date = ctx.get("opp_close_date", "")
-    units = int(ctx.get("cafe_units", 0) or 0)
-    butter_need = ctx.get("butter_need", 0)
-    shortage = ctx.get("butter_shortage", 0)
-    case_id = ctx.get("case_id", "")
-
-    return f"""To: {customer}, Cafe Lumiere — tghidaleson@salesforce.com
-From: Riley Torres, Sales Director, Chaz Bakery
-Subject: Cafe Lumiere — May 8 Pastry Delivery: Quick Heads Up
-
-Hi {customer},
-
-I'm reaching out proactively as your Chaz Bakery account team regarding your Full Pastry Program — the opportunity currently in our system ({opp_name}, ${opp_val:,}, closing {opp_date}).
-
-Our ops team flagged a tight butter supply window. Grassland Dairy's next delivery isn't until April 26, and we're carefully managing production runs to protect your May 8 order of {units} pastry units.
-
-Good news: your May 8 delivery is fully confirmed and scheduled as a priority run. We'll send a formal confirmation by end of day Friday.
-
-I'm also keeping our ops team on the supply situation so we stay ahead of it. If anything changes on your end, let me know and we'll adjust immediately.
-
-Talk soon,
-Riley Torres | Sales Director | Chaz Bakery | rtorres@chazsbakery.com"""
-
 load_dotenv()
 
 app = Flask(__name__)
-
-@app.route("/test-llm")
-def test_llm():
-    from dotenv import load_dotenv
-    import os, requests
-    load_dotenv()
-    key = os.getenv("GROQ_API_KEY", "MISSING")
-    try:
-        resp = requests.post("https://api.groq.com/openai/v1/chat/completions",
-            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-            json={"model": "llama-3.3-70b-versatile", "messages": [{"role": "user", "content": "say hi"}], "max_tokens": 5},
-            timeout=15)
-        return {"key": key[:15]+"...", "status": resp.status_code, "response": resp.json()}
-    except Exception as e:
-        return {"key": key[:15]+"...", "error": str(e)}, 500
-
-
 
 # ─── API Credentials ─────────────────────────────────────────────────
 DATABRICKS_TOKEN = os.getenv("DATABRICKS_TOKEN")
@@ -429,22 +311,22 @@ def run_inventory_agent(task_id, question):
         except:
             pass
 
-        # Build email context and generate via skill file + Groq
-        email_ctx = {
-            "customer_name": contact_email.split('@')[0].title(),
-            "customer_full": contact_email,
-            "customer_email": contact_email,
-            "opp_name": cl_opp['Name'] if cl_opp else "",
-            "opp_value": cl_opp_val,
-            "opp_close_date": cl_opp['CloseDate'] if cl_opp else "",
-            "cafe_units": int(cafe_units),
-            "order_date": "May 8",
-            "butter_need": round(cafe_butter, 1),
-            "butter_shortage": round(butter_shortage, 1),
-            "coverage_pct": butter['coverage'] if butter else 0,
-            "case_id": case_id if case_id else "",
-        }
-        outreach_message = build_outreach_email(email_ctx)
+        outreach_message = f"""To: Taylor Nguyen (Owner), Cafe Lumiere — tghidaleson@salesforce.com
+From: Riley Torres, Sales Director, Chaz Bakery
+Subject: Cafe Lumiere — May 8 Pastry Delivery: Quick Heads Up
+
+Hi Taylor,
+
+I'm reaching out proactively as your Chaz Bakery account team regarding your Full Pastry Program — the opportunity currently in our system ($85K, closing May 15).
+
+Our ops team flagged a tight butter supply window. Grassland Dairy's next delivery isn't until April 26, and we're carefully managing production runs to protect your May 8 order of {int(cafe_units)} pastry units.
+
+Good news: your May 8 delivery is fully confirmed and scheduled as a priority run. We'll send a formal confirmation by end of day Friday.
+
+I'm also keeping our ops team on the supply situation so we stay ahead of it. If anything changes on your end, let me know and we'll adjust immediately.
+
+Talk soon,
+Riley Torres | Sales Director | Chaz Bakery | rtorres@chazsbakery.com"""
 
         emit_sse_event(task_id, 6, "draft_outreach", "done",
                        "Proactive outreach drafted to Taylor Nguyen (Owner), Cafe Lumiere",
@@ -509,7 +391,7 @@ def llm_generate_sql(question: str) -> str:
         "- Always prefix table names with chazbakedgoods.sales. (e.g., chazbakedgoods.sales.supplier_inventory)\n"
         "- For top-N results use ORDER BY column DESC LIMIT N\n"
         "- Do NOT use backticks for identifiers\n"
-        "- Always use LOWER() on both sides for string comparisons to ensure case-insensitive matching — e.g., LOWER(product_name) = LOWER('Rye Bread')\n"
+        "- Return ONLY the SQL query. No markdown, no explanation.\n\n"
         "Question: " + question + "\n"
         "SQL:"
     )
@@ -650,13 +532,10 @@ def send_email():
 
     # Parse the outreach message into subject and body
     lines = outreach.strip().split('\n')
-    subject = "Cafe Lumiere — May 8 Pastry Delivery: Quick Heads Up"  # fallback
+    subject = "Cafe Lumiere — May 8 Pastry Delivery: Quick Heads Up"
     body_lines = []
     for line in lines:
-        if line.startswith('To:') or line.startswith('From:'):
-            continue
-        if line.startswith('Subject:'):
-            subject = line.replace('Subject:', '').strip()
+        if line.startswith('To:') or line.startswith('From:') or line.startswith('Subject:'):
             continue
         body_lines.append(line)
     body = '\n'.join(body_lines).strip()
