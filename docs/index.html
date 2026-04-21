@@ -1,3 +1,171 @@
+  <section class="data-stack" id="scenario">
+    <div class="container">
+      <div class="content">
+        <p class="section-label">The Scenario</p>
+        <h2>Chaz's Bakery and Its Restaurant Accounts</h2>
+
+        <div class="scenario-grid">
+
+          <div class="scenario-prose">
+            <p>
+              Chaz's Bakery is a wholesale bakery serving restaurant accounts in the
+              Boston area. The operations team manages order volume, ingredient
+              procurement, and delivery logistics across dozens of active accounts —
+              Cafe Lumiere, Grand Hotels &amp; Resorts, United Oil &amp; Gas, and others.
+              They run their planning in a data warehouse; they run their account
+              relationships in a CRM. These two systems do not talk to each other.
+            </p>
+            <p>
+              The portal is their interface. When a team member asks a question, the
+              agent decides which system to query and returns an answer grounded in
+              live data. When conditions warrant it — a shortage detected, a
+              delivery at risk — the agent closes the loop autonomously: it opens a
+              case in the CRM, drafts a customer email governed by a skill file
+              checked into source control, sends it, and logs the action against the
+              account record.
+            </p>
+            <p>
+              In the walkthrough below, the specific numbers are real: a $83,000
+              opportunity at Cafe Lumiere, a 667-pound butter shortage identified
+              across a three-week demand window, Case 00001077 created and
+              resolved in the CRM, and an outbound email that landed in the
+              customer's inbox — all triggered by a natural-language question about
+              inventory risk.
+            </p>
+          </div>
+
+          <div class="scenario-card-col">
+            <div class="account-card">
+              <div class="account-card__header">
+                <div class="account-card__avatar">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4a8fa8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 11l19-9-9 19-2-8-8-2z"/>
+                  </svg>
+                </div>
+                <div class="account-card__name-block">
+                  <div class="account-card__name">Cafe Lumiere</div>
+                  <div class="account-card__meta">Restaurant · Boston, MA</div>
+                </div>
+              </div>
+              <div class="account-card__divider"></div>
+              <div class="account-card__section">
+                <div class="account-card__label">Primary Contact</div>
+                <div class="account-card__value">Taylor Nguyen — Owner</div>
+              </div>
+              <div class="account-card__section">
+                <div class="account-card__opp-name">Full Pastry Program</div>
+                <div class="account-card__opp-amount">$83,000</div>
+                <div class="account-card__opp-details">Close 2026-05-15 · Perception Analysis</div>
+              </div>
+              <div class="account-card__risk">
+                <div class="account-card__risk-dot"></div>
+                <div class="account-card__risk-text">
+                  <span class="account-card__risk-label">At Risk</span>
+                  <span class="account-card__risk-detail">667 lbs butter shortfall</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="agent" id="agent">
+    <div class="container">
+      <div class="content">
+        <p class="section-label">Overview</p>
+        <h2>What This Page Documents</h2>
+
+        <!-- Two-column layout -->
+        <div class="overview-grid">
+
+          <!-- Left: prose (55%) -->
+          <div class="overview-prose">
+            <p>
+              An internal web app — purpose-built for an operations team — that routes
+              natural-language questions to live data systems, reasons across them, and
+              writes back to a system of record when action is warranted. The agent
+              is headless: it runs as a backend service, not a chatbot widget. The
+              interface is a product decision, not a runtime constraint.
+            </p>
+            <p>
+              Three integrations are wired in this demonstration: a data warehouse
+              holding operational tables, a CRM managing account relationships, and an
+              email system completing the write-back path. The pattern is
+              tool-agnostic. Every binding shown is swappable.
+            </p>
+          </div>
+
+          <!-- Right: design decision cards (40%) -->
+          <div class="overview-cards">
+
+            <div class="decision-card">
+              <div class="decision-card__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                </svg>
+              </div>
+              <div class="decision-card__body">
+                <div class="decision-card__title">Purpose-built UI</div>
+                <div class="decision-card__desc">Not a generic chat widget. The interface is a product decision, made per workflow.</div>
+              </div>
+            </div>
+
+            <div class="decision-card">
+              <div class="decision-card__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/>
+                  <path d="M6 21V9a9 9 0 0 0 9 9"/>
+                </svg>
+              </div>
+              <div class="decision-card__body">
+                <div class="decision-card__title">Two data planes</div>
+                <div class="decision-card__desc">Operational data stays in the warehouse. Relationship data stays in the CRM. Federated at query time.</div>
+              </div>
+            </div>
+
+            <div class="decision-card">
+              <div class="decision-card__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
+                </svg>
+              </div>
+              <div class="decision-card__body">
+                <div class="decision-card__title">Skills in version control</div>
+                <div class="decision-card__desc">Agent behavior lives in markdown files, not a vendor console. Reviewable, diffable, portable.</div>
+              </div>
+            </div>
+
+            <div class="decision-card">
+              <div class="decision-card__icon">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+              </div>
+              <div class="decision-card__body">
+                <div class="decision-card__title">Reasoning as first-class feature</div>
+                <div class="decision-card__desc">The Activity Log is the audit trail and the trust primitive. Not a debug view.</div>
+              </div>
+            </div>
+
+          </div>
+        </div><!-- /overview-grid -->
+
+        <!-- Pull quote -->
+        <div class="overview-pullquote">
+          What makes this worth documenting is not the integrations — those are straightforward API work.
+          It is the design decisions that surround them: why a purpose-built UI instead of a generic
+          chat surface, why two separate data planes instead of one, why agent behavior lives in
+          version control rather than a vendor console, and why the reasoning trace is a
+          first-class feature of the system rather than a debug view.
+        </div>
+
+      </div>
+    </div>
+  </section>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -864,6 +1032,206 @@
       .content p {
         color: var(--text-secondary);
         line-height: 1.8;
+      }
+
+
+
+      /* ── Overview: two-column grid ── */
+      .overview-grid {
+        display: grid;
+        grid-template-columns: 55% 1fr;
+        gap: 40px;
+        align-items: start;
+        margin-top: 8px;
+      }
+      .overview-prose p {
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.8;
+        margin: 0 0 16px;
+      }
+      .overview-prose p:last-child { margin-bottom: 0; }
+
+      /* ── Decision cards ── */
+      .overview-cards {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .decision-card {
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        padding: 14px 16px;
+        background: rgba(6, 14, 28, 0.6);
+        border: 1px solid rgba(74, 143, 168, 0.18);
+        border-radius: 8px;
+        transition: border-color 0.2s;
+      }
+      .decision-card:hover { border-color: rgba(74, 143, 168, 0.35); }
+      .decision-card__icon {
+        color: var(--accent-cyan);
+        flex-shrink: 0;
+        margin-top: 2px;
+        opacity: 0.7;
+      }
+      .decision-card__body { flex: 1; }
+      .decision-card__title {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--accent-cyan);
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        margin-bottom: 4px;
+      }
+      .decision-card__desc {
+        font-size: 12px;
+        color: var(--text-secondary);
+        line-height: 1.55;
+      }
+
+      /* ── Overview pull quote ── */
+      .overview-pullquote {
+        margin-top: 36px;
+        padding: 22px 32px;
+        border-left: 2px solid rgba(74, 143, 168, 0.3);
+        font-family: var(--font-serif);
+        font-size: 15px;
+        font-style: italic;
+        color: var(--text-secondary);
+        line-height: 1.75;
+        background: rgba(6, 14, 28, 0.3);
+        border-radius: 0 6px 6px 0;
+      }
+
+      /* ── Scenario: two-column grid ── */
+      .scenario-grid {
+        display: grid;
+        grid-template-columns: 58% 1fr;
+        gap: 40px;
+        align-items: start;
+        margin-top: 8px;
+      }
+      .scenario-prose p {
+        color: var(--text-secondary);
+        font-size: 15px;
+        line-height: 1.8;
+        margin: 0 0 16px;
+      }
+      .scenario-prose p:last-child { margin-bottom: 0; }
+
+      /* ── Account card ── */
+      .scenario-card-col {
+        position: sticky;
+        top: 80px;
+      }
+      .account-card {
+        background: #081525;
+        border: 1px solid rgba(74, 143, 168, 0.2);
+        border-radius: 10px;
+        padding: 20px;
+        font-family: var(--font-mono);
+      }
+      .account-card__header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .account-card__avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 8px;
+        background: rgba(74, 143, 168, 0.1);
+        border: 1px solid rgba(74, 143, 168, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .account-card__name {
+        font-size: 13px;
+        font-weight: 700;
+        color: #c8d4e0;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .account-card__meta {
+        font-size: 10px;
+        color: #2a4a6a;
+        margin-top: 2px;
+      }
+      .account-card__divider {
+        height: 1px;
+        background: rgba(74, 143, 168, 0.12);
+        margin: 14px 0;
+      }
+      .account-card__section { margin-bottom: 12px; }
+      .account-card__opp-name {
+        font-size: 12px;
+        color: #c8d4e0;
+        margin-bottom: 2px;
+      }
+      .account-card__opp-amount {
+        font-size: 15px;
+        font-weight: 700;
+        color: #c8d4e0;
+        margin-bottom: 2px;
+      }
+      .account-card__opp-details {
+        font-size: 9px;
+        color: #2a4a6a;
+      }
+      .account-card__risk {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        background: rgba(181, 105, 74, 0.08);
+        border: 1px solid rgba(181, 105, 74, 0.25);
+        border-radius: 6px;
+        margin-top: 14px;
+      }
+      .account-card__risk-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #b5694a;
+        flex-shrink: 0;
+        box-shadow: 0 0 6px rgba(181, 105, 74, 0.6);
+      }
+      .account-card__risk-label {
+        font-size: 10px;
+        font-weight: 700;
+        color: #b5694a;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        display: block;
+      }
+      .account-card__risk-detail {
+        font-size: 10px;
+        color: #8a6050;
+        display: block;
+        margin-top: 1px;
+      }
+
+      /* ── Responsive ── */
+      @media (max-width: 900px) {
+        .overview-grid,
+        .scenario-grid {
+          grid-template-columns: 1fr;
+          gap: 28px;
+        }
+        .overview-pullquote {
+          padding: 18px 24px;
+        }
+        .scenario-card-col {
+          position: static;
+        }
+        .account-card {
+          max-width: 380px;
+        }
       }
 
   </style>
