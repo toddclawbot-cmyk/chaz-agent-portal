@@ -2125,7 +2125,7 @@
             <text x="592" y="157" font-family="monospace" font-size="8" fill="#2a4a6a">Subject</text>
             <text x="592" y="169" font-family="monospace" font-size="9" fill="#c8d4e0">Butter Shortage</text>
 
-            <text x="592" y="186" font-family="monospace" font-size="8" fill="#b5694a">$83K Opp at Risk</text>
+            <text x="592" y="186" font-family="monospace" font-size="8" fill="#b5694a">$85K Opp at Risk</text>
 
             <!-- Checkmark in corner -->
             <circle cx="752" cy="48" r="10" fill="#0e2236" stroke="#4a8fa8" stroke-width="1"/>
@@ -2145,9 +2145,6 @@
       <p class="hero__subtitle reveal">
         From natural language to autonomous action — a live demonstration.
       </p>
-
-      <!-- CTA -->
-      <p class="hero__cta-no-link">Groq · Databricks · Salesforce</p>
 
       <!-- Demo Video — lives inside hero; order CSS pulls it to top on mobile -->
       <div id="video-section" style="width: 100%; max-width: 780px; margin: 0 auto;">
@@ -2353,8 +2350,8 @@
               account record.
             </p>
             <p>
-              In the walkthrough below, the specific numbers are real: a $83,000
-              opportunity at Cafe Lumiere, a 667-pound butter shortage identified
+              In the walkthrough below, the specific numbers are real: a $85,000
+              opportunity at Cafe Lumiere, a 267-pound butter shortage identified
               across a three-week demand window, Case 00001077 created and
               resolved in the CRM, and an outbound email that landed in the
               customer's inbox — all triggered by a natural-language question about
@@ -2382,25 +2379,25 @@
               </div>
               <div class="account-card__section">
                 <div class="account-card__opp-name">Full Pastry Program</div>
-                <div class="account-card__opp-amount">$83,000</div>
+                <div class="account-card__opp-amount">$85,000</div>
                 <div class="account-card__opp-details">Close 2026-05-15 · Perception Analysis</div>
               </div>
               <div class="account-card__risk">
                 <div class="account-card__risk-dot"></div>
                 <div class="account-card__risk-text">
                   <span class="account-card__risk-label">At Risk</span>
-                  <span class="account-card__risk-detail">667 lbs butter shortfall</span>
+                  <span class="account-card__risk-detail">267 lbs butter shortfall</span>
                 </div>
               </div>
             </div>
 
             <div class="scenario-stats-strip">
               <div class="scenario-stat">
-                <span class="scenario-stat__value">$83K</span>
+                <span class="scenario-stat__value">$85K</span>
                 <span class="scenario-stat__label">Opportunity at risk</span>
               </div>
               <div class="scenario-stat">
-                <span class="scenario-stat__value">667 lbs</span>
+                <span class="scenario-stat__value">267 lbs</span>
                 <span class="scenario-stat__label">Butter shortfall</span>
               </div>
               <div class="scenario-stat">
@@ -2466,7 +2463,7 @@ WHERE IsClosed = FALSE AND Account.Name = 'Cafe Lumiere'
 LIMIT 25</code></pre>
             <p>
               The query returns a single live opportunity: the Full Pastry
-              Program — $83,000, Stage: Perception Analysis, Close: 2026-05-15.
+              Program — $85,000, Stage: Perception Analysis, Close: 2026-05-15.
               The same agent, the same chat surface, routed to a different data
               plane based on intent.
             </p>
@@ -2489,7 +2486,7 @@ LIMIT 25</code></pre>
               <li>Query Databricks Inventory — finds butter below reorder point across all suppliers</li>
               <li>Analyze Databricks Results — cross-references against confirmed delivery windows and three-week demand forecast</li>
               <li>Search Salesforce — retrieves open opportunities and account contacts for at-risk customers</li>
-              <li>Risk Assessment — MEDIUM severity: 667 lbs butter shortage, Cafe Lumiere's $83,000 opportunity at risk, outreach window 24 hours</li>
+              <li>Risk Assessment — MEDIUM severity: 267 lbs butter shortage, Cafe Lumiere's $85,000 opportunity at risk, outreach window 24 hours</li>
               <li>Create Case — writes Case 00001077 to Salesforce with full context: subject, priority High, linked Account and Contact, current stock levels, shortage percentage</li>
               <li>Draft Outreach — generates customer email governed by email-skill.md: Riley Torres to Taylor Nguyen at Cafe Lumiere, shortage confirmed, delivery window protected</li>
               <li>Send Email — fires via Gmail; lands in customer's inbox and logs to the Case feed in Salesforce</li>
@@ -2532,7 +2529,7 @@ LIMIT 25</code></pre>
                   <span class="timeline-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span>
                 </summary>
                 <div class="timeline-step__detail">
-                  MEDIUM severity: 667 lbs butter shortage, Cafe Lumiere's $83,000 opportunity at risk, outreach window 24 hours.
+                  MEDIUM severity: 267 lbs butter shortage, Cafe Lumiere's $85,000 opportunity at risk, outreach window 24 hours.
                 </div>
               </details>
               <details class="timeline-step">
@@ -3000,7 +2997,7 @@ order_date, order_qty, order_description, next_delivery</code></pre>
         <details class="reasoning-step">
           <summary>Step 4: <strong>Risk Assessment</strong><span class="reasoning-step__chevron"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg></span></summary>
           <div class="reasoning-step__body">
-            <p>The agent synthesizes the warehouse signal and the CRM signal into a structured risk call. In this case: MEDIUM severity, 667 lbs butter shortfall, Cafe Lumiere's $83,000 opportunity exposed, outreach window 24 hours. This is the decision point — everything before it was data retrieval; this is judgment.</p>
+            <p>The agent synthesizes the warehouse signal and the CRM signal into a structured risk call. In this case: MEDIUM severity, 267 lbs butter shortfall, Cafe Lumiere's $85,000 opportunity exposed, outreach window 24 hours. This is the decision point — everything before it was data retrieval; this is judgment.</p>
           </div>
         </details>
 
@@ -3166,10 +3163,8 @@ order_date, order_qty, order_description, next_delivery</code></pre>
   <footer class="footer">
     <div class="container">
       <p class="footer__brand">Chaz Agent Portal</p>
-      <nav class="footer__links">
+      <nav class="footer__links" style="justify-content: center;">
         <a href="https://github.com/toddclawbot-cmyk/chaz-agent-portal" class="footer__link" target="_blank" rel="noopener">GitHub</a>
-        <span class="footer__divider">/</span>
-        Live Architecture
       </nav>
       <p class="footer__credit">Built by Todd Ghidaleson + Chaz (AI Assistant)</p>
     </div>
