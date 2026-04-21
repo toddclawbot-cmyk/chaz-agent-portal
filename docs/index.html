@@ -132,6 +132,24 @@
       height: auto;
       margin-bottom: var(--space-lg);
     }
+    /* Demo Video */
+    .hero__video-wrap {
+      margin: 0 auto 32px;
+      max-width: 780px;
+      text-align: center;
+    }
+    .hero__video {
+      width: 100%;
+      max-width: 780px;
+      border-radius: 12px;
+      box-shadow:
+        0 0 0 1px rgba(181, 105, 74, 0.25),
+        0 8px 40px rgba(0, 0, 0, 0.6),
+        0 2px 8px rgba(0, 0, 0, 0.4);
+      display: block;
+      background: #060f1a;
+    }
+
 
     .hero__headline {
       font-family: var(--font-serif);
@@ -758,6 +776,21 @@
             <circle cx="80" cy="400" r="3"/>
           </g>
         </svg>
+      </div>
+
+
+      <!-- Demo Video -->
+      <div class="hero__video-wrap reveal" style="transition-delay: 0.1s;">
+        <video
+          class="hero__video"
+          controls
+          playsinline
+          preload="none"
+          title="Chaz Agent Portal Demo"
+        >
+          <source src="https://github.com/toddclawbot-cmyk/chaz-agent-portal/releases/download/v1.0-demo/Chaz.Bakery.Demo.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
       </div>
 
       <!-- Headline -->
