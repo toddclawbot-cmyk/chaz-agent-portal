@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: chaz-agent-portal
+    env: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    healthCheckPath: /
+    envVars:
+      - key: GROQ_API_KEY
+        sync: false
+      - key: DATABRICKS_TOKEN
+        sync: false
+      - key: DATABRICKS_SERVER
+        value: dbc-7178ded3-3dd3.cloud.databricks.com
+        sync: false
+      - key: DATABRICKS_WAREHOUSE
+        value: 095b4b50e2976a51
+        sync: false
+      - key: SALESFORCE_TOKEN
+        sync: false
+      - key: SALESFORCE_INSTANCE
+        value: https://orgfarm-23393c2d11-dev-ed.develop.my.salesforce.com
+        sync: false
